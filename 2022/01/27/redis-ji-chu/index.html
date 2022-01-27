@@ -4,10 +4,13 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="3W1H | 关于写博客的反思, KV store">
-    <meta name="description" content="3W1H | 关于写博客的反思Why？为什么会想起来写博客？也就是之前只是做了一个比较粗糙的主页，现在想要丰富一下自己的页面
-What？都写一些什么主题的博客？大概就是记录自己学习过程的东西吧，主要做的就是redis方面的
-Who？写出来的">
+    <meta name="keywords" content="redis基础, KV store">
+    <meta name="description" content="redis基础数据结构sds
+字符串长度保存在本体中,获取需要常数时间复杂度
+header包含的部分:
+len: 表示字符串的真正长度（不包含NULL结束符在内）。
+alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。
+flag">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +22,7 @@ Who？写出来的">
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>3W1H | 关于写博客的反思 | homie&#39;s Home</title>
+    <title>redis基础 | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -327,12 +330,12 @@ Who？写出来的">
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">3W1H | 关于写博客的反思</h1>
+                    <h1 class="description center-align post-title">redis基础</h1>
                 </div>
             </div>
         </div>
@@ -448,8 +451,8 @@ Who？写出来的">
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E5%8D%9A%E5%AE%A2/">
-                                <span class="chip bg-color">博客</span>
+                            <a href="/tags/redis/">
+                                <span class="chip bg-color">redis</span>
                             </a>
                         
                     </div>
@@ -460,8 +463,8 @@ Who？写出来的">
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
-                                随笔
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                学习
                             </a>
                         
                     </div>
@@ -473,7 +476,7 @@ Who？写出来的">
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-01-26
+                    2022-01-27
                 </div>
                 
 
@@ -482,14 +485,14 @@ Who？写出来的">
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    180
+                    3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    11 分
                 </div>
                 
 
@@ -512,11 +515,317 @@ Who？写出来的">
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="3W1H-关于写博客的反思"><a href="#3W1H-关于写博客的反思" class="headerlink" title="3W1H | 关于写博客的反思"></a>3W1H | 关于写博客的反思</h1><h2 id="Why？为什么会想起来写博客？"><a href="#Why？为什么会想起来写博客？" class="headerlink" title="Why？为什么会想起来写博客？"></a>Why？为什么会想起来写博客？</h2><p>也就是之前只是做了一个比较粗糙的主页，现在想要丰富一下自己的页面</p>
-<h2 id="What？都写一些什么主题的博客？"><a href="#What？都写一些什么主题的博客？" class="headerlink" title="What？都写一些什么主题的博客？"></a>What？都写一些什么主题的博客？</h2><p>大概就是记录自己学习过程的东西吧，主要做的就是redis方面的</p>
-<h2 id="Who？写出来的博客都是给谁看的？"><a href="#Who？写出来的博客都是给谁看的？" class="headerlink" title="Who？写出来的博客都是给谁看的？"></a>Who？写出来的博客都是给谁看的？</h2><p>更多只是自己学习方面的记录，我觉得有时间摸摸鱼写一下就是很给博客面子了</p>
-<h2 id="How-much？要花多少时间和金钱来运营维护？"><a href="#How-much？要花多少时间和金钱来运营维护？" class="headerlink" title="How much？要花多少时间和金钱来运营维护？"></a>How much？要花多少时间和金钱来运营维护？</h2><p>不准备花多少时间哈哈哈哈哈哈我可能就是心血来潮搞一下而已</p>
+                <h1 id="redis基础"><a href="#redis基础" class="headerlink" title="redis基础"></a>redis基础</h1><h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="sds"><a href="#sds" class="headerlink" title="sds"></a>sds</h3><ul>
+<li>字符串长度保存在本体中,获取需要常数时间复杂度</li>
+<li>header包含的部分:<ul>
+<li>len: 表示字符串的真正长度（不包含NULL结束符在内）。</li>
+<li>alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。</li>
+<li>flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。</li>
+</ul>
+</li>
+<li>缓冲区不会溢出</li>
+<li>减少修改时的内存重分配次数<ul>
+<li>空间预分配</li>
+<li>alloca记录分配的总空间,惰性空间释放</li>
+</ul>
+</li>
+<li>除了自己加上的头部字段,其他和c函数一样,兼容相关函数</li>
+</ul>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><ul>
+<li>双向链表</li>
+<li>无环,头指针的prev,尾指针的next都指向null</li>
+<li>自带指向头指针和尾指针的指针</li>
+<li>链表具有链表长度计数器,标识长度</li>
+<li>void *可以保存不同类型的值</li>
+</ul>
+<h3 id="dict"><a href="#dict" class="headerlink" title="dict"></a>dict</h3><p>基于哈希表实现,采用某个哈希函数从key计算得到在哈希表中的位置，采用拉链法解决冲突，并在装载因子超过预定值时自动扩展内存，引发重哈希,并且在重哈希的过程中,每次增删改查推进一步重哈希,避免重哈希期间单个请求的响应时间剧烈增加.</p>
+<p>实现增量式重哈希，dict的数据结构里包含两个哈希表。在重哈希期间，数据从第一个哈希表向第二个哈希表迁移</p>
+<ul>
+<li><p>hash table结构:</p>
+<ul>
+<li>一个dictEntry指针数组（table）。key的哈希值最终映射到这个数组的某个位置上（对应一个bucket）。如果多个key映射到同一个位置，就发生了冲突，那么就拉出一个dictEntry链表。</li>
+<li>size：标识dictEntry指针数组的长度。它总是2的指数。</li>
+<li>sizemask：用于将哈希值映射到table的位置索引。它的值等于(size-1)，比如7, 15, 31, 63，等等，也就是用二进制表示的各个bit全1的数字。每个key先经过hashFunction计算得到一个哈希值，然后计算(哈希值 &amp; sizemask)得到在table上的位置。相当于计算取余(哈希值 % size)。</li>
+<li>used：记录dict中现有的数据个数。它与size的比值就是装载因子（load factor）。这个比值越大，哈希值冲突概率越高。</li>
+</ul>
+</li>
+<li><p>单个dictentry结构:</p>
+<ul>
+<li>```c<br>typedef struct dictEntry {<pre><code>void *key;//键
+union {
+    void *val;
+    uint64_t u64;
+    int64_t s64;
+    double d;
+} v;//值
+struct dictEntry *next;     /* 具有相同的hash值,先通过链表链接起来Next entry in the same hash bucket. */
+void *metadata[];           /* An arbitrary number of bytes (starting at a
+                             * pointer-aligned address) of size as returned
+                             * by dictType's dictEntryMetadataBytes(). */
+</code></pre>
+} dictEntry;<pre class="language-none"><code class="language-none">
+    
 
+- dict本身结构:
+
+  ```c
+  //字典本身
+  struct dict {
+      dictType *type;//类型函数
+      /*dictEntry指针数组（table）。
+      key的哈希值最终映射到这个数组的某个位置上（对应一个bucket）。
+      如果多个key映射到同一个位置，就发生了冲突，那么就拉出一个dictEntry链表。
+      只有在重哈希的过程中，ht_table[0]和ht_table[1]才都有效。
+      而在平常情况下，只有ht_table[0]有效，ht_table[1]里面没有任何数据。*/
+      dictEntry **ht_table[2];//hash表
+      /*记录dict中现有的数据个数。
+      它与size的比值就是装载因子（load factor）。
+      这个比值越大，哈希值冲突概率越高。*/
+      unsigned long ht_used[2];
+      // rehash 索引
+      // 当 rehash 不在进行时，值为 -1,它的值记录了当前重哈希进行到哪一步了
+      long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+  
+      /* Keep small vars at end for optimal (minimal) struct padding */
+      /* If &gt;0 rehashing is paused (&lt;0 indicates coding error) */
+      int16_t pauserehash; //大于0表示rehash计算停止,小于0编码错误
+      signed char ht_size_exp[2]; /* 记录大小的次方,exponent of size. (size = 1&lt;&lt;exp) */
+  };</code></pre></li>
+</ul>
+</li>
+<li><p>rehash过程:</p>
+<ul>
+<li>大小选择:<ul>
+<li>扩展时第二个hash表的大小是大于等于第一个的used*2的第一个$2^n$</li>
+<li>收缩时第二个hash表的大小是大于等于第一个的used的第一个$2^n$</li>
+</ul>
+</li>
+<li>rehash的时候重新计算键的哈希值和索引值</li>
+<li>所有键值对rehash结束之后就直接把新的hash表当作原来的hash表</li>
+<li>rehash进行时,每次增删改查都会顺带把第一个哈希表上面相应rehashidx索引上面的所有键值对rehash到第二个表上,rehash完成之后将rehashidx值增加一</li>
+<li>当rehash完成之后,rehashidx的值设置成-1</li>
+</ul>
+</li>
+</ul>
+<h3 id="skiplist"><a href="#skiplist" class="headerlink" title="skiplist"></a>skiplist</h3><ul>
+<li><p>基本结构:</p>
+<ul>
+<li>```c<br>typedef struct zskiplistNode {<pre><code>//zadd命令在将数据插入到skiplist里面之前先进行了解码，所以存储的一定是一个sds
+//为了方便在查找的时候对数据进行字典序的比较，
+//而且，skiplist里的value部分是数字的可能性也比较小,不是很方便压缩
+sds ele;
+double score;
+//指向链表前一个节点的指针（前向指针）
+//每个节点只有1个前向指针(没有依靠level分开)，所以只有第1层链表是一个双向链表
+struct zskiplistNode *backward;
+//存放指向各层链表后一个节点的指针（后向指针）
+//是一个柔性数组,占用内存不在zskiplistNode结构里面，需要插入节点的时候单独为它分配
+//所以skiplist的每个节点所包含的指针数目是不固定的
+struct zskiplistLevel {
+    //每层对应1个后向指针，用forward字段表示
+    struct zskiplistNode *forward;
+    //表示当前的指针跨越了多少个节点,用于计算元素排名
+    unsigned long span;
+} level[];
+</code></pre>
+} zskiplistNode;<pre class="language-none"><code class="language-none">
+- ```c
+  //真正的skiplist结构
+  typedef struct zskiplist {
+      struct zskiplistNode *header, *tail;
+      unsigned long length;//链表长度,头指针为空,不算在计数中
+      int level;//总层数
+  } zskiplist;</code></pre></li>
+</ul>
+</li>
+<li><p>层数随机决定(1-32,幂次随机算法)</p>
+</li>
+<li><p>分值可以相同,但是对应成员必须不一样</p>
+</li>
+</ul>
+<h3 id="intset"><a href="#intset" class="headerlink" title="intset"></a>intset</h3><ul>
+<li><p>不会出现重复元素</p>
+</li>
+<li><p>结构:</p>
+<ul>
+<li><p>```c<br>//由整数组成的有序集合,便于在上面进行二分查找，用于快速地判断一个元素是否属于这个集合<br>typedef struct intset {</p>
+<pre><code>//整个统一的数据编码，表示intset中的每个数据元素用几个字节来存储
+//intset中存储的整数最多只能占用64bit
+//随着数据添加,可能改变数据编码,比如一些比较大的整数
+uint32_t encoding;
+//inset中的元素个数
+uint32_t length;
+//一个柔性数组,长度等于encoding * length,用于表达偏移量
+//contents需要单独为其分配空间，这部分内存不包含在intset结构当中
+int8_t contents[];
+</code></pre>
+<p>} intset;</p>
+<pre class="language-none"><code class="language-none">
+- 当原来的encoding大小不够新的数据存储时,需要升级数据编码
+
+  - 先扩充整个集合底层数组大小,分配新元素空间
+  - 原来的数据类型转换
+  - 添加新元素(一般来说新元素都在开头或者末尾位置)
+
+- 有点像数组的排列,中间插入元素需要整个向后移动,修改代价比较高
+
+### ziplist
+
+- 列表键只包含少量列表键,值的储存是变长的
+
+- 将表中每一项存放在前后连续的地址空间内，一个ziplist整体占用一大块内存
+
+- 结构:
+
+  - ```c
+    typedef struct {
+        /* When string is used, it is provided with the length (slen). */
+        unsigned char *sval;
+        unsigned int slen;
+        /* When integer is used, 'sval' is NULL, and lval holds the value. */
+        long long lval;
+    } ziplistEntry;
+    //ziplist的数据类型，没有用自定义的struct之类的来表达，
+    //而就是简单的unsigned char *。
+    //这是因为ziplist本质上就是一块连续内存，
+    //内部组成结构又是一个高度动态的设计（变长编码），也没法用一个固定的数据结构来表达。</code></pre></li>
+<li><p>```c<br>/* We use this function to receive information about a ziplist entry.</p>
+<ul>
+<li>Note that this is not how the data is actually encoded, is just what we</li>
+<li>get filled by a function in order to operate more easily. <em>/<br>//每一个entry的格式<br>//记录长度是为了方便指针运算确定偏移量<br>typedef struct zlentry {<br> unsigned int prevrawlensize; /</em> Bytes used to encode the previous entry len*/<br> unsigned int prevrawlen;     /* Previous entry len. <em>/<br> unsigned int lensize;        /</em> Bytes used to encode this entry type/len.<pre><code>                             For example strings have a 1, 2 or 5 bytes
+                             header. Integers always use a single byte.*/
+</code></pre>
+ unsigned int len;            /* Bytes used to represent the actual entry.<pre><code>                             For strings this is just the string length
+                             while for integers it is 1, 2, 3, 4, 8 or
+                             0 (for 4 bit immediate) depending on the
+                             number range. */
+</code></pre>
+ unsigned int headersize;     /* prevrawlensize + lensize. <em>/<br> unsigned char encoding;      /</em> Set to ZIP_STR_* or ZIP_INT_* depending on<pre><code>                             the entry encoding. However for 4 bits
+                             immediate integers this can assume a range
+                             of values and must be range-checked. */
+</code></pre>
+ unsigned char <em>p;            /</em> Pointer to the very start of the entry, that<pre><code>                             is, this points to prev-entry-len field. */
+</code></pre>
+} zlentry;<pre class="language-none"><code class="language-none">
+- 添加/删除节点的时候很可能出现连锁更新
+
+## robj(server.h)
+
+对象的类型一般是指value的类型,和key类型无关(key一般都是string)
+
+- 作用:
+
+  - 为多种数据类型提供一种统一的表示方式。
+  - 允许同一类型的数据采用不同的内部表示，从而在某些情况下尽量节省内存。
+  - 支持对象共享和引用计数。当对象被共享的时候，只占用一份内存拷贝，进一步节省内存。
+
+- 结构:
+
+  - ```c
+    typedef struct redisObject {
+        //对象的数据类型
+        //可能的取值有5种：OBJ_STRING, OBJ_LIST, OBJ_SET, OBJ_ZSET, OBJ_HASH，
+        //分别对应Redis对外暴露的5种数据结构
+        unsigned type:4;
+        //对象的内部表示方式（也可以称为编码）
+        //可能的取值有10种，即前面代码中的10个OBJ_ENCODING_XXX常量
+        unsigned encoding:4;
+        //lru算法记录使用的数据
+        unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
+                                * LFU data (least significant 8 bits frequency
+                                * and most significant 16 bits access time). */
+        //引用计数,允许robj在一定情况下被共享
+        int refcount;
+        //数据指针,指向真正的数据
+        void *ptr;
+    } robj;</code></pre></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>string对象:</p>
+<ul>
+<li>接收到的value值（string类型）表示成一个type = OBJ_STRING并且encoding = OBJ_ENCODING_RAW的robj对象</li>
+<li>然后在存入内部存储之前先执行一个编码过程，试图将它表示成另一种更节省内存的encoding方式</li>
+</ul>
+</li>
+<li><p>list对象</p>
+<ul>
+<li>一般使用ziplist</li>
+</ul>
+</li>
+<li><p>哈希对象</p>
+<ul>
+<li>使用ziplist或者hashtable</li>
+<li>ziplist:<ul>
+<li>键值对相邻,先压入键再压入值</li>
+<li>直接往尾部添加</li>
+</ul>
+</li>
+<li>hashtable:<ul>
+<li>使用dict实现</li>
+<li>dict的键保存键,值保存值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>集合</p>
+<ul>
+<li>使用intset或者hashtable</li>
+<li>使用hashtable实现时,字典每个键都是一个字符串对象,对应一个集合元素,字典值设为null</li>
+</ul>
+</li>
+<li><p>有序集合</p>
+<ul>
+<li>使用ziplist或者skiplist</li>
+</ul>
+</li>
+<li><p>多态指令:</p>
+<ul>
+<li>根据对象的类型编码决定指令的具体函数与实现方式决定要调用的函数</li>
+<li>执行指令前像检查对应键或者值能否正确执行相关函数指令</li>
+</ul>
+</li>
+<li><p>内存回收</p>
+<ul>
+<li>通过引用计数在适当时候释放对象并回收内存<ul>
+<li>创建时引用数加一</li>
+<li>被新程序使用时引用数加一</li>
+<li>程序不再使用,引用数减一</li>
+<li>引用数变成0,内存释放</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>对象共享</p>
+<ul>
+<li>共享就是利用refcount实现的,每多一个共享的就加一</li>
+<li>提前准备了0到9999的字符串对象共享</li>
+</ul>
+</li>
+<li><p>空转时长</p>
+<ul>
+<li>lru记录最后一次被程序访问的时间,当前时间减去lru时间就是空转时长</li>
+<li>(打印空转时长并不会更新lru值)</li>
+<li>当内存比较满时,最先被释放的是lru最早的那些键</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据类型实现"><a href="#数据类型实现" class="headerlink" title="数据类型实现"></a>数据类型实现</h2><h3 id="t-string-c"><a href="#t-string-c" class="headerlink" title="t_string.c"></a>t_string.c</h3><ul>
+<li>setGenericCommand()函数实现了SET,SETEX,PSETEX,SETNX指令<ul>
+<li>expire 定义了 Redis 对象的过期时间</li>
+<li><em>ok_reply 和 abort_reply 决定了命令回复的内容，NX 参数和 XX 参数也会改变回复。</em><ul>
+<li><em>如果 ok_reply 为 NULL ，那么 “+OK” 被返回。如果 abort_reply 为 NULL ，那么 “$-1” 被返回。</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>getExpireMillisecondsOrReply()实现了过期处理,从客户请求中处理过期的robj</li>
+<li>parseExtendedStringArgumentsOrReply()判断当前字符串操作指令的有效性</li>
+<li>*getexCommand()*对于GET的多余参数进行处理,和GET不同,这个指令不是仅可读的</li>
+<li>setrangeCommand()函数中感觉有个地方可以优化,sdslen只能为0或者正值,那么可以减少一个地方的判断,少用一个if语句</li>
+</ul>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1>
                 
             </div>
             <hr/>
@@ -542,7 +851,7 @@ Who？写出来的">
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/">http://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/</a>
+                    <a href="http://leehm00.github.io/2022/01/27/redis-ji-chu/">http://leehm00.github.io/2022/01/27/redis-ji-chu/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -580,8 +889,8 @@ Who？写出来的">
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E5%8D%9A%E5%AE%A2/">
-                                    <span class="chip bg-color">博客</span>
+                                <a href="/tags/redis/">
+                                    <span class="chip bg-color">redis</span>
                                 </a>
                             
                         </div>
@@ -759,13 +1068,13 @@ Who？写出来的">
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/01/27/redis-ji-chu/">
+                <a href="/2022/01/27/redis-dan-ji-shu-ju-ku/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="redis基础">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="redis单机数据库以及持久化">
                         
-                        <span class="card-title">redis基础</span>
+                        <span class="card-title">redis单机数据库以及持久化</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -808,13 +1117,13 @@ Who？写出来的">
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/26/hello-world/">
+                <a href="/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="3W1H | 关于写博客的反思">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">3W1H | 关于写博客的反思</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -829,11 +1138,23 @@ Who？写出来的">
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            homie
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
+                                    随笔
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%8D%9A%E5%AE%A2/">
+                        <span class="chip bg-color">博客</span>
+                    </a>
+                    
                 </div>
                 
             </div>
