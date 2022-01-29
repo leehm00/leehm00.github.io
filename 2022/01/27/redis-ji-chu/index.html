@@ -35,9 +35,9 @@ flag">
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.0.0">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
 </head>
 
 
@@ -648,8 +648,7 @@ struct zskiplistLevel {
 </li>
 <li><p>结构:</p>
 <ul>
-<li><p>```c<br>//由整数组成的有序集合,便于在上面进行二分查找，用于快速地判断一个元素是否属于这个集合<br>typedef struct intset {</p>
-<pre><code>//整个统一的数据编码，表示intset中的每个数据元素用几个字节来存储
+<li>```c<br>//由整数组成的有序集合,便于在上面进行二分查找，用于快速地判断一个元素是否属于这个集合<br>typedef struct intset {<pre><code>//整个统一的数据编码，表示intset中的每个数据元素用几个字节来存储
 //intset中存储的整数最多只能占用64bit
 //随着数据添加,可能改变数据编码,比如一些比较大的整数
 uint32_t encoding;
@@ -659,8 +658,7 @@ uint32_t length;
 //contents需要单独为其分配空间，这部分内存不包含在intset结构当中
 int8_t contents[];
 </code></pre>
-<p>} intset;</p>
-<pre class="language-none"><code class="language-none">
+} intset;<pre class="language-none"><code class="language-none">
 - 当原来的encoding大小不够新的数据存储时,需要升级数据编码
 
   - 先扩充整个集合底层数组大小,分配新元素空间
@@ -677,7 +675,9 @@ int8_t contents[];
 
 - 结构:
 
-  - ```c
+  - 源代码：
+    
+    ```c
     typedef struct {
         /* When string is used, it is provided with the length (slen). */
         unsigned char *sval;
@@ -689,58 +689,63 @@ int8_t contents[];
     //而就是简单的unsigned char *。
     //这是因为ziplist本质上就是一块连续内存，
     //内部组成结构又是一个高度动态的设计（变长编码），也没法用一个固定的数据结构来表达。</code></pre></li>
-<li><p>```c<br>/* We use this function to receive information about a ziplist entry.</p>
-<ul>
-<li>Note that this is not how the data is actually encoded, is just what we</li>
-<li>get filled by a function in order to operate more easily. <em>/<br>//每一个entry的格式<br>//记录长度是为了方便指针运算确定偏移量<br>typedef struct zlentry {<br> unsigned int prevrawlensize; /</em> Bytes used to encode the previous entry len*/<br> unsigned int prevrawlen;     /* Previous entry len. <em>/<br> unsigned int lensize;        /</em> Bytes used to encode this entry type/len.<pre><code>                             For example strings have a 1, 2 or 5 bytes
-                             header. Integers always use a single byte.*/
-</code></pre>
- unsigned int len;            /* Bytes used to represent the actual entry.<pre><code>                             For strings this is just the string length
-                             while for integers it is 1, 2, 3, 4, 8 or
-                             0 (for 4 bit immediate) depending on the
-                             number range. */
-</code></pre>
- unsigned int headersize;     /* prevrawlensize + lensize. <em>/<br> unsigned char encoding;      /</em> Set to ZIP_STR_* or ZIP_INT_* depending on<pre><code>                             the entry encoding. However for 4 bits
-                             immediate integers this can assume a range
-                             of values and must be range-checked. */
-</code></pre>
- unsigned char <em>p;            /</em> Pointer to the very start of the entry, that<pre><code>                             is, this points to prev-entry-len field. */
-</code></pre>
-} zlentry;<pre class="language-none"><code class="language-none">
-- 添加/删除节点的时候很可能出现连锁更新
-
-## robj(server.h)
-
-对象的类型一般是指value的类型,和key类型无关(key一般都是string)
-
-- 作用:
-
-  - 为多种数据类型提供一种统一的表示方式。
-  - 允许同一类型的数据采用不同的内部表示，从而在某些情况下尽量节省内存。
-  - 支持对象共享和引用计数。当对象被共享的时候，只占用一份内存拷贝，进一步节省内存。
-
-- 结构:
-
-  - ```c
-    typedef struct redisObject {
-        //对象的数据类型
-        //可能的取值有5种：OBJ_STRING, OBJ_LIST, OBJ_SET, OBJ_ZSET, OBJ_HASH，
-        //分别对应Redis对外暴露的5种数据结构
-        unsigned type:4;
-        //对象的内部表示方式（也可以称为编码）
-        //可能的取值有10种，即前面代码中的10个OBJ_ENCODING_XXX常量
-        unsigned encoding:4;
-        //lru算法记录使用的数据
-        unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
-                                * LFU data (least significant 8 bits frequency
-                                * and most significant 16 bits access time). */
-        //引用计数,允许robj在一定情况下被共享
-        int refcount;
-        //数据指针,指向真正的数据
-        void *ptr;
-    } robj;</code></pre></li>
+<li>zlentry结构：<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">/* We use this function to receive information about a ziplist entry.
+ * Note that this is not how the data is actually encoded, is just what we
+ * get filled by a function in order to operate more easily. */</span>
+<span class="token comment">//每一个entry的格式</span>
+<span class="token comment">//记录长度是为了方便指针运算确定偏移量</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">zlentry</span> <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> prevrawlensize<span class="token punctuation">;</span> <span class="token comment">/* Bytes used to encode the previous entry len*/</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> prevrawlen<span class="token punctuation">;</span>     <span class="token comment">/* Previous entry len. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> lensize<span class="token punctuation">;</span>        <span class="token comment">/* Bytes used to encode this entry type/len.
+                                    For example strings have a 1, 2 or 5 bytes
+                                    header. Integers always use a single byte.*/</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> len<span class="token punctuation">;</span>            <span class="token comment">/* Bytes used to represent the actual entry.
+                                    For strings this is just the string length
+                                    while for integers it is 1, 2, 3, 4, 8 or
+                                    0 (for 4 bit immediate) depending on the
+                                    number range. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> headersize<span class="token punctuation">;</span>     <span class="token comment">/* prevrawlensize + lensize. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> encoding<span class="token punctuation">;</span>      <span class="token comment">/* Set to ZIP_STR_* or ZIP_INT_* depending on
+                                    the entry encoding. However for 4 bits
+                                    immediate integers this can assume a range
+                                    of values and must be range-checked. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>            <span class="token comment">/* Pointer to the very start of the entry, that
+                                    is, this points to prev-entry-len field. */</span>
+<span class="token punctuation">}</span> zlentry<span class="token punctuation">;</span></code></pre></li>
 </ul>
 </li>
+<li><p>添加/删除节点的时候很可能出现连锁更新</p>
+</li>
+</ul>
+<h2 id="robj-server-h"><a href="#robj-server-h" class="headerlink" title="robj(server.h)"></a>robj(server.h)</h2><p>对象的类型一般是指value的类型,和key类型无关(key一般都是string)</p>
+<ul>
+<li><p>作用:</p>
+<ul>
+<li>为多种数据类型提供一种统一的表示方式。</li>
+<li>允许同一类型的数据采用不同的内部表示，从而在某些情况下尽量节省内存。</li>
+<li>支持对象共享和引用计数。当对象被共享的时候，只占用一份内存拷贝，进一步节省内存。</li>
+</ul>
+</li>
+<li><p>结构:</p>
+<ul>
+<li>源代码：<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisObject</span> <span class="token punctuation">{</span>
+    <span class="token comment">//对象的数据类型</span>
+    <span class="token comment">//可能的取值有5种：OBJ_STRING, OBJ_LIST, OBJ_SET, OBJ_ZSET, OBJ_HASH，</span>
+    <span class="token comment">//分别对应Redis对外暴露的5种数据结构</span>
+    <span class="token keyword">unsigned</span> type<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token comment">//对象的内部表示方式（也可以称为编码）</span>
+    <span class="token comment">//可能的取值有10种，即前面代码中的10个OBJ_ENCODING_XXX常量</span>
+    <span class="token keyword">unsigned</span> encoding<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token comment">//lru算法记录使用的数据</span>
+    <span class="token keyword">unsigned</span> lru<span class="token operator">:</span>LRU_BITS<span class="token punctuation">;</span> <span class="token comment">/* LRU time (relative to global lru_clock) or
+                            * LFU data (least significant 8 bits frequency
+                            * and most significant 16 bits access time). */</span>
+    <span class="token comment">//引用计数,允许robj在一定情况下被共享</span>
+    <span class="token keyword">int</span> refcount<span class="token punctuation">;</span>
+    <span class="token comment">//数据指针,指向真正的数据</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>ptr<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> robj<span class="token punctuation">;</span></code></pre></li>
 </ul>
 </li>
 <li><p>string对象:</p>
@@ -825,7 +830,7 @@ int8_t contents[];
 <li>*getexCommand()*对于GET的多余参数进行处理,和GET不同,这个指令不是仅可读的</li>
 <li>setrangeCommand()函数中感觉有个地方可以优化,sdslen只能为0或者正值,那么可以减少一个地方的判断,少用一个if语句</li>
 </ul>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+
                 
             </div>
             <hr/>
@@ -851,7 +856,7 @@ int8_t contents[];
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://leehm00.github.io/2022/01/27/redis-ji-chu/">http://leehm00.github.io/2022/01/27/redis-ji-chu/</a>
+                    <a href="https://leehm00.github.io/2022/01/27/redis-ji-chu/">https://leehm00.github.io/2022/01/27/redis-ji-chu/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1395,7 +1400,7 @@ int8_t contents[];
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.9k</span>
+                        class="white-color">29.6k</span>
             
             
             

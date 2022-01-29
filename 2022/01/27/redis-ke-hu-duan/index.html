@@ -38,9 +38,9 @@ typedef struct multiCmd {
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.0.0">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
 </head>
 
 
@@ -745,7 +745,9 @@ typedef struct multiCmd {
 
 - 输入缓冲区
 
-  - ```c#
+  - 源代码：
+
+    ```c#
     typedef struct client {
     	//缓冲区,用于储存指令
         sds querybuf;           /* Buffer we use to accumulate client queries. */
@@ -756,33 +758,36 @@ typedef struct multiCmd {
 </li>
 <li><p>命令和命令参数</p>
 <ul>
-<li><p>```c<br>typedef struct client {</p>
-<pre><code>//当前指令的参数数量
-int argc;               /* Num of arguments of current command. */
-//当前指令参数值
-robj **argv;            /* Arguments of current command. */
-//参数有可能是重写过的,记录了原来的参数数量
-int original_argc;      /* Num of arguments of original command if arguments were rewritten. */
-//参数有可能是重写过的,记录了原来的参数值
-robj **original_argv;   /* Arguments of original command if arguments were rewritten. */
-size_t argv_len_sum;    /* Sum of lengths of objects in argv list. */
-</code></pre>
-<p>}client;</p>
-<pre class="language-none"><code class="language-none">
-- 命令实现函数
-
-  - ```c
-    typedef struct client {
-    	//记录客户端执行的命令
-        struct redisCommand *cmd, *lastcmd;  /* Last command executed. */
-    }client;</code></pre></li>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+	<span class="token comment">//当前指令的参数数量</span>
+    <span class="token keyword">int</span> argc<span class="token punctuation">;</span>               <span class="token comment">/* Num of arguments of current command. */</span>
+    <span class="token comment">//当前指令参数值</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">;</span>            <span class="token comment">/* Arguments of current command. */</span>
+    <span class="token comment">//参数有可能是重写过的,记录了原来的参数数量</span>
+    <span class="token keyword">int</span> original_argc<span class="token punctuation">;</span>      <span class="token comment">/* Num of arguments of original command if arguments were rewritten. */</span>
+    <span class="token comment">//参数有可能是重写过的,记录了原来的参数值</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>original_argv<span class="token punctuation">;</span>   <span class="token comment">/* Arguments of original command if arguments were rewritten. */</span>
+    <span class="token class-name">size_t</span> argv_len_sum<span class="token punctuation">;</span>    <span class="token comment">/* Sum of lengths of objects in argv list. */</span>
+    
+<span class="token punctuation">}</span>client<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>命令实现函数</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+	<span class="token comment">//记录客户端执行的命令</span>
+    <span class="token keyword">struct</span> <span class="token class-name">redisCommand</span> <span class="token operator">*</span>cmd<span class="token punctuation">,</span> <span class="token operator">*</span>lastcmd<span class="token punctuation">;</span>  <span class="token comment">/* Last command executed. */</span>
+<span class="token punctuation">}</span>client<span class="token punctuation">;</span></code></pre></li>
 <li><p>根据项argv[0] 的值,在命令表中査找命令所对应的命令实现函数,找到之后将客户端状态的cmd执行那个在命令表之中的这个结构,这个结构保存了命令的实现函数、 命令的标志 、 命令应该给定的参数个数、 命令的总执行次数和总消耗时长等统计信息  </p>
 </li>
 </ul>
 </li>
 <li><p>输出缓冲区</p>
 <ul>
-<li><pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
     <span class="token comment">//...</span>
 	<span class="token comment">/* Response buffer */</span>
     <span class="token comment">// 回复偏移量</span>
@@ -808,43 +813,38 @@ size_t argv_len_sum;    /* Sum of lengths of objects in argv list. */
 </li>
 <li><p>时间</p>
 <ul>
-<li>```c<pre><code>//创建客户端时间
-time_t ctime;           /* Client creation time. */
-long duration;          /* Current command duration. Used for measuring latency of blocking/non-blocking cmds */
-// 客户端最后一次和服务器互动的时间    ,即客户端空转时间
-time_t lastinteraction; /* Time of the last interaction, used for timeout */
-//达到buf软性限制的时间,太长的话会被kill
-time_t obuf_soft_limit_reached_time;
-</code></pre>
-<pre class="language-none"><code class="language-none">
-- 限制缓冲区大小
-
-  - 硬性限制（ hard limit ): 如果输出缓冲区的大小超过了硬性限制所设置的大小， 那么服务器立即关闭客户端。
-  - 软性限制（ softlimit ): 如果输出缓冲区的大小超过了软性限制所设置的大小， 但还没超过硬性限制， 那么服务器将使用客户端状态结构的 `obuf_soft_limit_
-    reached_time `属性记录下客户端到达软性限制的起始时间； 之后服务器会继续监视客户端， 如果输出缓冲区的大小一直超出软性限制， 并且持续时间超过服务器设定的时长， 那么服务器将关闭客户端;如果不再超过的话就直接清零属性值,不关闭客户端
-
-### 客户端的类型
-
-- 普通客户端
-  - 直接按照之前的模式执行相关程序即可
-
-- Lua脚本的伪客户端
-  - Lua_client 伪客户端在服务器初始化的时候就创建了,服务器运行的整个生命期中会一直存在,服务器被关闭时， 这个客户端才会被关闭
-
-## 服务器
-
-### 命令请求的执行过程
-
-#### 发送请求
-
-Redis 服务器的命令请求来自 Redis 客户端， 当用户在客户端中键人一个命令请求时，客户端会将这个命令请求转换成协议格式， 然后通过连接到服务器的套接字， 将协议格式的命令请求发送给服务器
-
-```mermaid
-graph LR
-id1[用户]--键入命令请求--&gt;id2[客户端]--将命令转换为协议的格式并发送--&gt;id3[服务器]</code></pre></li>
+<li>源代码：<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//创建客户端时间</span>
+   <span class="token class-name">time_t</span> ctime<span class="token punctuation">;</span>           <span class="token comment">/* Client creation time. */</span>
+   <span class="token keyword">long</span> duration<span class="token punctuation">;</span>          <span class="token comment">/* Current command duration. Used for measuring latency of blocking/non-blocking cmds */</span>
+   <span class="token comment">// 客户端最后一次和服务器互动的时间	,即客户端空转时间</span>
+   <span class="token class-name">time_t</span> lastinteraction<span class="token punctuation">;</span> <span class="token comment">/* Time of the last interaction, used for timeout */</span>
+<span class="token comment">//达到buf软性限制的时间,太长的话会被kill</span>
+   <span class="token class-name">time_t</span> obuf_soft_limit_reached_time<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>限制缓冲区大小</p>
+<ul>
+<li>硬性限制（ hard limit ): 如果输出缓冲区的大小超过了硬性限制所设置的大小， 那么服务器立即关闭客户端。</li>
+<li>软性限制（ softlimit ): 如果输出缓冲区的大小超过了软性限制所设置的大小， 但还没超过硬性限制， 那么服务器将使用客户端状态结构的 <code>obuf_soft_limit_ reached_time </code>属性记录下客户端到达软性限制的起始时间； 之后服务器会继续监视客户端， 如果输出缓冲区的大小一直超出软性限制， 并且持续时间超过服务器设定的时长， 那么服务器将关闭客户端;如果不再超过的话就直接清零属性值,不关闭客户端</li>
 </ul>
 </li>
 </ul>
+<h3 id="客户端的类型"><a href="#客户端的类型" class="headerlink" title="客户端的类型"></a>客户端的类型</h3><ul>
+<li><p>普通客户端</p>
+<ul>
+<li>直接按照之前的模式执行相关程序即可</li>
+</ul>
+</li>
+<li><p>Lua脚本的伪客户端</p>
+<ul>
+<li>Lua_client 伪客户端在服务器初始化的时候就创建了,服务器运行的整个生命期中会一直存在,服务器被关闭时， 这个客户端才会被关闭</li>
+</ul>
+</li>
+</ul>
+<h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><h3 id="命令请求的执行过程"><a href="#命令请求的执行过程" class="headerlink" title="命令请求的执行过程"></a>命令请求的执行过程</h3><h4 id="发送请求"><a href="#发送请求" class="headerlink" title="发送请求"></a>发送请求</h4><p>Redis 服务器的命令请求来自 Redis 客户端， 当用户在客户端中键人一个命令请求时，客户端会将这个命令请求转换成协议格式， 然后通过连接到服务器的套接字， 将协议格式的命令请求发送给服务器</p>
+<pre class="language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">graph</span> LR
+id1<span class="token text string">[用户]</span><span class="token inter-arrow-label"><span class="token arrow-head arrow operator">--</span><span class="token label property">键入命令请求</span><span class="token arrow operator">--&gt;</span></span>id2<span class="token text string">[客户端]</span><span class="token inter-arrow-label"><span class="token arrow-head arrow operator">--</span><span class="token label property">将命令转换为协议的格式并发送</span><span class="token arrow operator">--&gt;</span></span>id3<span class="token text string">[服务器]</span></code></pre>
+
 <h4 id="读取请求"><a href="#读取请求" class="headerlink" title="读取请求"></a>读取请求</h4><p>客户端与服务器之间的连接套接字因为客户端的写入而变得可读,服务器将调用命令请求处理器:</p>
 <ol>
 <li>读取套接字中协议格式的命令请求， 并保存到客户端的输入缓冲区里面</li>
@@ -859,23 +859,23 @@ id1[用户]--键入命令请求--&gt;id2[客户端]--将命令转换为协议的
 <h5 id="调用命令实现函数"><a href="#调用命令实现函数" class="headerlink" title="调用命令实现函数"></a>调用命令实现函数</h5><p>执行<code>client-&gt;cmd-&gt;proc(client);</code>,执行函数之后产生相应的命令回复,保存在客户端状态的输出缓冲区(buf和reply)</p>
 <h5 id="执行后续工作"><a href="#执行后续工作" class="headerlink" title="执行后续工作"></a>执行后续工作</h5><p>记录日志等后续</p>
 <h4 id="将回复发送给客户端"><a href="#将回复发送给客户端" class="headerlink" title="将回复发送给客户端"></a>将回复发送给客户端</h4><p>命令实现函数会将命令回复保存到客户端的输出缓冲区里面， 并为客户端的套接字关联命令回复处理器， 当客户端套接字变为可写状态时， 服务器就会执行命令回复处理器， 将保存在客户端输出缓冲区中的命令回复发送给客户端。  发送完之后将缓冲区清空.</p>
-<h4 id="客户端接受并打印命令回复"><a href="#客户端接受并打印命令回复" class="headerlink" title="客户端接受并打印命令回复"></a>客户端接受并打印命令回复</h4><p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211112225309381.png" alt="image-20211112225309381"></p>
+<h4 id="客户端接受并打印命令回复"><a href="#客户端接受并打印命令回复" class="headerlink" title="客户端接受并打印命令回复"></a>客户端接受并打印命令回复</h4><p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112225309381.png" alt="image-20211112225309381"></p>
 <h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>SET KEY VALUE</p>
 <ol>
 <li><p>先由客户端转换成协议<code>*3\r\n$3\r\nSET\r\n$3\r\nKEY\r\n$5\r\nVALUE\r\n  </code>并发送给服务器</p>
 </li>
-<li><p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211112111306721.png" alt="image-20211112111306721"><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211112111326098.png" alt="image-20211112111326098"></p>
+<li><p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112111306721.png" alt="image-20211112111306721"><img src="/2022/01/27/redis-ke-hu-duan/image-20211112111326098.png" alt="image-20211112111326098"></p>
 </li>
 <li><p>命令执行过程</p>
 <ol>
 <li><p>查找命令实现</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211112195218882.png" alt="image-20211112195218882"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112195218882.png" alt="image-20211112195218882"></p>
 </li>
 <li><p>调用实现函数</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211112223826504.png" alt="image-20211112223826504"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112223826504.png" alt="image-20211112223826504"></p>
 </li>
 <li><p>保存回复到缓冲区</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211112224130202.png" alt="image-20211112224130202"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112224130202.png" alt="image-20211112224130202"></p>
 </li>
 </ol>
 </li>
@@ -955,7 +955,7 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
 <h4 id="执行事件循环"><a href="#执行事件循环" class="headerlink" title="执行事件循环"></a>执行事件循环</h4><p>打开事件循环,之后就可以接受命令</p>
 <h1 id="多机数据库实现"><a href="#多机数据库实现" class="headerlink" title="多机数据库实现"></a>多机数据库实现</h1><h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p>SLAVEOF可以让从服务器复制主服务器的内容,二者保存的数据是一致的</p>
 <h3 id="旧版复制功能"><a href="#旧版复制功能" class="headerlink" title="旧版复制功能"></a>旧版复制功能</h3><p>以前直接在重连的时候复制整个数据库的RDB文件,bgsave开销非常大(相当于重新执行了一次sync,期间对于主服务器不能执行其他命令,需要保存在缓冲区)</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211117222257569.png" alt="image-20211117222257569"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211117222257569.png" alt="image-20211117222257569"></p>
 <p>执行SYNC命令:</p>
 <ul>
 <li>主服务器需要执行BGSAVE命令来生成 RDB 文件， 这个生成操作会耗费主服务器大量的 CPU、 内存和磁盘 I/O 资源。</li>
@@ -969,13 +969,13 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
 <li>部分重同步:断线后重连复制,条件允许时直接将断开连接期间的写命令发给从服务器.</li>
 </ul>
 <p>重连之后从服务器发送PSYNC命令,主服务器向从服务器返回+CONTINUE回复,表示执行部分重同步,从服务器接受回复,准备执行部分重同步,主服务器发送断线期间的写命令,从服务器接受并执行,完成同步</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118101021620.png" alt="image-20211118101021620"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118101021620.png" alt="image-20211118101021620"></p>
 <h4 id="复制偏移量"><a href="#复制偏移量" class="headerlink" title="复制偏移量"></a>复制偏移量</h4><p>主从服务器都会维护复制偏移量,主服务器发送n数据,从服务器接受n数据,都会分别给自己的复制偏移量添加n.</p>
 <p>如果master和slave的偏移量是相同的，那么主从数据处于一致的状态</p>
 <h4 id="复制积压缓冲区"><a href="#复制积压缓冲区" class="headerlink" title="复制积压缓冲区"></a>复制积压缓冲区</h4><p>主服务器维护的一个FIFO队列,固定默认1MB大小</p>
 <p>当master向slave传播命令时，会将命令<strong>写入到复制积压缓冲区</strong>,复制积压缓冲区记录了最近向slave传播的命令；并且为每个字节记录了相应的复制偏移量</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118105510397.png" alt="image-20211118105510397"></p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118105606106.png" alt="image-20211118105606106"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118105510397.png" alt="image-20211118105510397"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118105606106.png" alt="image-20211118105606106"></p>
 <p>当slave断线后重新连接master时，向master发送PSYNC命令会将自己的复制偏移量发送给master。</p>
 <p>master会根据这个偏移量决定对slave执行<strong>部分同步</strong>还是<strong>完全同步；</strong></p>
 <ul>
@@ -1004,7 +1004,7 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
 <li><strong><code>+CONTINUE</code> 执行部分重同步；</strong></li>
 <li><strong><code>-ERR</code> 不支持psync同步操作，从服务将发送sync命令到主服务器,执行完全重同步；</strong></li>
 </ol>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118170432055.png" alt="image-20211118170432055"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118170432055.png" alt="image-20211118170432055"></p>
 <p>注意图片有个情况没写出来</p>
 <ol>
 <li><p>设置主服务器的地址和端口</p>
@@ -1012,38 +1012,38 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
 <p>slaveof要做的主要是给“从服务”设置的“主服务”地址和端口，会保存到从服务器的<strong>masterhost</strong>和<strong>masterport</strong>属性中(<strong>replication.c/replicaofCommand</strong>)</p>
 <p>slaveof是一个异步命令，完成设置后，会给客户端返回OK; 实际复制工作将在OK返回后真正开始执行；</p>
 <p>执行<code>SLAVEOF 127.0.0.1&nbsp;6379</code>,设置好之后</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118204602440.png" alt="image-20211118204602440"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118204602440.png" alt="image-20211118204602440"></p>
 </li>
 <li><p>建立套接字连接</p>
 <p>根据前一步保存的属性开始连接主服务器套接字(<strong>server.c/serverCron</strong> &gt; <strong>replication.c/replicationCron</strong> &gt; <strong>replication.c/connectWithMaster</strong>)</p>
 <p>如果从服务和主服务器连接成功，从服务器会给这个套接字关联一个处理复制工作的文件处理器(<strong>replication.c/syncWithMaster</strong>),处理器完成后续工作,包括接受RDB文件,接受后续传来的写命令</p>
 <p>主服务器在接受（ accept ) 从服务器的套接字连接之后， 将为该套接字创建相应的客户端状态， 并将从服务器看作是一个连接到主服务器的客户端来对待， 这时从服务器将同时具有服务器和客户端两个身份. </p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118221239382.png" alt="image-20211118221239382"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221239382.png" alt="image-20211118221239382"></p>
 </li>
 <li><p>发送ping命令</p>
 <ul>
 <li>检查套接字连接情况</li>
 <li>检查主服务器是否能正常处理命令</li>
 </ul>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118221522707.png" alt="image-20211118221522707"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221522707.png" alt="image-20211118221522707"></p>
 </li>
 <li><p>身份验证</p>
 <ul>
 <li>如果从服务器设置了 masterauth 选项， 那么进行身份验证。</li>
 <li>如果从服务器没有设置 masterauth 选项， 那么不进行身份验证。</li>
 </ul>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118221720561.png" alt="image-20211118221720561"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221720561.png" alt="image-20211118221720561"></p>
 </li>
 <li><p>发送端口信息</p>
 <p>从服务将执行<code>REPLCONF listen-port &lt;port-number&gt;</code>，向主服务器发送从服务监听的端口号</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118221853890.png" alt="image-20211118221853890"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221853890.png" alt="image-20211118221853890"></p>
 <p>主服务器接受到这个命令后，将从服务的端口号记录到客户端状态中的 slave_listening_port属性中</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118221942590.png" alt="image-20211118221942590"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221942590.png" alt="image-20211118221942590"></p>
 </li>
 <li><p>同步</p>
 <p>从服务器向主服务器发送PSYNC命令</p>
 <p>在同步操作执行之前， 只有从服务器是主服务器的客户端， 但是在执行同步操作之后， 他们互为客户端,因为主服务器也需要发送写命令给从服务器</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211118223802314.png" alt="image-20211118223802314"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118223802314.png" alt="image-20211118223802314"></p>
 </li>
 <li><p>命令传播</p>
 <p>写命令传播给从服务器</p>
@@ -1058,9 +1058,9 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
 <p>那么从服务的数量少于3个，或者3个从服务的延时（lag）值大于等于10秒时，主服务都不能执行写命令；</p>
 <h4 id="检测命令丢失"><a href="#检测命令丢失" class="headerlink" title="检测命令丢失"></a><strong>检测命令丢失</strong></h4><p>如果因为网络原因，主服务传播给从服务的命令丢失了。那么当从服务向主服务器放松RELPCONF ACK 命令时，主服务会发觉 从服务 的复制偏移量少于主服务的复制偏移量；</p>
 <p>然后主服务会将丢失的部分发送给从服务器(这里是没有断线的部分重同步,与断线之后的PSYNC区分)</p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211119111122087.png" alt="image-20211119111122087"></p>
-<p><img src="redis%E5%AE%A2%E6%88%B7%E7%AB%AF.assets/image-20211119111136634.png" alt="image-20211119111136634"></p>
-<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211119111122087.png" alt="image-20211119111122087"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211119111136634.png" alt="image-20211119111136634"></p>
+
                 
             </div>
             <hr/>
@@ -1086,7 +1086,7 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://leehm00.github.io/2022/01/27/redis-ke-hu-duan/">http://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</a>
+                    <a href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/">https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1303,13 +1303,13 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/01/27/redis-shao-bing-sentinel/">
+                <a href="/2022/01/27/redis-shao-bing-sentinels/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="redis哨兵sentinel">
+                        <img src="/medias/featureimages/28.jpg" class="responsive-img" alt="redis哨兵sentinels">
                         
-                        <span class="card-title">redis哨兵sentinel</span>
+                        <span class="card-title">redis哨兵sentinels</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1630,7 +1630,7 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.9k</span>
+                        class="white-color">29.6k</span>
             
             
             

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="redis哨兵sentinel, KV store">
+    <meta name="keywords" content="redis哨兵sentinels, KV store">
     <meta name="description" content="哨兵SentinelSentinel节点本质上是一个特殊的Redis节点
 它可以监视任意多个主服务器以及这些主服务器属下的所有从服务器，并在被监视的主服务器进人下线状态时(根据ping的时间间隔判断是否是下线了)， 自动将下线主服务器属下的">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +18,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>redis哨兵sentinel | homie&#39;s Home</title>
+    <title>redis哨兵sentinels | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -326,12 +326,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/28.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">redis哨兵sentinel</h1>
+                    <h1 class="description center-align post-title">redis哨兵sentinels</h1>
                 </div>
             </div>
         </div>
@@ -513,14 +513,14 @@
             <div id="articleContent">
                 <h2 id="哨兵Sentinel"><a href="#哨兵Sentinel" class="headerlink" title="哨兵Sentinel"></a>哨兵Sentinel</h2><p>Sentinel节点本质上是一个特殊的Redis节点</p>
 <p>它可以监视任意多个主服务器以及这些主服务器属下的所有从服务器，并在被监视的主服务器进人下线状态时(根据ping的时间间隔判断是否是下线了)， 自动将下线主服务器属下的某个从服务器升级为新的主服务器， 然后由新的主服务器代替已下线的主服务器继续处理命令请求  </p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211119220249825.png" alt="image-20211119220249825"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211119220249825.png" alt="image-20211119220249825"></p>
 <p>当 serverl 的下线时长超过用户设定的下线时长上限时， Sentinel 系统就会对server1 执行故障转移操作：</p>
 <ul>
 <li>首先， Sentinel 系统会挑选 server1属下的其中一个从服务器， 并将这个被选中的从服务器升级为新的主服务器。  </li>
 <li>之后， Sentinel 系统会向 serverl 属下的所有从服务器发送新的复制指令， 让它们成为新的主服务器的从服务器， 当所有从服务器都开始复制新的主服务器时， 故障转移操作执行完毕。</li>
 <li>另外， Sentinel 还会继续监视已下线的 serverl， 并在它重新上线时， 将它设置为新的主服务器的从服务器。  </li>
 </ul>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211119220709722.png" alt="image-20211119220709722"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211119220709722.png" alt="image-20211119220709722"></p>
 <h3 id="网络连接"><a href="#网络连接" class="headerlink" title="网络连接"></a>网络连接</h3><p>每个Sentinel实例会维护与所监测的主从实例之间的两个连接，分别是命令连接（Command Connection）和发布/订阅连接（Pub/Sub Connection）。但是<strong>Sentinel和其他Sentinel之间只有一个命令连接</strong>。</p>
 <h4 id="命令连接"><a href="#命令连接" class="headerlink" title="命令连接"></a>命令连接</h4><p>Sentinel维护命令连接是为了与其他主从实例以及Sentinel实例通过发送接收命令的方式进行通信</p>
 <p>作用包括：</p>
@@ -672,11 +672,11 @@
 </ul>
 <p>根据sentinel启动时的指定的配置项或者配置文件来初始化</p>
 <p>如果按照下图指定:</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121155233753.png" alt="image-20211121155233753"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155233753.png" alt="image-20211121155233753"></p>
 <p>则最后的字典值为:</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121155311843.png" alt="image-20211121155311843"></p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121155327607.png" alt="image-20211121155327607"></p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121155342021.png" alt="image-20211121155342021"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155311843.png" alt="image-20211121155311843"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155327607.png" alt="image-20211121155327607"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155342021.png" alt="image-20211121155342021"></p>
 <p>创建与主服务器的网络连接</p>
 <p>sentinel会与被监控的master建立连接，sentinel将会成为master的客户端</p>
 <p>sentinel会创建两个连接向master的异步网络连接：</p>
@@ -729,7 +729,7 @@
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121204051572.png" alt="image-20211121204051572"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121204051572.png" alt="image-20211121204051572"></p>
 <h3 id="获取主服务器信息"><a href="#获取主服务器信息" class="headerlink" title="获取主服务器信息"></a>获取主服务器信息</h3><p>sentinel默认每10s一次频率向 master &amp; slale发送info命令</p>
 <p>实现的入口:(server.c/main -&gt; server.c/serverCron() -&gt; sentinel.c/sentinelTimer -&gt; sentinel.c/sentinelHandleDictOfRedisInstances() -&gt; sentinel.c/sentinelSendPeriodicCommands)</p>
 <pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">/**
@@ -808,7 +808,7 @@
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121205944717.png" alt="image-20211121205944717"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121205944717.png" alt="image-20211121205944717"></p>
 <p>通过解析maser返回Info命令信息，获取master的当前信息；</p>
 <ul>
 <li>一方面获取master的信息，包括run_id、角色、地址等；</li>
@@ -816,10 +816,10 @@
 </ul>
 <p>根据这些返回信息，用户无需提供从服务器信息，就可以自动发现从服务器（便于与从服务器建立连接）</p>
 <p>这些信息用来更新slaves字典,出现了新的就要加入到字典中,键是从服务器的ip:port，值是从服务器的对应实例结构</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121223027407.png" alt="image-20211121223027407"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121223027407.png" alt="image-20211121223027407"></p>
 <p><strong>解析info返回结果入口</strong><br><strong>sentinel.c/sentinelSendPeriodicCommands</strong> -&gt; <strong>sentinel.c/sentinelInfoReplyCallback</strong> &gt; <strong>sentinel.c/sentinelInfoReplyCallback</strong> &gt; <strong>sentinel.c/sentinelRefreshInstanceInfo</strong></p>
 <h3 id="获取从服务器信息"><a href="#获取从服务器信息" class="headerlink" title="获取从服务器信息"></a>获取从服务器信息</h3><p>对于每个连接到主服务器的从服务器也要建立命令连接和订阅连接</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121223238004.png" alt="image-20211121223238004"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121223238004.png" alt="image-20211121223238004"></p>
 <p>通过解析slave返回的slave的信息，主要提取以下信息。然后根据这些信息，更新从服务的实例信息；</p>
 <ul>
 <li>从服务的run_id</li>
@@ -828,7 +828,7 @@
 <li>从服务器优先级</li>
 <li>从服务的偏移量</li>
 </ul>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211121223623465.png" alt="image-20211121223623465"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121223623465.png" alt="image-20211121223623465"></p>
 <h3 id="向被监视的主从服务器发送信息"><a href="#向被监视的主从服务器发送信息" class="headerlink" title="向被监视的主从服务器发送信息"></a>向被监视的主从服务器发送信息</h3><p>每两秒进行一次</p>
 <p>发送的内容：</p>
 <ul>
@@ -892,10 +892,10 @@
 
 <h3 id="接受来自主从服务器的频道信息"><a href="#接受来自主从服务器的频道信息" class="headerlink" title="接受来自主从服务器的频道信息"></a>接受来自主从服务器的频道信息</h3><p>当sentinel与主服务或者从服务建立连接后，sentinel就订阅主服务或从服务器的<code>__sentinel__::hello</code>频道；</p>
 <p>订阅频道会一直持续到连接断开；</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211122130447110.png" alt="image-20211122130447110"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122130447110.png" alt="image-20211122130447110"></p>
 <p>这样对于监听同一个服务器的多个sentinel，一个sentinel发送的信息会被其他sentinel接受到，这些信息会被其他sentinel用于更新信息；</p>
 <p><strong>举个例子：</strong><br>假设有三个sentinel ，s1、s2、s3监听同一个服务器，s1向服务器频道<code>__sentinel__:hello</code>发送了一条信息，s1、s2、s3都会受到这条消息 ；</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211122145234776.png" alt="image-20211122145234776"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122145234776.png" alt="image-20211122145234776"></p>
 <p>sentinel接受到消息后，会对消息进行解析:</p>
 <ul>
 <li>如果是自己发送的信息，就会丢弃该信息</li>
@@ -907,12 +907,12 @@
 <li>值是对应的实例结构</li>
 </ul>
 <p>收到其他sentinel发送的消息时，对于信息中sentinel，主服务器相关的参数配置做相应的记录</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211122151957038.png" alt="image-20211122151957038"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122151957038.png" alt="image-20211122151957038"></p>
 <p>sentinel节点保存的master实例中的sentinels字典不需要包含自身</p>
 <p>sentinels字典利于发现监视同一个主服务器的其他sentinel节点</p>
 <h3 id="创建连向其他sentinel节点的命令连接"><a href="#创建连向其他sentinel节点的命令连接" class="headerlink" title="创建连向其他sentinel节点的命令连接"></a>创建连向其他sentinel节点的命令连接</h3><p>使用命令连接相连的各个 Sentinel 可以通过向其他 Sentinel 发送命令请求来进行信息交换，但是不会创建订阅链接</p>
 <p>Sentinel需要通过接收主服务器或者从服务器发来的频道信息来发现未知的新 Sentinel, 所以需要建立订阅连接， 而相互已知的 Sentinel 只要使用命令连接来进行通信就足够了   </p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211122153845487.png" alt="image-20211122153845487"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122153845487.png" alt="image-20211122153845487"></p>
 <h3 id="检测主观下线状态"><a href="#检测主观下线状态" class="headerlink" title="检测主观下线状态"></a>检测主观下线状态</h3><p>默认情况下sentinel每秒发送ping，然后通过回复的pong确认监视的对象是否下线</p>
 <p>对于ping命令的回复分两种情况：</p>
 <ul>
@@ -920,7 +920,7 @@
 <li>无效回复：除了上述三种的回复外，都是无效回复</li>
 </ul>
 <p>如果down-after-millseconds毫秒内，连续返回无效回复，那么sentinel就会将master标记为主观下线，在实例结构的flag属性中标记主观下线</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211125223705911.png" alt="image-20211125223705911"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211125223705911.png" alt="image-20211125223705911"></p>
 <blockquote>
 <p>down-after-millonseconds是sentinel配置文件指定的下线标准；<br>这个参数不仅会应用于master，还会应用到master下属的所有从服务器；</p>
 <p>多个sentinel设置的down-after-millseconds时间可能是不同的，所以可能部分的sentinel认为主观下线，而其他的认为没有主观下线</p>
@@ -944,7 +944,7 @@
 <li><leader_epoch>  ：局部领头 Sentinel的运行纪元</leader_epoch></li>
 </ul>
 <h4 id="接受SENTINEL-is-master-down-by-addr命令-的回复"><a href="#接受SENTINEL-is-master-down-by-addr命令-的回复" class="headerlink" title="接受SENTINEL is-master-down-by-addr命令 的回复"></a>接受SENTINEL is-master-down-by-addr命令 的回复</h4><p>sentienl根据SENTINEL is-master-down-by-addr命令的返回，统计其他sentinel返回下线的数量；<br>当这一数量达到配置指定的客观下线数量（之前由quorum参数指定）时，sentinel会将服务器实例结构的flags属性的SIR_O_DOWN标记位打开，标识主服务进入客观下线状态；</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211125223723501.png" alt="image-20211125223723501"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211125223723501.png" alt="image-20211125223723501"></p>
 <blockquote>
 <p>同样的，多个sentinel设置的quorum参数可能是不同的，所以可能部分的sentinel认为客观下线，而其他的认为没有客观下线</p>
 </blockquote>
@@ -978,8 +978,8 @@
 </ol>
 <p>选举出新的主服务后，sentinel将向新的主服务器发送slave no one ，转换成新的主服务器<br>然后领头sentinel以每秒一次的频率向新的主服务发送info命令,用于判断“切换主服务操作”是否成功（当新的主服务器角色由salve变成master，说明已经切换成功了）</p>
 <h4 id="修改从服务器的复制目标"><a href="#修改从服务器的复制目标" class="headerlink" title="修改从服务器的复制目标"></a>修改从服务器的复制目标</h4><p>新的主服务出现后，sentinel就会让所有从服务器去复制新的主服务器（通过salveof 命令实现）</p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211126111618727.png" alt="image-20211126111618727"></p>
-<p><img src="/2022/01/27/redis-shao-bing-sentinel/image-20211126111640191.png" alt="image-20211126111640191"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211126111618727.png" alt="image-20211126111618727"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211126111640191.png" alt="image-20211126111640191"></p>
 <h4 id="修改旧的主服务器的为从服务器"><a href="#修改旧的主服务器的为从服务器" class="headerlink" title="修改旧的主服务器的为从服务器"></a>修改旧的主服务器的为从服务器</h4><p>最后，将已经下线的主服务设置为从服务器，并复制新的主服务；</p>
 <p>注意：因为这时旧的主服务已经下线，所以这时这个操作先保存到sentinel对应的实例结构中，等到旧的主服务重新上线后，sentinel就会向他发送slaveof命令，将他设置为从服务器；</p>
 <h3 id="tilt模式"><a href="#tilt模式" class="headerlink" title="tilt模式"></a>tilt模式</h3><p>Redis哨兵依赖于系统时间,为了了解某个实例是否是可用的,其会记住最后一次成功回复PING命令的时间,然后与现在时间进行比较判断生存时间.<br>但是如果计算机时间发生了意外的变化,或者计算机现在非常忙碌,或者进程因为某些原因阻塞,哨兵可能会有意料之外的行为</p>
@@ -1022,7 +1022,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/">https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/</a>
+                    <a href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/">https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1235,10 +1235,9 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
                 <a href="/2022/01/27/redis-shao-bing-sentinel/">
                     <div class="card-image">
@@ -1256,9 +1255,9 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-27
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-27
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1271,7 +1270,6 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
@@ -1290,13 +1288,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/27/redis-shao-bing-sentinels/">
+                <a href="/2022/01/27/redis-ke-hu-duan/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/28.jpg" class="responsive-img" alt="redis哨兵sentinels">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="redis客户端与服务器">
                         
-                        <span class="card-title">redis哨兵sentinels</span>
+                        <span class="card-title">redis客户端与服务器</span>
                     </div>
                 </a>
                 <div class="card-content article-content">

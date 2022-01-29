@@ -3,11 +3,11 @@
   <title>homie&#39;s Home</title>
   
   <subtitle>homie lee</subtitle>
-  <link href="http://leehm00.github.io/atom.xml" rel="self"/>
+  <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
-  <link href="http://leehm00.github.io/"/>
-  <updated>2022-01-27T01:31:59.435Z</updated>
-  <id>http://leehm00.github.io/</id>
+  <link href="https://leehm00.github.io/"/>
+  <updated>2022-01-29T11:10:22.442Z</updated>
+  <id>https://leehm00.github.io/</id>
   
   <author>
     <name>homie</name>
@@ -18,10 +18,10 @@
   
   <entry>
     <title>redis哨兵sentinel</title>
-    <link href="http://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/"/>
-    <id>http://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/</id>
+    <link href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/</id>
     <published>2022-01-27T01:16:54.000Z</published>
-    <updated>2022-01-27T01:31:59.435Z</updated>
+    <updated>2022-01-29T11:10:22.442Z</updated>
     
     
       
@@ -34,19 +34,44 @@
     
     
     
-    <category term="学习" scheme="http://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="redis" scheme="http://leehm00.github.io/tags/redis/"/>
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>redis哨兵sentinels</title>
+    <link href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/</id>
+    <published>2022-01-27T01:16:54.000Z</published>
+    <updated>2022-01-29T11:10:27.496Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;哨兵Sentinel&quot;&gt;&lt;a href=&quot;#哨兵Sentinel&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>redis客户端与服务器</title>
-    <link href="http://leehm00.github.io/2022/01/27/redis-ke-hu-duan/"/>
-    <id>http://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</id>
+    <link href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</id>
     <published>2022-01-27T01:14:25.000Z</published>
-    <updated>2022-01-27T01:32:18.243Z</updated>
+    <updated>2022-01-29T11:11:06.088Z</updated>
     
     
       
@@ -59,19 +84,19 @@
     
     
     
-    <category term="学习" scheme="http://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="redis" scheme="http://leehm00.github.io/tags/redis/"/>
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>redis事件</title>
-    <link href="http://leehm00.github.io/2022/01/27/redis-shi-jian/"/>
-    <id>http://leehm00.github.io/2022/01/27/redis-shi-jian/</id>
+    <link href="https://leehm00.github.io/2022/01/27/redis-shi-jian/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-shi-jian/</id>
     <published>2022-01-27T01:13:18.000Z</published>
-    <updated>2022-01-27T01:31:51.817Z</updated>
+    <updated>2022-01-29T11:10:11.404Z</updated>
     
     
       
@@ -84,19 +109,19 @@
     
     
     
-    <category term="学习" scheme="http://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="redis" scheme="http://leehm00.github.io/tags/redis/"/>
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>redis单机数据库以及持久化</title>
-    <link href="http://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/"/>
-    <id>http://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</id>
+    <link href="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</id>
     <published>2022-01-27T01:08:58.000Z</published>
-    <updated>2022-01-27T01:31:55.548Z</updated>
+    <updated>2022-01-29T11:10:16.387Z</updated>
     
     
       
@@ -109,19 +134,19 @@
     
     
     
-    <category term="学习" scheme="http://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="redis" scheme="http://leehm00.github.io/tags/redis/"/>
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>redis基础</title>
-    <link href="http://leehm00.github.io/2022/01/27/redis-ji-chu/"/>
-    <id>http://leehm00.github.io/2022/01/27/redis-ji-chu/</id>
+    <link href="https://leehm00.github.io/2022/01/27/redis-ji-chu/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-ji-chu/</id>
     <published>2022-01-26T16:08:30.000Z</published>
-    <updated>2022-01-27T01:32:03.790Z</updated>
+    <updated>2022-01-29T11:10:31.559Z</updated>
     
     
       
@@ -134,17 +159,17 @@
     
     
     
-    <category term="学习" scheme="http://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="redis" scheme="http://leehm00.github.io/tags/redis/"/>
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>3W1H | 关于写博客的反思</title>
-    <link href="http://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/"/>
-    <id>http://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/</id>
+    <link href="https://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/"/>
+    <id>https://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/</id>
     <published>2022-01-26T07:27:31.000Z</published>
     <updated>2022-01-26T14:45:50.214Z</updated>
     
@@ -159,17 +184,17 @@
     
     
     
-    <category term="随笔" scheme="http://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
     
     
-    <category term="博客" scheme="http://leehm00.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    <category term="博客" scheme="https://leehm00.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://leehm00.github.io/2022/01/26/hello-world/"/>
-    <id>http://leehm00.github.io/2022/01/26/hello-world/</id>
+    <link href="https://leehm00.github.io/2022/01/26/hello-world/"/>
+    <id>https://leehm00.github.io/2022/01/26/hello-world/</id>
     <published>2022-01-26T05:26:24.000Z</published>
     <updated>2022-01-26T05:26:24.604Z</updated>
     
