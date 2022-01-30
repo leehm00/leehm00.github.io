@@ -2,9 +2,45 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</loc>
+    
+    <lastmod>2022-01-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</loc>
     
-    <lastmod>2022-01-29</lastmod>
+    <lastmod>2022-01-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan-yu-fu-wu-qi/</loc>
+    
+    <lastmod>2022-01-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</loc>
+    
+    <lastmod>2022-01-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/01/27/redis-shi-jian/</loc>
+    
+    <lastmod>2022-01-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -21,33 +57,6 @@
   
   <url>
     <loc>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/</loc>
-    
-    <lastmod>2022-01-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/</loc>
-    
-    <lastmod>2022-01-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</loc>
-    
-    <lastmod>2022-01-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/01/27/redis-shi-jian/</loc>
     
     <lastmod>2022-01-29</lastmod>
     
@@ -148,7 +157,7 @@
 
   <url>
     <loc>https://leehm00.github.io/</loc>
-    <lastmod>2022-01-29</lastmod>
+    <lastmod>2022-01-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -156,14 +165,14 @@
   
   <url>
     <loc>https://leehm00.github.io/tags/%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2022-01-29</lastmod>
+    <lastmod>2022-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/redis/</loc>
-    <lastmod>2022-01-29</lastmod>
+    <lastmod>2022-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -172,14 +181,14 @@
   
   <url>
     <loc>https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/</loc>
-    <lastmod>2022-01-29</lastmod>
+    <lastmod>2022-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2022-01-29</lastmod>
+    <lastmod>2022-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>

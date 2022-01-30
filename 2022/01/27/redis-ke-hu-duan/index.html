@@ -38,9 +38,9 @@ typedef struct multiCmd {
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
-
+<meta name="generator" content="Hexo 6.0.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
 </head>
 
 
@@ -706,52 +706,97 @@ typedef struct multiCmd {
 </li>
 <li><p>可以是单个也可以是多个标志的二进制取或.见CLIENT_*的定义可知,都是一位表示的</p>
 </li>
-<li><p>```c#<br>/* Client flags <em>/<br>//主从服务器进行复制时,相互都是客户端的关系,slave和master区分两个服务器<br>#define CLIENT_SLAVE (1&lt;&lt;0)   /</em> This client is a replica <em>/<br>#define CLIENT_MASTER (1&lt;&lt;1)  /</em> This client is a master <em>/<br>//正在执行monitor指令,是一个从客户端<br>#define CLIENT_MONITOR (1&lt;&lt;2) /</em> This client is a slave monitor, see MONITOR <em>/<br>//执行事务<br>#define CLIENT_MULTI (1&lt;&lt;3)   /</em> This client is in a MULTI context <em>/<br>//客户端被阻塞<br>#define CLIENT_BLOCKED (1&lt;&lt;4) /</em> The client is waiting in a blocking operation <em>/<br>//事务使用WATCH监视的数据库键已经被修改,EXEC执行过程中会直接fail<br>#define CLIENT_DIRTY_CAS (1&lt;&lt;5)<br>//用户对这个客户端执行了 CLIENT KILL命令或者客户端发送给服务器的命令中协议内容有误,<br>//服务器会将客户端积存在输出缓冲区中的所有内容发送给客户端,然后关闭客户端<br>#define CLIENT_CLOSE_AFTER_REPLY (1&lt;&lt;6) /</em> Close after writing entire reply. <em>/<br>//从阻塞中解除,只有在之前阻塞过才可用<br>#define CLIENT_UNBLOCKED (1&lt;&lt;7) /</em> This client was unblocked and is stored in</p>
-<pre><code>                              server.unblocked_clients */
-</code></pre>
-<p>//专门处理Lua脚本的客户端<br>#define CLIENT_LUA (1&lt;&lt;8) /* This is a non connected client used by Lua <em>/<br>//客户端向集群节点（ 运行在集群模式下的服务器） 发送了ASKING 命令<br>#define CLIENT_ASKING (1&lt;&lt;9)     /</em> Client issued the ASKING command <em>/<br>//客户端的输出缓冲区大小超出了服务器允许的范围，<br>//服务器会在下一次执行 serverCron 函数时关闭这个客户端,以免影响服务器的稳定性<br>//积存在输出缓冲区中的所有内容会直接被释放,不会返回给客户端.<br>#define CLIENT_CLOSE_ASAP (1&lt;&lt;10)/</em> Close this client ASAP <em>/<br>//服务器使用 UNIX 套接字来连接客户端<br>#define CLIENT_UNIX_SOCKET (1&lt;&lt;11) /</em> Client connected via Unix domain socket <em>/<br>//事务在命令入队时出现了错误, 和CLIENT_DIRTY_CAS 都表示了事务不安全,EXEC会执行失败<br>#define CLIENT_DIRTY_EXEC (1&lt;&lt;12)  /</em> EXEC will fail for errors while queueing <em>/<br>//在主从服务器进行命令传播期间,从服务器需要向主服务器发送REPLICATION ACK命令<br>//发送命令之前需要打开这个标志以允许发送操作执行<br>#define CLIENT_MASTER_FORCE_REPLY (1&lt;&lt;13)  /</em> Queue replies even if is master <em>/<br>//执行PUBSUB指令时打开,强制服务器将当前执行的命令写人到 AOF 文件里面<br>#define CLIENT_FORCE_AOF (1&lt;&lt;14)   /</em> Force AOF propagation of current cmd. <em>/<br>//执行SCRIPT LOADD指令时打开,强制主服务器将当前执行的命令复制给所有从服务器<br>#define CLIENT_FORCE_REPL (1&lt;&lt;15)  /</em> Force replication of current cmd. <em>/<br>//主服务器不能使用PSYNC命令与当前低版本从服务器进行同步.<br>//这个标志只能在 REDIS_SLAVE 标志处于打开状态时使用<br>#define CLIENT_PRE_PSYNC (1&lt;&lt;16)   /</em> Instance don’t understand PSYNC. <em>/<br>#define CLIENT_READONLY (1&lt;&lt;17)    /</em> Cluster client is in read-only state. <em>/<br>#define CLIENT_PUBSUB (1&lt;&lt;18)      /</em> Client is in Pub/Sub mode. <em>/<br>#define CLIENT_PREVENT_AOF_PROP (1&lt;&lt;19)  /</em> Don’t propagate to AOF. <em>/<br>#define CLIENT_PREVENT_REPL_PROP (1&lt;&lt;20)  /</em> Don’t propagate to slaves. <em>/<br>#define CLIENT_PREVENT_PROP (CLIENT_PREVENT_AOF_PROP|CLIENT_PREVENT_REPL_PROP)<br>#define CLIENT_PENDING_WRITE (1&lt;&lt;21) /</em> Client has output to send but a write</p>
-<pre><code>                                    handler is yet not installed. */
-</code></pre>
-<p>#define CLIENT_REPLY_OFF (1&lt;&lt;22)   /* Don’t send replies to client. <em>/<br>#define CLIENT_REPLY_SKIP_NEXT (1&lt;&lt;23)  /</em> Set CLIENT_REPLY_SKIP for next cmd <em>/<br>#define CLIENT_REPLY_SKIP (1&lt;&lt;24)  /</em> Don’t send just this reply. <em>/<br>#define CLIENT_LUA_DEBUG (1&lt;&lt;25)  /</em> Run EVAL in debug mode. <em>/<br>#define CLIENT_LUA_DEBUG_SYNC (1&lt;&lt;26)  /</em> EVAL debugging without fork() <em>/<br>#define CLIENT_MODULE (1&lt;&lt;27) /</em> Non connected client used by some module. <em>/<br>#define CLIENT_PROTECTED (1&lt;&lt;28) /</em> Client should not be freed for now. <em>/<br>#define CLIENT_PENDING_READ (1&lt;&lt;29) /</em> The client has pending reads and was put</p>
-<pre><code>                                   in the list of clients we can read
-                                   from. */
-</code></pre>
-<p>#define CLIENT_PENDING_COMMAND (1&lt;&lt;30) /* Indicates the client has a fully</p>
-<pre><code>                                    * parsed command ready for execution. */
-</code></pre>
-<p>#define CLIENT_TRACKING (1ULL&lt;&lt;31) /* Client enabled keys tracking in order to</p>
-<pre><code>                               perform client side caching. */
-</code></pre>
-<p>#define CLIENT_TRACKING_BROKEN_REDIR (1ULL&lt;&lt;32) /* Target client is invalid. <em>/<br>#define CLIENT_TRACKING_BCAST (1ULL&lt;&lt;33) /</em> Tracking in BCAST mode. <em>/<br>#define CLIENT_TRACKING_OPTIN (1ULL&lt;&lt;34)  /</em> Tracking in opt-in mode. <em>/<br>#define CLIENT_TRACKING_OPTOUT (1ULL&lt;&lt;35) /</em> Tracking in opt-out mode. <em>/<br>#define CLIENT_TRACKING_CACHING (1ULL&lt;&lt;36) /</em> CACHING yes/no was given,</p>
-<pre><code>                                          depending on optin/optout mode. */
-</code></pre>
-<p>#define CLIENT_TRACKING_NOLOOP (1ULL&lt;&lt;37) /* Don’t send invalidation messages</p>
-<pre><code>                                         about writes performed by myself.*/
-</code></pre>
-<p>#define CLIENT_IN_TO_TABLE (1ULL&lt;&lt;38) /* This client is in the timeout table. <em>/<br>#define CLIENT_PROTOCOL_ERROR (1ULL&lt;&lt;39) /</em> Protocol error chatting with it. <em>/<br>#define CLIENT_CLOSE_AFTER_COMMAND (1ULL&lt;&lt;40) /</em> Close after executing commands</p>
-<pre><code>                                           * and writing entire reply. */
-</code></pre>
-<p>#define CLIENT_DENY_BLOCKING (1ULL&lt;&lt;41) /* Indicate that the client should not be blocked.</p>
-<pre><code>                                       currently, turned on inside MULTI, Lua, RM_Call,
-                                       and AOF client */
-</code></pre>
-<p>#define CLIENT_REPL_RDBONLY (1ULL&lt;&lt;42) /* This client is a replica that only wants RDB without replication buffer. */</p>
-<pre class="language-none"><code class="language-none">
-    
-
-  - PUBSUB命令:本身不修改数据库,但是向频道的所有订阅者发送消息的行为带有副作用， 接收到消息的所有客户端的状态都会因为这个命令而改变,所以也需要写入AOF.
-
-  - SCRIPT LOAD命令:类似的,它修改了服务器状态,也带有副作用,同时因为涉及到主从服务器,CLIENT_FORCE_REPL将指令发给所有的从服务器.
-
-- 输入缓冲区
-
-  - 源代码：
-
-    ```c#
-    typedef struct client {
-    	//缓冲区,用于储存指令
-        sds querybuf;           /* Buffer we use to accumulate client queries. */
-    }client;</code></pre></li>
+<li><p>源代码：</p>
+<pre class="language-c#" data-language="c#"><code class="language-c#">/* Client flags */
+//主从服务器进行复制时,相互都是客户端的关系,slave和master区分两个服务器
+#define CLIENT_SLAVE (1&lt;&lt;0)   /* This client is a replica */
+#define CLIENT_MASTER (1&lt;&lt;1)  /* This client is a master */
+//正在执行monitor指令,是一个从客户端
+#define CLIENT_MONITOR (1&lt;&lt;2) /* This client is a slave monitor, see MONITOR */
+//执行事务
+#define CLIENT_MULTI (1&lt;&lt;3)   /* This client is in a MULTI context */
+//客户端被阻塞
+#define CLIENT_BLOCKED (1&lt;&lt;4) /* The client is waiting in a blocking operation */
+//事务使用WATCH监视的数据库键已经被修改,EXEC执行过程中会直接fail
+#define CLIENT_DIRTY_CAS (1&lt;&lt;5)
+//用户对这个客户端执行了 CLIENT KILL命令或者客户端发送给服务器的命令中协议内容有误, 
+//服务器会将客户端积存在输出缓冲区中的所有内容发送给客户端,然后关闭客户端
+#define CLIENT_CLOSE_AFTER_REPLY (1&lt;&lt;6) /* Close after writing entire reply. */
+//从阻塞中解除,只有在之前阻塞过才可用
+#define CLIENT_UNBLOCKED (1&lt;&lt;7) /* This client was unblocked and is stored in
+                                  server.unblocked_clients */
+//专门处理Lua脚本的客户端
+#define CLIENT_LUA (1&lt;&lt;8) /* This is a non connected client used by Lua */
+//客户端向集群节点（ 运行在集群模式下的服务器） 发送了ASKING 命令
+#define CLIENT_ASKING (1&lt;&lt;9)     /* Client issued the ASKING command */
+//客户端的输出缓冲区大小超出了服务器允许的范围，
+//服务器会在下一次执行 serverCron 函数时关闭这个客户端,以免影响服务器的稳定性
+//积存在输出缓冲区中的所有内容会直接被释放,不会返回给客户端.
+#define CLIENT_CLOSE_ASAP (1&lt;&lt;10)/* Close this client ASAP */
+//服务器使用 UNIX 套接字来连接客户端
+#define CLIENT_UNIX_SOCKET (1&lt;&lt;11) /* Client connected via Unix domain socket */
+//事务在命令入队时出现了错误, 和CLIENT_DIRTY_CAS 都表示了事务不安全,EXEC会执行失败
+#define CLIENT_DIRTY_EXEC (1&lt;&lt;12)  /* EXEC will fail for errors while queueing */
+//在主从服务器进行命令传播期间,从服务器需要向主服务器发送REPLICATION ACK命令
+//发送命令之前需要打开这个标志以允许发送操作执行
+#define CLIENT_MASTER_FORCE_REPLY (1&lt;&lt;13)  /* Queue replies even if is master */
+//执行PUBSUB指令时打开,强制服务器将当前执行的命令写人到 AOF 文件里面
+#define CLIENT_FORCE_AOF (1&lt;&lt;14)   /* Force AOF propagation of current cmd. */
+//执行SCRIPT LOADD指令时打开,强制主服务器将当前执行的命令复制给所有从服务器
+#define CLIENT_FORCE_REPL (1&lt;&lt;15)  /* Force replication of current cmd. */
+//主服务器不能使用PSYNC命令与当前低版本从服务器进行同步.
+//这个标志只能在 REDIS_SLAVE 标志处于打开状态时使用
+#define CLIENT_PRE_PSYNC (1&lt;&lt;16)   /* Instance don't understand PSYNC. */
+#define CLIENT_READONLY (1&lt;&lt;17)    /* Cluster client is in read-only state. */
+#define CLIENT_PUBSUB (1&lt;&lt;18)      /* Client is in Pub/Sub mode. */
+#define CLIENT_PREVENT_AOF_PROP (1&lt;&lt;19)  /* Don't propagate to AOF. */
+#define CLIENT_PREVENT_REPL_PROP (1&lt;&lt;20)  /* Don't propagate to slaves. */
+#define CLIENT_PREVENT_PROP (CLIENT_PREVENT_AOF_PROP|CLIENT_PREVENT_REPL_PROP)
+#define CLIENT_PENDING_WRITE (1&lt;&lt;21) /* Client has output to send but a write
+                                        handler is yet not installed. */
+#define CLIENT_REPLY_OFF (1&lt;&lt;22)   /* Don't send replies to client. */
+#define CLIENT_REPLY_SKIP_NEXT (1&lt;&lt;23)  /* Set CLIENT_REPLY_SKIP for next cmd */
+#define CLIENT_REPLY_SKIP (1&lt;&lt;24)  /* Don't send just this reply. */
+#define CLIENT_LUA_DEBUG (1&lt;&lt;25)  /* Run EVAL in debug mode. */
+#define CLIENT_LUA_DEBUG_SYNC (1&lt;&lt;26)  /* EVAL debugging without fork() */
+#define CLIENT_MODULE (1&lt;&lt;27) /* Non connected client used by some module. */
+#define CLIENT_PROTECTED (1&lt;&lt;28) /* Client should not be freed for now. */
+#define CLIENT_PENDING_READ (1&lt;&lt;29) /* The client has pending reads and was put
+                                       in the list of clients we can read
+                                       from. */
+#define CLIENT_PENDING_COMMAND (1&lt;&lt;30) /* Indicates the client has a fully
+                                        * parsed command ready for execution. */
+#define CLIENT_TRACKING (1ULL&lt;&lt;31) /* Client enabled keys tracking in order to
+                                   perform client side caching. */
+#define CLIENT_TRACKING_BROKEN_REDIR (1ULL&lt;&lt;32) /* Target client is invalid. */
+#define CLIENT_TRACKING_BCAST (1ULL&lt;&lt;33) /* Tracking in BCAST mode. */
+#define CLIENT_TRACKING_OPTIN (1ULL&lt;&lt;34)  /* Tracking in opt-in mode. */
+#define CLIENT_TRACKING_OPTOUT (1ULL&lt;&lt;35) /* Tracking in opt-out mode. */
+#define CLIENT_TRACKING_CACHING (1ULL&lt;&lt;36) /* CACHING yes/no was given,
+                                              depending on optin/optout mode. */
+#define CLIENT_TRACKING_NOLOOP (1ULL&lt;&lt;37) /* Don't send invalidation messages
+                                             about writes performed by myself.*/
+#define CLIENT_IN_TO_TABLE (1ULL&lt;&lt;38) /* This client is in the timeout table. */
+#define CLIENT_PROTOCOL_ERROR (1ULL&lt;&lt;39) /* Protocol error chatting with it. */
+#define CLIENT_CLOSE_AFTER_COMMAND (1ULL&lt;&lt;40) /* Close after executing commands
+                                               * and writing entire reply. */
+#define CLIENT_DENY_BLOCKING (1ULL&lt;&lt;41) /* Indicate that the client should not be blocked.
+                                           currently, turned on inside MULTI, Lua, RM_Call,
+                                           and AOF client */
+#define CLIENT_REPL_RDBONLY (1ULL&lt;&lt;42) /* This client is a replica that only wants RDB without replication buffer. */</code></pre></li>
+<li><p>PUBSUB命令:本身不修改数据库,但是向频道的所有订阅者发送消息的行为带有副作用， 接收到消息的所有客户端的状态都会因为这个命令而改变,所以也需要写入AOF.</p>
+</li>
+<li><p>SCRIPT LOAD命令:类似的,它修改了服务器状态,也带有副作用,同时因为涉及到主从服务器,CLIENT_FORCE_REPL将指令发给所有的从服务器.</p>
+</li>
+</ul>
+</li>
+<li><p>输入缓冲区</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c#" data-language="c#"><code class="language-c#">typedef struct client {
+	//缓冲区,用于储存指令
+    sds querybuf;           /* Buffer we use to accumulate client queries. */
+}client;</code></pre></li>
 <li><p>保存用户发送的命令请求,根据输入内容动态变化大小</p>
 </li>
 </ul>
@@ -1352,13 +1397,13 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/27/redis-shi-jian/">
+                <a href="/2022/01/27/redis-ke-hu-duan-yu-fu-wu-qi/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="redis事件">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="redis客户端与服务器">
                         
-                        <span class="card-title">redis事件</span>
+                        <span class="card-title">redis客户端与服务器</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1630,7 +1675,7 @@ redisAtomic <span class="token class-name">time_t</span> unixtime<span class="to
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">29.6k</span>
+                        class="white-color">54k</span>
             
             
             

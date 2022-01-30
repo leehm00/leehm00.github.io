@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-01-29T11:10:22.442Z</updated>
+  <updated>2022-01-30T14:35:09.963Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,27 +17,24 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>redis哨兵sentinel</title>
-    <link href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/"/>
-    <id>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinel/</id>
-    <published>2022-01-27T01:16:54.000Z</published>
-    <updated>2022-01-29T11:10:22.442Z</updated>
+    <title>译Dynamo Amazon&#39;s Highly Available Key-value Store</title>
+    <link href="https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/"/>
+    <id>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</id>
+    <published>2022-01-30T14:33:54.000Z</published>
+    <updated>2022-01-30T14:35:09.963Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;哨兵Sentinel&quot;&gt;&lt;a href=&quot;#哨兵Sentinel&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;p&gt;转自&lt;a href=&quot;https://arthurchiao.art/blog/amazon-dynamo-zh/&quot;&gt;arthurchiao.art /blog/amazon-dynamo-zh/&lt;/a&gt;&lt;/p&gt;
+&lt;h1</summary>
         
       
     
     
     
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
@@ -71,7 +68,32 @@
     <link href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/"/>
     <id>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</id>
     <published>2022-01-27T01:14:25.000Z</published>
-    <updated>2022-01-29T11:11:06.088Z</updated>
+    <updated>2022-01-30T14:32:20.900Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;redis客户端与服务器&quot;&gt;&lt;a href=&quot;#redis客户端与服务器&quot; class=&quot;headerlink&quot; title=&quot;redis客户端与服务器&quot;&gt;&lt;/a&gt;redis客户端与服务器&lt;/h1&gt;&lt;h2 id=&quot;客户端&quot;&gt;&lt;a href=&quot;#客户端&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>redis客户端与服务器</title>
+    <link href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan-yu-fu-wu-qi/"/>
+    <id>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan-yu-fu-wu-qi/</id>
+    <published>2022-01-27T01:14:25.000Z</published>
+    <updated>2022-01-30T14:31:00.559Z</updated>
     
     
       
@@ -96,7 +118,7 @@
     <link href="https://leehm00.github.io/2022/01/27/redis-shi-jian/"/>
     <id>https://leehm00.github.io/2022/01/27/redis-shi-jian/</id>
     <published>2022-01-27T01:13:18.000Z</published>
-    <updated>2022-01-29T11:10:11.404Z</updated>
+    <updated>2022-01-30T14:31:00.523Z</updated>
     
     
       
@@ -121,7 +143,7 @@
     <link href="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/"/>
     <id>https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</id>
     <published>2022-01-27T01:08:58.000Z</published>
-    <updated>2022-01-29T11:10:16.387Z</updated>
+    <updated>2022-01-30T14:31:00.523Z</updated>
     
     
       
