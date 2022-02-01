@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-01-30T14:35:09.963Z</updated>
+  <updated>2022-01-31T15:38:00.962Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,11 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>体制内还是体制外工作</title>
+    <link href="https://leehm00.github.io/2022/01/31/ti-zhi-nei-huan-shi-ti-zhi-wai-gong-zuo/"/>
+    <id>https://leehm00.github.io/2022/01/31/ti-zhi-nei-huan-shi-ti-zhi-wai-gong-zuo/</id>
+    <published>2022-01-31T11:09:06.000Z</published>
+    <updated>2022-01-31T15:38:00.962Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;看到这个我觉得就是经济学家纯纯傻逼，&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;经济学家向松祚表示：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我看到这些优秀的清北毕业生，都去考公，我觉得很遗憾。我觉得这是不应该的，就说中国这些顶级大学的学生出来，应该主要是去做科学家，企业家，</summary>
+        
+      
+    
+    
+    
+    <category term="随笔" scheme="https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+    <category term="职位" scheme="https://leehm00.github.io/tags/%E8%81%8C%E4%BD%8D/"/>
+    
+  </entry>
+  
+  <entry>
     <title>译Dynamo Amazon&#39;s Highly Available Key-value Store</title>
     <link href="https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/"/>
     <id>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</id>
     <published>2022-01-30T14:33:54.000Z</published>
-    <updated>2022-01-30T14:35:09.963Z</updated>
+    <updated>2022-01-31T05:11:44.526Z</updated>
     
     
       

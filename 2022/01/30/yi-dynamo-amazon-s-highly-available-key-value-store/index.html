@@ -710,6 +710,9 @@
 <p><img src="/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/2.png" alt="img"></p>
 <p>图 2 Dynamo 哈希环上 key 的分散（partition）和复制（replication）</p>
 <p>存储某个特定 key 的所有节点组成一个列表，称为 <strong>preference list</strong>（优先列表）。 我们在 4.8 节会看到，Dynamo 的设计是，<strong>对于给定的 key，每个节点都能决定哪些 节点可以进入这个列表</strong>。<strong>为了应对节点失败的情况，preference list 会包含多余 N 个节 点</strong>。</p>
+<blockquote>
+<p>todo：这里的优先列表会不会非常非常大？占用资源太多？</p>
+</blockquote>
 <p>另外注意，由于我们引入了虚拟节点，存储一个 key 的 N 个节点，实际上对应的物理节 点可能少于 N 个（例如，一个节点可能会占用环上的不止一个节点）。为了避免这个问题 ，<strong>preference list 在选择节点的时候会跳过一些位置，以保证 list 里面的节点都在不 同的物理节点上</strong>。</p>
 <h3 id="4-4-数据版本化（Data-Versioning）"><a href="#4-4-数据版本化（Data-Versioning）" class="headerlink" title="4.4 数据版本化（Data Versioning）"></a>4.4 数据版本化（Data Versioning）</h3><p>Dynamo 提供最终一致性，所有更新操作会异步地传递给所有的副本。</p>
 <p><code>put()</code> 操作返回时，数据（更新）可能还没有应用到所有副本，因此紧接着的 <code>get()</code> 操作可能获取不到最新数据。在没有故障的情况下，传递更新的耗时有一个上限；但在特定 故障场景下（例如服务器宕机或网络分裂），更新可能会在限定的时间内无法传递到所有副 本。</p>
@@ -1241,18 +1244,17 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/">
+                <a href="/2022/01/31/ti-zhi-nei-huan-shi-ti-zhi-wai-gong-zuo/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="译Dynamo Amazon&#39;s Highly Available Key-value Store">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="体制内还是体制外工作">
                         
-                        <span class="card-title">译Dynamo Amazon&#39;s Highly Available Key-value Store</span>
+                        <span class="card-title">体制内还是体制外工作</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1262,18 +1264,29 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-30
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-31
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            homie
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
+                                    随笔
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%81%8C%E4%BD%8D/">
+                        <span class="chip bg-color">职位</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -1562,7 +1575,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">54k</span>
+                        class="white-color">54.4k</span>
             
             
             

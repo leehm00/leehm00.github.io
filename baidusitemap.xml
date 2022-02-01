@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://leehm00.github.io/2022/01/31/ti-zhi-nei-huan-shi-ti-zhi-wai-gong-zuo/</loc>
+    <lastmod>2022-01-31</lastmod>
+  </url>
+  <url>
     <loc>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-01-31</lastmod>
   </url>
   <url>
     <loc>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</loc>
