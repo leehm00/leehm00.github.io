@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-02-13T08:57:14.652Z</updated>
+  <updated>2022-02-13T13:15:14.826Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/"/>
     <id>https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/</id>
     <published>2022-02-10T15:05:43.000Z</published>
-    <updated>2022-02-13T08:57:14.652Z</updated>
+    <updated>2022-02-13T13:15:14.826Z</updated>
     
     
       
@@ -34,6 +34,10 @@
     
     
     
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="anna" scheme="https://leehm00.github.io/tags/anna/"/>
     
   </entry>
   
