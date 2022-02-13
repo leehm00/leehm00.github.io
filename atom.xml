@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-01-31T15:38:00.962Z</updated>
+  <updated>2022-02-13T08:57:14.652Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>anna论文笔记</title>
+    <link href="https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/"/>
+    <id>https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/</id>
+    <published>2022-02-10T15:05:43.000Z</published>
+    <updated>2022-02-13T08:57:14.652Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;Anna（支持任意扩展和超高性能的KV数据库系统）阅读笔记&quot;&gt;&lt;a href=&quot;#Anna（支持任意扩展和超高性能的KV数据库系统）阅读笔记&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>体制内还是体制外工作</title>
@@ -72,7 +93,7 @@
     <link href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/"/>
     <id>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/</id>
     <published>2022-01-27T01:16:54.000Z</published>
-    <updated>2022-01-29T11:10:27.496Z</updated>
+    <updated>2022-01-29T11:10:27.000Z</updated>
     
     
       
@@ -122,7 +143,7 @@
     <link href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan-yu-fu-wu-qi/"/>
     <id>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan-yu-fu-wu-qi/</id>
     <published>2022-01-27T01:14:25.000Z</published>
-    <updated>2022-01-30T14:31:00.559Z</updated>
+    <updated>2022-01-30T14:31:00.000Z</updated>
     
     
       
