@@ -4,8 +4,13 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, KV store">
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex">
+    <meta name="keywords" content="MIT 6.824 2022 notes 1, KV store">
+    <meta name="description" content="Lecture 1: Introductionwhy do we use distributed systems?
+connect physically seperated machines
+Usually shared 
+
+
+increa">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +22,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hello World | homie&#39;s Home</title>
+    <title>MIT 6.824 2022 notes 1 | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -325,12 +330,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description center-align post-title">MIT 6.824 2022 notes 1</h1>
                 </div>
             </div>
         </div>
@@ -444,12 +449,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/course/">
+                                <span class="chip bg-color">course</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                学习
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -458,7 +476,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-01-26
+                    2022-02-14
                 </div>
                 
 
@@ -467,14 +485,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    75
+                    518
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    3 分
                 </div>
                 
 
@@ -497,20 +515,75 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
+                <h1 id="Lecture-1-Introduction"><a href="#Lecture-1-Introduction" class="headerlink" title="Lecture 1: Introduction"></a>Lecture 1: Introduction</h1><h2 id="why-do-we-use-distributed-systems"><a href="#why-do-we-use-distributed-systems" class="headerlink" title="why do we use distributed systems?"></a>why do we use distributed systems?</h2><ol>
+<li>connect physically seperated machines<ul>
+<li>Usually shared </li>
+</ul>
+</li>
+<li>increase capacity through parallelism</li>
+<li>tolerate faults</li>
+<li>achieve security/via isolate</li>
+</ol>
+<h2 id="What-are-the-challenges"><a href="#What-are-the-challenges" class="headerlink" title="What are the challenges?"></a>What are the challenges?</h2><ol>
+<li>Concurrency</li>
+<li>Partial failure</li>
+<li>High performance</li>
+</ol>
+<h2 id="Infrastructure-Abstractions"><a href="#Infrastructure-Abstractions" class="headerlink" title="Infrastructure Abstractions"></a>Infrastructure Abstractions</h2><ul>
+<li>storage </li>
+<li><strong>communication</strong></li>
+<li>Computation </li>
+</ul>
+<h3 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h3><p>RPC, threads, concurrency lock.</p>
+<h2 id="performace"><a href="#performace" class="headerlink" title="performace"></a>performace</h2><p>Scalability </p>
+<h2 id="Fault-Tolerance"><a href="#Fault-Tolerance" class="headerlink" title="Fault Tolerance"></a>Fault Tolerance</h2><ul>
+<li>Availability </li>
+<li>Recoverbility </li>
+</ul>
+<p>Solutions：</p>
+<ul>
+<li>NV storage(non-volatile storage)非易失性存储</li>
+<li>Replication: management of replication copies, </li>
+</ul>
+<h3 id="Consistency"><a href="#Consistency" class="headerlink" title="Consistency"></a>Consistency</h3><p>puts and gets for k-v store</p>
+<h3 id="reasons-for-non-consistency"><a href="#reasons-for-non-consistency" class="headerlink" title="reasons for non-consistency"></a>reasons for non-consistency</h3><ul>
+<li>cache </li>
+<li>Replication </li>
+</ul>
+<h3 id="kinds"><a href="#kinds" class="headerlink" title="kinds"></a>kinds</h3><ul>
+<li>Strong<ul>
+<li>expensive to implement<ul>
+<li>Communication </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>weak</strong> <ul>
+<li>Real world</li>
+</ul>
+</li>
+</ul>
+<h2 id="Mapreduce"><a href="#Mapreduce" class="headerlink" title="Mapreduce"></a>Mapreduce</h2><blockquote>
+<p><strong>MapReduce</strong> is a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Programming_model">programming model</a> and an associated implementation for processing and generating <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Big_data">big data</a> sets with a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Parallel_computing">parallel</a>, <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Distributed_computing">distributed</a> algorithm on a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cluster_(computing)">cluster</a>.</p>
+<p>A MapReduce program is composed of a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Map_(parallel_pattern)"><em>map</em></a> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Procedure_(computing)">procedure</a>, which performs filtering and sorting (such as sorting students by first name into queues, one queue for each name), and a <em><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Reduce_(parallel_pattern)">reduce</a></em> method, which performs a summary operation (such as counting the number of students in each queue, yielding name frequencies). The “MapReduce System” (also called “infrastructure” or “framework”) orchestrates the processing by <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Marshalling_(computer_science)">marshalling</a> the distributed servers, running the various tasks in parallel, managing all communications and data transfers between the various parts of the system, and providing for <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Redundancy_(engineering)">redundancy</a> and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fault-tolerant_computer_system">fault tolerance</a>.</p>
+<p>——Wiki</p>
+</blockquote>
+<h3 id="Definitions"><a href="#Definitions" class="headerlink" title="Definitions"></a>Definitions</h3><p>Map(k, v): k-the name of the file, v-the content of the maps inout file(full text).</p>
+<p>Reduce(k, v): k-the word, v-value to be summaryed(count or frequency).</p>
+<p>Master server: organize the whole computation</p>
+<p>worker server: computation work</p>
+<h3 id="Working-process"><a href="#Working-process" class="headerlink" title="Working process"></a>Working process</h3><p>If we want to run a MapReduce job that takes the entire crawled web as input the data is already stored in a way that split up evenly across all the file servers(a web file) and so that means that the map workers are able to read the data in parallel from these file servers. </p>
+<blockquote>
+<p><strong>Does Google have one set of physical machines among GFS and a separate set of physical machines that run MapReduce jobs?</strong></p>
+<p><strong>No.</strong> (just for 2004)</p>
+<p>In general case if we have big files stored in some big Network file system like  GFS. MapReduce worker process has to go off and talk across the network to the correct GFS server and maybe servers that store the data are part of the input and fetch servers spread data over the network to pass the map to the MapReduce worker machine. </p>
+<p><strong>In this case we need massive network throughput capacity.</strong></p>
+<p>If you just pick some MapReduce worker and some GFS servers, <strong>chances are at least half the time the communication between them has to pass through</strong>. This one wouldn’t switch their routes which had only some amount of total throughput.</p>
+<p><strong>Usually we run the GFS servers and the MapReduce workers on the same set of machines.</strong> Possibly we have a thousand machines running the service.  </p>
+<p>Now network is much faster and we can collect and process data from anywhere.</p>
+</blockquote>
+<p>GFS splits a big file into 64M pieces and process them on single physical machines, finally the MapReduce framework would gather them up and write them into giant files in GFS via network.(needs massive network throughput)</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1>
                 
             </div>
             <hr/>
@@ -536,7 +609,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/01/26/hello-world/">https://leehm00.github.io/2022/01/26/hello-world/</a>
+                    <a href="https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/">https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -573,7 +646,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/course/">
+                                    <span class="chip bg-color">course</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -749,13 +826,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/">
+                <a href="/2022/02/15/gfs-chinese-version/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="3W1H | 关于写博客的反思">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="GFS chinese version">
                         
-                        <span class="card-title">3W1H | 关于写博客的反思</span>
+                        <span class="card-title">GFS chinese version</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -766,14 +843,14 @@
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-26
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-02-15
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
-                                    随笔
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    学习
                                 </a>
                             
                             
@@ -783,8 +860,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%8D%9A%E5%AE%A2/">
-                        <span class="chip bg-color">博客</span>
+                    <a href="/tags/%E8%AE%BA%E6%96%87/">
+                        <span class="chip bg-color">论文</span>
                     </a>
                     
                 </div>
@@ -795,16 +872,16 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/26/hello-world/">
+                <a href="/2022/02/14/fen-bu-shi-xue-xi-zi-liao/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="分布式学习资料">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">分布式学习资料</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -815,17 +892,28 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-14
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            homie
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    学习
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/distributed-system/">
+                        <span class="chip bg-color">distributed system</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>

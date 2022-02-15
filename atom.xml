@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-02-14T04:33:12.452Z</updated>
+  <updated>2022-02-15T16:07:35.952Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,81 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MIT 6.824 2022 notes 1 chinese version</title>
+    <link href="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-1-chinese-version/"/>
+    <id>https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-1-chinese-version/</id>
+    <published>2022-02-15T16:06:31.000Z</published>
+    <updated>2022-02-15T16:07:35.952Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;chinese-version&quot;&gt;&lt;a href=&quot;#chinese-version&quot; class=&quot;headerlink&quot; title=&quot;chinese version&quot;&gt;&lt;/a&gt;chinese version&lt;/h1&gt;&lt;h2 id=&quot;课程背景&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GFS chinese version</title>
+    <link href="https://leehm00.github.io/2022/02/15/gfs-chinese-version/"/>
+    <id>https://leehm00.github.io/2022/02/15/gfs-chinese-version/</id>
+    <published>2022-02-15T11:17:00.000Z</published>
+    <updated>2022-02-15T11:22:34.523Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;The-Google-File-System中文版&quot;&gt;&lt;a href=&quot;#The-Google-File-System中文版&quot; class=&quot;headerlink&quot; title=&quot;The Google File System中文版&quot;&gt;&lt;/a&gt;The Google</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="论文" scheme="https://leehm00.github.io/tags/%E8%AE%BA%E6%96%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MIT 6.824 2022 notes 1</title>
+    <link href="https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/"/>
+    <id>https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/</id>
+    <published>2022-02-14T07:31:48.000Z</published>
+    <updated>2022-02-15T16:07:38.689Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;Lecture-1-Introduction&quot;&gt;&lt;a href=&quot;#Lecture-1-Introduction&quot; class=&quot;headerlink&quot; title=&quot;Lecture 1: Introduction&quot;&gt;&lt;/a&gt;Lecture 1:</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
+    
+  </entry>
   
   <entry>
     <title>分布式学习资料</title>
