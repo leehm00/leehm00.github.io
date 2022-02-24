@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-02-15T16:07:35.952Z</updated>
+  <updated>2022-02-24T08:21:05.446Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,84 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2022.2.24会议记录</title>
+    <link href="https://leehm00.github.io/2022/02/24/2022-2-24-hui-yi-ji-lu/"/>
+    <id>https://leehm00.github.io/2022/02/24/2022-2-24-hui-yi-ji-lu/</id>
+    <published>2022-02-24T06:01:29.000Z</published>
+    <updated>2022-02-24T08:21:05.446Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;lxy&quot;&gt;&lt;a href=&quot;#lxy&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="工作" scheme="https://leehm00.github.io/categories/%E5%B7%A5%E4%BD%9C/"/>
+    
+    
+    <category term="会议记录" scheme="https://leehm00.github.io/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GOmake函数和slice，map解析</title>
+    <link href="https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/"/>
+    <id>https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/</id>
+    <published>2022-02-21T01:51:37.000Z</published>
+    <updated>2022-02-21T01:52:54.545Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;make函数&quot;&gt;&lt;a href=&quot;#make函数&quot; class=&quot;headerlink&quot; title=&quot;make函数&quot;&gt;&lt;/a&gt;make函数&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;首先看个例子&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&quot;language-go&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="GO" scheme="https://leehm00.github.io/tags/GO/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MIT 6.824 2022 notes 2 chinese version</title>
+    <link href="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/"/>
+    <id>https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/</id>
+    <published>2022-02-16T11:05:48.000Z</published>
+    <updated>2022-02-22T14:09:58.018Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;Lecture-2-RPC-and-threads&quot;&gt;&lt;a href=&quot;#Lecture-2-RPC-and-threads&quot; class=&quot;headerlink&quot; title=&quot;Lecture 2:RPC and threads&quot;&gt;&lt;/a&gt;Lecture</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
+    
+  </entry>
   
   <entry>
     <title>MIT 6.824 2022 notes 1 chinese version</title>
@@ -121,7 +199,7 @@
     <link href="https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/"/>
     <id>https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/</id>
     <published>2022-02-10T15:05:43.000Z</published>
-    <updated>2022-02-13T13:15:14.826Z</updated>
+    <updated>2022-02-23T04:57:45.957Z</updated>
     
     
       

@@ -4,13 +4,22 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="redis单机数据库以及持久化, KV store">
-    <meta name="description" content="单机数据库实现和持久化数据库细节实现
-数据库的数据结构
+    <meta name="keywords" content="GOmake函数和slice，map解析, KV store">
+    <meta name="description" content="make函数
+首先看个例子
 
-源代码：typedef struct redisDb {
-    // 数据库键空间，保存着数据库中的所有键值对
-    dict *dict;                 /*">
+package main
+import (
+ &#34;fmt&#34;
+)
+func main() {
+ var i *int
+ *i=10
+ fmt.Println(*i)
+}
+
+
+这个例子会打印出什么？0还是10?。以上">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -22,7 +31,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>redis单机数据库以及持久化 | homie&#39;s Home</title>
+    <title>GOmake函数和slice，map解析 | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -330,12 +339,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/25.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">redis单机数据库以及持久化</h1>
+                    <h1 class="description center-align post-title">GOmake函数和slice，map解析</h1>
                 </div>
             </div>
         </div>
@@ -451,8 +460,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/redis/">
-                                <span class="chip bg-color">redis</span>
+                            <a href="/tags/GO/">
+                                <span class="chip bg-color">GO</span>
                             </a>
                         
                     </div>
@@ -476,7 +485,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-01-27
+                    2022-02-21
                 </div>
                 
 
@@ -485,14 +494,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    1.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    4 分
                 </div>
                 
 
@@ -515,185 +524,116 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="单机数据库实现和持久化"><a href="#单机数据库实现和持久化" class="headerlink" title="单机数据库实现和持久化"></a>单机数据库实现和持久化</h1><h2 id="数据库细节实现"><a href="#数据库细节实现" class="headerlink" title="数据库细节实现"></a>数据库细节实现</h2><ul>
-<li><p>数据库的数据结构</p>
-<ul>
-<li>源代码：<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisDb</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 数据库键空间，保存着数据库中的所有键值对</span>
-    dict <span class="token operator">*</span>dict<span class="token punctuation">;</span>                 <span class="token comment">/* The keyspace for this DB */</span>
-    <span class="token comment">// 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳</span>
-    dict <span class="token operator">*</span>expires<span class="token punctuation">;</span>              <span class="token comment">/* Timeout of keys with a timeout set */</span>
-    <span class="token comment">// 正处于阻塞状态的键</span>
-    dict <span class="token operator">*</span>blocking_keys<span class="token punctuation">;</span>        <span class="token comment">/* Keys with clients waiting for data (BLPOP)*/</span>
-    <span class="token comment">// 可以解除阻塞的键</span>
-    dict <span class="token operator">*</span>ready_keys<span class="token punctuation">;</span>           <span class="token comment">/* Blocked keys that received a PUSH */</span>
-    <span class="token comment">// 正在被 WATCH 命令监视的键</span>
-    dict <span class="token operator">*</span>watched_keys<span class="token punctuation">;</span>         <span class="token comment">/* WATCHED keys for MULTI/EXEC CAS */</span>
-    <span class="token comment">//数据库编码</span>
-    <span class="token keyword">int</span> id<span class="token punctuation">;</span>                     <span class="token comment">/* Database ID */</span>
-    <span class="token comment">// 数据库的键的平均 TTL ，统计信息</span>
-    <span class="token keyword">long</span> <span class="token keyword">long</span> avg_ttl<span class="token punctuation">;</span>          <span class="token comment">/* Average TTL, just for stats */</span>
-    <span class="token comment">//过期指针</span>
-    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> expires_cursor<span class="token punctuation">;</span> <span class="token comment">/* Cursor of the active expire cycle. */</span>
-    <span class="token comment">//即将整理的键名称,用一个list保存</span>
-    list <span class="token operator">*</span>defrag_later<span class="token punctuation">;</span>         <span class="token comment">/* List of key names to attempt to defrag one by one, gradually. */</span>
-<span class="token punctuation">}</span> redisDb<span class="token punctuation">;</span></code></pre></li>
+                <h1 id="make函数"><a href="#make函数" class="headerlink" title="make函数"></a>make函数</h1><ul>
+<li>首先看个例子</li>
 </ul>
-</li>
-</ul>
-<ul>
-<li>Hash table type implementation<ul>
-<li>tryResizeHashTables()用于缩小字典体积：如果字典的使用率比 HASHTABLE_MIN_MINFILL 常量要低，那么通过缩小字典的体积来节约内存,htNeedsResize()就是比较这两个大小的函数,在有孩子进程的时候不会进行resize</li>
-<li>服务器在对数据库执行增删改查命令时会对数据库进行渐进式 rehash ,但如果服务器长期没有执行命令的话，数据库字典的 rehash 就可能一直没办法完成,为了防止出现这种情况，incrementallyRehash()主动 rehash ,执行了rehash之后返回1,否则返回0</li>
-</ul>
-</li>
-</ul>
-<h3 id="过期功能实现"><a href="#过期功能实现" class="headerlink" title="过期功能实现"></a>过期功能实现</h3><ul>
-<li><p>设置生存和过期时间</p>
-<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211110165635236.png" alt="image-20211110165635236"></p>
-</li>
-<li><p>带有生存和过期时间的数据库</p>
-<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211110165743757.png" alt="image-20211110165743757"></p>
-<p>添加过期时间就是在过期字典中添加项目,移除过期时间就是在过期字典中删除对应的项目,键过期时间和当前时间做差就可以计算出生存时间.</p>
-</li>
-<li><p>过期键删除:</p>
-<ul>
-<li><p>惰性删除</p>
-<ul>
-<li><p>db.c的expireIfNeeded()函数对于所有的输入键检查是否过期,过期的键直接删除</p>
-<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111154024925.png" alt="image-20211111154024925"></p>
-<ul>
-<li>定期删除<ul>
-<li>由expire.c中的activeExpireCycle()函数实现定期删除,当服务器定期执行server.c的serverCron()函数时,就会调用,在expire字典中随机检查一部分键的过期时间,并且删除其中的过期键.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>RDB对于过期键处理</p>
-<ul>
-<li>生成时过期键不加入RDB文件中</li>
-<li>主服务器载入时检查键是否过期,过期键不加入数据库;从服务器不检查,但是会和主服务器同步数据,同步的时候也会清除过期键</li>
-</ul>
-</li>
-<li><p>AOF对于过期键处理</p>
-<ul>
-<li><p>写入时如果键过期但没有删除,不会影响,当(惰性或者定期)删除的时候追加一条DEL</p>
-<ul>
-<li><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111214557807.png" alt="image-20211111214557807"></li>
-</ul>
-</li>
-<li><p>重写入的时候检查键是否过期,过期键不加入数据库</p>
-</li>
-</ul>
-</li>
-<li><p>复制对于过期键处理</p>
-<ul>
-<li><p>主服务器处理,之后对从服务器发送DEL,从服务器对于过期键不做处理</p>
-</li>
-<li><p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111220239415.png" alt="image-20211111220239415"></p>
-<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111220255616.png" alt="image-20211111220255616"></p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="数据库通知"><a href="#数据库通知" class="headerlink" title="数据库通知"></a>数据库通知</h3><ul>
-<li><p>可以监视对键的操作情况,或者是监视某个指令的使用情况</p>
-</li>
-<li><p>由notify.c/notifyKeyspaceEvent()函数实现:</p>
-</li>
-</ul>
-</li>
-</ul>
-<pre class="language-c#" data-language="c#"><code class="language-c#">
-/* The API provided to the rest of the Redis core is a simple function:
- *实现了发送数据库通知的功能
- * notifyKeyspaceEvent(int type, char *event, robj *key, int dbid);
- *
- * 'type' is the notification class we define in `server.h`.
- * type是当前想要发送的通知的类型,根据这个判断通知发送与否,提前在server.h中定义过种类
- * 'event' is a C string representing the event name.
- *  event 参数是一个字符串表示的事件名
- * 'key' is a Redis object representing the key name.
- * key 参数是一个 Redis 对象表示的键名,是产生事件的键
- * 'dbid' is the database ID where the key lives.
- * dbid 参数为键所在(产生事件)的数据库  
- * 每当一个redis命令需要发送数据库通知的时候,都会调用此函数,向函数传递命令的相关信息*/
-void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
-    sds chan;
-    robj *chanobj, *eventobj;
-    int len = -1;
-    char buf[24];
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+ <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ <span class="token keyword">var</span> i <span class="token operator">*</span><span class="token builtin">int</span>
+ <span class="token operator">*</span>i<span class="token operator">=</span><span class="token number">10</span>
+ fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">*</span>i<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
 
-    /* If any modules are interested in events, notify the module system now.
-     * This bypasses the notifications configuration, but the module engine
-     * will only call event subscribers if the event type matches the types
-     * they are interested in. */
-     moduleNotifyKeyspaceEvent(type, event, key, dbid);
-
-    /* If notifications for this class of events are off, return ASAP. 
-    如果给定通知不是服务器允许发送的通知,直接返回*/
-    if (!(server.notify_keyspace_events &amp; type)) return;
-
-    eventobj = createStringObject(event,strlen(event));
-
-    /* __keyspace@&lt;db&gt;__:&lt;key&gt; &lt;event&gt; notifications. */
-    //发送键空间通知
-    if (server.notify_keyspace_events &amp; NOTIFY_KEYSPACE) {
-        chan = sdsnewlen("__keyspace@",11);
-        len = ll2string(buf,sizeof(buf),dbid);
-        chan = sdscatlen(chan, buf, len);
-        chan = sdscatlen(chan, "__:", 3);
-        chan = sdscatsds(chan, key-&gt;ptr);
-        chanobj = createObject(OBJ_STRING, chan);
-        pubsubPublishMessage(chanobj, eventobj);//通过publish发送通知
-        decrRefCount(chanobj);
-    }
-
-    /* __keyevent@&lt;db&gt;__:&lt;event&gt; &lt;key&gt; notifications. */
-    //发送键时间通知
-    if (server.notify_keyspace_events &amp; NOTIFY_KEYEVENT) {
-        chan = sdsnewlen("__keyevent@",11);
-        //初始化为-1,加入前面发送键空间通知的时候计算过了就不会是-1,少计算一次
-        if (len == -1) len = ll2string(buf,sizeof(buf),dbid);
-        chan = sdscatlen(chan, buf, len);
-        chan = sdscatlen(chan, "__:", 3);
-        chan = sdscatsds(chan, eventobj-&gt;ptr);
-        chanobj = createObject(OBJ_STRING, chan);
-        pubsubPublishMessage(chanobj, key);
-        decrRefCount(chanobj);
-    }
-    decrRefCount(eventobj);
-}</code></pre>
-
-
-<p>​    </p>
-<h2 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h2><p>redis是内存数据库,RDB持久化将数据库状态保存到磁盘里面,避免数据意外丢失</p>
-<p>RDB文件时压缩的二进制文件,可以用这个文件恢复数据库状态,主要使用save和bgsave实现</p>
-<h3 id="创建和载入"><a href="#创建和载入" class="headerlink" title="创建和载入"></a>创建和载入</h3><ul>
-<li>save创建RDB文件,但是会阻塞服务器;bgsave生成一个子进程,专门负责生成RDB文件</li>
-<li>只要有RDB文件在,就会自动载入RDB文件(如果开启了AOF持久化功能,会优先使用AOF文件还原数据库)</li>
-<li>bgsave执行期间不能执行save,bgsave(防止竞争条件);也不能执行bgrewriteaof,因为都会有大量的磁盘写入</li>
+<ul>
+<li>这个例子会打印出什么？0还是10?。以上全错，运行的时候会painc，原因如下：</li>
 </ul>
-<h3 id="自动保存"><a href="#自动保存" class="headerlink" title="自动保存"></a>自动保存</h3><h4 id="设置自动保存条件"><a href="#设置自动保存条件" class="headerlink" title="设置自动保存条件"></a>设置自动保存条件</h4><p>设定自动保存的条件,达到条件时自动运行bgsave</p>
-<p>条件保存在redisServer的saveparams属性中</p>
-<h4 id="dirty计数器和lastsave属性"><a href="#dirty计数器和lastsave属性" class="headerlink" title="dirty计数器和lastsave属性"></a>dirty计数器和lastsave属性</h4><ul>
-<li>dirty计数器记录上次成功执行save或者bgsave之后服务器对数据库进行修改的次数</li>
-<li>lastsave记录了上次成功save的时间</li>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token builtin">panic</span><span class="token punctuation">:</span> runtime <span class="token builtin">error</span><span class="token punctuation">:</span> invalid memory address or <span class="token boolean">nil</span> pointer dereference</code></pre>
+
+<ul>
+<li>从这个提示中可以看出，对于引用类型的变量，我们不光要声明它，还要为它分配内容空间，否则我们的值放在哪里去呢？这就是上面错误提示的原因</li>
+<li>对于值类型的声明不需要，是因为已经默认帮我们分配好了</li>
+<li>分配内存，Go提供了两种方式，分别是new和make</li>
 </ul>
-<h4 id="检查保存条件"><a href="#检查保存条件" class="headerlink" title="检查保存条件"></a>检查保存条件</h4><p>serverCron函数默认没100ms就要执行一次,维护当前运行的数据库,同时也检查了自动保存条件是否满足,只要有一个条件满足了就要执行bgsave</p>
-<h2 id="AOF持久化-Append-Only-File"><a href="#AOF持久化-Append-Only-File" class="headerlink" title="AOF持久化(Append Only File)"></a>AOF持久化(Append Only File)</h2><p>通过保存所有的写命令记录数据库状态</p>
-<p>写命令执行之后加到redisServer的aof_buf缓冲区末尾,在处理事件循环的时候决定是否将缓冲区的值写入到AOF文件</p>
-<p>数据还原的时候先创建不带网络连接的伪客户端,直接使用来自AOF文件中的命令,挨个执行,最终执行完毕就是数据库的状态</p>
-<h3 id="AOF文件重写"><a href="#AOF文件重写" class="headerlink" title="AOF文件重写"></a>AOF文件重写</h3><ul>
-<li><p>直接读取当前状态,对于每个键直接使用add指令读取最后的状态作为一个add添加进去.</p>
-</li>
-<li><p>开始执行重写之后可能会继续执行指令,对于数据库进行修改,因此建立了AOF重写缓冲区,新指令同时同步到AOF缓冲区和AOF重写缓冲区</p>
-</li>
-<li><p>完成重写之后直接覆盖原来的AOF文件</p>
-</li>
+<h2 id="new"><a href="#new" class="headerlink" title="new"></a>new</h2><p>Go提供内建函数new</p>
+<pre class="language-swift" data-language="swift"><code class="language-swift"><span class="token keyword">func</span> <span class="token function-definition function">new</span><span class="token punctuation">(</span><span class="token keyword">Type</span><span class="token punctuation">)</span> <span class="token operator">*</span><span class="token keyword">Type</span></code></pre>
+
+<ul>
+<li>它只接受一个参数，这个参数是一个类型，分配好内存后，返回一个指向该类型内存地址的指针。同时请注意它同时把分配的内存置为零，也就是类型的零值。那么上面的函数可以改写成</li>
 </ul>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+ <span class="token keyword">var</span> i <span class="token operator">*</span><span class="token builtin">int</span>
+ i<span class="token operator">=</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">)</span>
+ <span class="token operator">*</span>i<span class="token operator">=</span><span class="token number">10</span>
+ fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">*</span>i<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<ul>
+<li>这就是new，它返回的永远是类型的指针，指向分配类型的内存地址</li>
+</ul>
+<h2 id="make"><a href="#make" class="headerlink" title="make"></a>make</h2><ul>
+<li>make也是用于内存分配的，但和new不同，它只用于通道chan、映射map以及切片slice的内存创建</li>
+<li>它的返回的类型就是这三个类型本身，而不是他们的指针类型，因为这三种类型本身就是引用类型</li>
+<li>注意，因为这三种类型是引用类型，所以必须得初始化，但不是置为零值</li>
+</ul>
+<pre class="language-swift" data-language="swift"><code class="language-swift"><span class="token keyword">func</span> <span class="token function-definition function">make</span><span class="token punctuation">(</span>t <span class="token keyword">Type</span><span class="token punctuation">,</span> size <span class="token operator">...</span><span class="token class-name">IntegerType</span><span class="token punctuation">)</span> <span class="token keyword">Type</span></code></pre>
+
+<h2 id="make和new对比"><a href="#make和new对比" class="headerlink" title="make和new对比"></a>make和new对比</h2><ul>
+<li>二者都是内存的分配（堆上），但是make只用于slice、map以及channel的初始化（非零值）；而new用于类型的内存分配，并且内存置为零</li>
+<li>make返回的还是这三个引用类型本身；而new返回的是指向类型的指针</li>
+<li>new不常用，通常都是采用短语句声明以及结构体的字面量达到我们的目的，比如：</li>
+</ul>
+<pre class="language-go" data-language="go"><code class="language-go">i<span class="token operator">:=</span><span class="token number">0</span>
+u<span class="token operator">:=</span>user<span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre>
+
+<ul>
+<li>make函数是无可替代的</li>
+</ul>
+<h1 id="切片slice"><a href="#切片slice" class="headerlink" title="切片slice"></a>切片slice</h1><ul>
+<li>Slice和数组类似，也是表示一个有序元素，但这个序列的长度可变，具有动态长度特性</li>
+<li>切片（slice）是对底层数组一个连续片段的引用，所以切片是一个引用类型</li>
+<li>内部实现的数据结构通过指针引用底层数组，设定相关属性将数据读写操作限定在指定的区域内</li>
+<li>切片本身是一个只读对象，其工作机制类似数组指针的一种封装</li>
+<li>多个切片可以指向同一个底层数组，实现了内存共享</li>
+<li>Slice 的数据结构定义如下:</li>
+</ul>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">type</span> slice <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+    array unsafe<span class="token punctuation">.</span>Pointer
+    <span class="token builtin">len</span>   <span class="token builtin">int</span>
+    <span class="token builtin">cap</span>   <span class="token builtin">int</span>
+<span class="token punctuation">}</span></code></pre>
+
+<ul>
+<li>切片的结构体由3部分构成，Pointer 是指向一个底层数组的指针，len 代表当前切片的长度，cap 是当前切片的容量，cap 总是大于等于 len 的</li>
+</ul>
+<h2 id="切片的使用"><a href="#切片的使用" class="headerlink" title="切片的使用"></a>切片的使用</h2><ul>
+<li>Go语言提供的内置函数make()可以用于灵活地创建数组切片</li>
+<li>创建方式make([]type, len, cap)，其中，type表示数组元素类型，len表示长度，cap表示容量</li>
+<li>还有一种切片字面量方式创建切片</li>
+</ul>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token comment">//创建一个初始元素长度为5的数组切片，元素初始值为0： </span>
+mySlice1 <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span> 
+<span class="token comment">//创建一个初始元素长度为5的数组切片，元素初始值为0，并预留10个元素的存储空间： </span>
+mySlice2 <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span> 
+<span class="token comment">//切片字面量创建长度为5容量为5的切片,需要注意的是 [ ] 里面不要写数组的容量，因为如果写了个数以后就是数组了，而不是切片了。</span>
+mySlice3 <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">{</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token number">40</span><span class="token punctuation">,</span><span class="token number">50</span><span class="token punctuation">}</span></code></pre>
+
+<h1 id="映射map"><a href="#映射map" class="headerlink" title="映射map"></a>映射map</h1><ul>
+<li>map是一种数据结构，用于存储一系列无序的键值对，类似java的HashMap</li>
+<li>通过散列表实现，使用两个数据结构来存储数据，一个数组用于选择桶的散列键的高八位值，可以区分每个键值属于哪个桶；另一个字节数组，用于存储键值对</li>
+<li>创建方式make(map[keyType] valueType, cap)，其中keyType表示键类型，valueType表示值类型，cap表示初始存储能力</li>
+</ul>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token comment">//创建了一个键类型为string、值类型为PersonInfo</span>
+myMap <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span> PersonInfo<span class="token punctuation">)</span> 
+<span class="token comment">//也可以选择是否在创建时指定该map的初始存储能力，创建了一个初始存储能力为100的map.</span>
+myMap <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span> PersonInfo<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span> 
+<span class="token comment">//创建并初始化map的代码.</span>
+myMap <span class="token operator">=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span> PersonInfo<span class="token punctuation">{</span> 
+  <span class="token string">"1234"</span><span class="token punctuation">:</span> PersonInfo<span class="token punctuation">{</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"Jack"</span><span class="token punctuation">,</span> <span class="token string">"Room 101,..."</span><span class="token punctuation">}</span><span class="token punctuation">,</span> 
+<span class="token punctuation">}</span> </code></pre>
+
+<h1 id="通道channel"><a href="#通道channel" class="headerlink" title="通道channel"></a>通道channel</h1><ul>
+<li>channel的内容在《浅谈Go并发编程》中已经介绍过了 不累赘</li>
+<li>创建方式make(chan type, cap)，其中type表示通道数据类型，cap表示缓存容量</li>
+</ul>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token comment">//创建有缓存通道</span>
+ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+<span class="token comment">//创建无缓存通道</span>
+ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span></code></pre>
+
+<p>转自<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f01841004810">Go内建函数make及切片slice、映射map详解</a></p>
 
                 
             </div>
@@ -720,7 +660,7 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/">https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</a>
+                    <a href="https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/">https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -758,8 +698,8 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/redis/">
-                                    <span class="chip bg-color">redis</span>
+                                <a href="/tags/GO/">
+                                    <span class="chip bg-color">GO</span>
                                 </a>
                             
                         </div>
@@ -937,13 +877,13 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/01/27/redis-shi-jian/">
+                <a href="/2022/02/24/2022-2-24-hui-yi-ji-lu/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="redis事件">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="2022.2.24会议记录">
                         
-                        <span class="card-title">redis事件</span>
+                        <span class="card-title">2022.2.24会议记录</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -954,14 +894,14 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-27
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-02-24
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
+                            <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
+                                    工作
                                 </a>
                             
                             
@@ -971,8 +911,8 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/redis/">
-                        <span class="chip bg-color">redis</span>
+                    <a href="/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/">
+                        <span class="chip bg-color">会议记录</span>
                     </a>
                     
                 </div>
@@ -986,13 +926,13 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/27/redis-ji-chu/">
+                <a href="/2022/02/16/mit-6-824-2022-notes-2-chinese-version/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="redis基础">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="MIT 6.824 2022 notes 2 chinese version">
                         
-                        <span class="card-title">redis基础</span>
+                        <span class="card-title">MIT 6.824 2022 notes 2 chinese version</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1003,7 +943,7 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-27
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-16
                             </span>
                         <span class="publish-author">
                             
@@ -1020,8 +960,8 @@ void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/redis/">
-                        <span class="chip bg-color">redis</span>
+                    <a href="/tags/course/">
+                        <span class="chip bg-color">course</span>
                     </a>
                     
                 </div>
