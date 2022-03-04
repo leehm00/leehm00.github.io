@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-03-04T08:52:42.350Z</updated>
+  <updated>2022-03-04T09:16:31.719Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis hotkey solutions</title>
+    <link href="https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/"/>
+    <id>https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/</id>
+    <published>2022-03-04T09:15:56.000Z</published>
+    <updated>2022-03-04T09:16:31.719Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;一、热点数据的存放&quot;&gt;&lt;a href=&quot;#一、热点数据的存放&quot; class=&quot;headerlink&quot; title=&quot;一、热点数据的存放&quot;&gt;&lt;/a&gt;一、热点数据的存放&lt;/h2&gt;&lt;h4 id=&quot;场景：&quot;&gt;&lt;a href=&quot;#场景：&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>mac命令行加密sha等</title>

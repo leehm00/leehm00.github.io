@@ -4,13 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="MIT 6.824 2022 notes 1, KV store">
-    <meta name="description" content="Lecture 1: Introductionwhy do we use distributed systems?
-connect physically seperated machines
-Usually shared 
-
-
-increa">
+    <meta name="keywords" content="Redis hotkey solutions, KV store">
+    <meta name="description" content="一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？
+方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -22,7 +18,7 @@ increa">
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>MIT 6.824 2022 notes 1 | homie&#39;s Home</title>
+    <title>Redis hotkey solutions | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -317,12 +313,12 @@ increa">
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">MIT 6.824 2022 notes 1</h1>
+                    <h1 class="description center-align post-title">Redis hotkey solutions</h1>
                 </div>
             </div>
         </div>
@@ -436,25 +432,12 @@ increa">
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/course/">
-                                <span class="chip bg-color">course</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                学习
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -463,7 +446,7 @@ increa">
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-02-14
+                    2022-03-04
                 </div>
                 
 
@@ -472,14 +455,14 @@ increa">
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    518
+                    1.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    6 分
                 </div>
                 
 
@@ -502,75 +485,43 @@ increa">
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Lecture-1-Introduction"><a href="#Lecture-1-Introduction" class="headerlink" title="Lecture 1: Introduction"></a>Lecture 1: Introduction</h1><h2 id="why-do-we-use-distributed-systems"><a href="#why-do-we-use-distributed-systems" class="headerlink" title="why do we use distributed systems?"></a>why do we use distributed systems?</h2><ol>
-<li>connect physically seperated machines<ul>
-<li>Usually shared </li>
-</ul>
-</li>
-<li>increase capacity through parallelism</li>
-<li>tolerate faults</li>
-<li>achieve security/via isolate</li>
-</ol>
-<h2 id="What-are-the-challenges"><a href="#What-are-the-challenges" class="headerlink" title="What are the challenges?"></a>What are the challenges?</h2><ol>
-<li>Concurrency</li>
-<li>Partial failure</li>
-<li>High performance</li>
-</ol>
-<h2 id="Infrastructure-Abstractions"><a href="#Infrastructure-Abstractions" class="headerlink" title="Infrastructure Abstractions"></a>Infrastructure Abstractions</h2><ul>
-<li>storage </li>
-<li><strong>communication</strong></li>
-<li>Computation </li>
-</ul>
-<h3 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h3><p>RPC, threads, concurrency lock.</p>
-<h2 id="performace"><a href="#performace" class="headerlink" title="performace"></a>performace</h2><p>Scalability </p>
-<h2 id="Fault-Tolerance"><a href="#Fault-Tolerance" class="headerlink" title="Fault Tolerance"></a>Fault Tolerance</h2><ul>
-<li>Availability </li>
-<li>Recoverbility </li>
-</ul>
-<p>Solutions：</p>
+                <h2 id="一、热点数据的存放"><a href="#一、热点数据的存放" class="headerlink" title="一、热点数据的存放"></a>一、热点数据的存放</h2><h4 id="场景："><a href="#场景：" class="headerlink" title="场景："></a>场景：</h4><p>数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？</p>
+<p><strong>方案：</strong><br>限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存，</p>
+<p>然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.</p>
 <ul>
-<li>NV storage(non-volatile storage)非易失性存储</li>
-<li>Replication: management of replication copies, </li>
+<li><strong>设置redis最大占用内存：</strong></li>
 </ul>
-<h3 id="Consistency"><a href="#Consistency" class="headerlink" title="Consistency"></a>Consistency</h3><p>puts and gets for k-v store</p>
-<h3 id="reasons-for-non-consistency"><a href="#reasons-for-non-consistency" class="headerlink" title="reasons for non-consistency"></a>reasons for non-consistency</h3><ul>
-<li>cache </li>
-<li>Replication </li>
+<p>　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！</p>
+<p>　　　　maxmemory 268435456</p>
+<ul>
+<li><strong>设置过期策略：</strong></li>
 </ul>
-<h3 id="kinds"><a href="#kinds" class="headerlink" title="kinds"></a>kinds</h3><ul>
-<li>Strong<ul>
-<li>expensive to implement<ul>
-<li>Communication </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>weak</strong> <ul>
-<li>Real world</li>
-</ul>
-</li>
-</ul>
-<h2 id="Mapreduce"><a href="#Mapreduce" class="headerlink" title="Mapreduce"></a>Mapreduce</h2><blockquote>
-<p><strong>MapReduce</strong> is a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Programming_model">programming model</a> and an associated implementation for processing and generating <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Big_data">big data</a> sets with a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Parallel_computing">parallel</a>, <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Distributed_computing">distributed</a> algorithm on a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cluster_(computing)">cluster</a>.</p>
-<p>A MapReduce program is composed of a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Map_(parallel_pattern)"><em>map</em></a> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Procedure_(computing)">procedure</a>, which performs filtering and sorting (such as sorting students by first name into queues, one queue for each name), and a <em><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Reduce_(parallel_pattern)">reduce</a></em> method, which performs a summary operation (such as counting the number of students in each queue, yielding name frequencies). The “MapReduce System” (also called “infrastructure” or “framework”) orchestrates the processing by <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Marshalling_(computer_science)">marshalling</a> the distributed servers, running the various tasks in parallel, managing all communications and data transfers between the various parts of the system, and providing for <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Redundancy_(engineering)">redundancy</a> and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fault-tolerant_computer_system">fault tolerance</a>.</p>
-<p>——Wiki</p>
-</blockquote>
-<h3 id="Definitions"><a href="#Definitions" class="headerlink" title="Definitions"></a>Definitions</h3><p>Map(k, v): k-the name of the file, v-the content of the maps inout file(full text).</p>
-<p>Reduce(k, v): k-the word, v-value to be summaryed(count or frequency).</p>
-<p>Master server: organize the whole computation</p>
-<p>worker server: computation work</p>
-<h3 id="Working-process"><a href="#Working-process" class="headerlink" title="Working process"></a>Working process</h3><p>If we want to run a MapReduce job that takes the entire crawled web as input the data is already stored in a way that split up evenly across all the file servers(a web file) and so that means that the map workers are able to read the data in parallel from these file servers. </p>
-<blockquote>
-<p><strong>Does Google have one set of physical machines among GFS and a separate set of physical machines that run MapReduce jobs?</strong></p>
-<p><strong>No.</strong> (just for 2004)</p>
-<p>In general case if we have big files stored in some big Network file system like  GFS. MapReduce worker process has to go off and talk across the network to the correct GFS server and maybe servers that store the data are part of the input and fetch servers spread data over the network to pass the map to the MapReduce worker machine. </p>
-<p><strong>In this case we need massive network throughput capacity.</strong></p>
-<p>If you just pick some MapReduce worker and some GFS servers, <strong>chances are at least half the time the communication between them has to pass through</strong>. This one wouldn’t switch their routes which had only some amount of total throughput.</p>
-<p><strong>Usually we run the GFS servers and the MapReduce workers on the same set of machines.</strong> Possibly we have a thousand machines running the service.  </p>
-<p>Now network is much faster and we can collect and process data from anywhere.</p>
-</blockquote>
-<p>GFS splits a big file into 64M pieces and process them on single physical machines, finally the MapReduce framework would gather them up and write them into giant files in GFS via network.(needs massive network throughput)</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+<p>　　　　maxmemory-policy volatile-lru</p>
+<ol>
+<li>当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下：</li>
+<li>noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略）</li>
+<li>allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key。</li>
+<li>allkeys-random:在所有key中随机删除一部分key</li>
+<li>volatile-lru: 在设置了超时时间（expire）的key中优先删除最近最少使用的key</li>
+<li>volatile-random：在设置了超时时间的key中随机删除一部分key</li>
+<li>volatile-ttl: 在设置了超时时间的key中优先删除剩余时间（time to live,TTL）的key</li>
+</ol>
+<p><strong>实际场景：</strong></p>
+<p><strong>redis用作缓存</strong><br>提供一种简单实现缓存失效的思路: LRU(最近少用的淘汰)<br>即redis的缓存每命中一次,就给命中的缓存增加一定ttl(过期时间)(根据具体情况来设定, 比如10分钟).<br>一段时间后, 热数据的ttl都会较大, 不会自动失效, 而冷数据基本上过了设定的ttl就马上失效了.<br><strong>过去24h活跃用户</strong><br>比如用户数据。数据库有2000w条。使用 redis sortSet里 放两天内(为方便取一天内活跃用户)登录过的用户，登录一次ZADD一次，如set已存在则覆盖其分数（登录时间）。键：login:users，值：分数 时间戳、value userid。设置一个周期任务，比如每天03:00:00点删除sort set中前一天3点前的数据（保证set不无序增长、留近一天内活跃用户）。<br>取时，拿到当前时间戳（int 10位），再减1天就可按分数范围取过去24h活跃用户。</p>
+<h2 id="二、怎么发现热key"><a href="#二、怎么发现热key" class="headerlink" title="二、怎么发现热key"></a>二、怎么发现热key</h2><p>方法一:凭借业务经验，进行预估哪些是热key<br>其实这个方法还是挺有可行性的。比如某商品在做秒杀，那这个商品的key就可以判断出是热key。缺点很明显，并非所有业务都能预估出哪些key是热key。</p>
+<p>方法二:在客户端进行收集<br>这个方式就是在操作redis之前，加入一行代码进行数据统计。那么这个数据统计的方式有很多种，也可以是给外部的通讯系统发送一个通知信息。缺点就是对客户端代码造成入侵。</p>
+<p>方法三:在Proxy层做收集<br>有些集群架构是下面这样的，Proxy可以是Twemproxy，是统一的入口。可以在Proxy层做收集上报，但是缺点很明显，并非所有的redis集群架构都有proxy。 </p>
+<p>方法四:用redis自带命令<br>(1)monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。当然，也有现成的分析工具可以给你使用，比如redis-faina。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。<br>(2)hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时加上–hotkeys选项即可。但是该参数在执行的时候，如果key比较多，执行起来比较慢。</p>
+<p>方法五:自己抓包评估<br>Redis客户端使用TCP协议与服务端进行交互，通信协议采用的是RESP。自己写程序监听端口，按照RESP协议规则解析数据，进行分析。缺点就是开发成本高，维护困难，有丢包可能性。</p>
+<p>以上五种方案，各有优缺点。根据自己业务场景进行抉择即可。那么发现热key后，如何解决呢？</p>
+<h2 id="三、高频访问热key的解决方案"><a href="#三、高频访问热key的解决方案" class="headerlink" title="三、高频访问热key的解决方案"></a>三、高频访问热key的解决方案</h2><p><strong>如何解决</strong><br>目前业内的方案有两种</p>
+<p><strong>(1)利用二级缓存</strong><br>比如利用ehcache，或者一个HashMap都可以。在你发现热key以后，把热key加载到系统的JVM中。<br>针对这种热key请求，会直接从jvm中取，而不会走到redis层。<br>假设此时有十万个针对同一个key的请求过来,如果没有本地缓存，这十万个请求就直接怼到同一台redis上了。<br>现在假设，你的应用层有50台机器，OK，你也有jvm缓存了。这十万个请求平均分散开来，每个机器有2000个请求，会从JVM中取到value值，然后返回数据。避免了十万个请求怼到同一台redis上的情形。<br>***(2)备份热key***<br>这个方案也很简单。不要让key走到同一台redis上不就行了。我们把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，我们就在有备份的redis上随机选取一台，进行访问取值，返回数据</p>
+<p> 我们知道在Redis集群中，是通过按照槽点的划分来决定数据最终落在哪个Redis节点上。在集群中，一共存在16384个槽点，如果我们的集群有3个节点组成的话，那么由这3个节点来均分这16384个槽点。如下图</p>
+<p>　　<img src="/2022/03/04/redis-hotkey-solutions/1211299-20210528161536403-484687935.png" alt="img"></p>
+<p>​    假如name@zhangsan的缓存是一个高频访问的数据，那么大量请求访问这个key时，就会出现压力都有redis1这个节点来承担，这样redis1节点就有可能会扛不住压力而罢工了。那么应该怎么解决这个问题呢？</p>
+<p>​    不妨在缓存数据的时候，将这个数据在每个redis节点都缓存一份。而在缓存的时候，将key在程序层面进行加工，如变成name@zhangsan#redis1、name@zhangsan#redis2、name@zhangsan#redis3这样的三个key。此处我们假如这样的3个key会根据crc16算法，将这个三个key分别落在这三个节点之上。那么这样在访问的时候，我们就可以依然遵循这个规则获得一个key，这样一来，获取数据的时候，压力就被分散到不同的redis节点上了。如图</p>
+<p><img src="/2022/03/04/redis-hotkey-solutions/1211299-20210528161547527-1836533042.png" alt="img"></p>
+
                 
             </div>
             <hr/>
@@ -596,7 +547,7 @@ increa">
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/">https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/</a>
+                    <a href="https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/">https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -633,11 +584,7 @@ increa">
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/course/">
-                                    <span class="chip bg-color">course</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -809,66 +756,18 @@ increa">
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/02/15/gfs-chinese-version/">
+                <a href="/2022/03/04/redis-hotkey-solutions/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="GFS chinese version">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="Redis hotkey solutions">
                         
-                        <span class="card-title">GFS chinese version</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-02-15
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/%E8%AE%BA%E6%96%87/">
-                        <span class="chip bg-color">论文</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2022/02/14/fen-bu-shi-xue-xi-zi-liao/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="分布式学习资料">
-                        
-                        <span class="card-title">分布式学习资料</span>
+                        <span class="card-title">Redis hotkey solutions</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -879,27 +778,53 @@ increa">
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-14
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-04
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            homie
                             
                         </span>
                     </div>
                 </div>
+
                 
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/distributed-system/">
-                        <span class="chip bg-color">distributed system</span>
-                    </a>
-                    
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/03/04/mac-ming-ling-xing-jia-mi-sha-deng/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="mac命令行加密sha等">
+                        
+                        <span class="card-title">mac命令行加密sha等</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            homie
+                            
+                        </span>
+                    </div>
                 </div>
                 
             </div>
