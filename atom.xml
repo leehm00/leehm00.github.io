@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-03-04T09:16:31.719Z</updated>
+  <updated>2022-03-05T14:47:58.254Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis cluster</title>
+    <link href="https://leehm00.github.io/2022/03/05/redis-cluster/"/>
+    <id>https://leehm00.github.io/2022/03/05/redis-cluster/</id>
+    <published>2022-03-05T14:45:29.000Z</published>
+    <updated>2022-03-05T14:47:58.254Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;redis集群理论&quot;&gt;&lt;a href=&quot;#redis集群理论&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Redis hotkey solutions</title>
@@ -472,27 +493,6 @@
     
     
     <category term="博客" scheme="https://leehm00.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="https://leehm00.github.io/2022/01/26/hello-world/"/>
-    <id>https://leehm00.github.io/2022/01/26/hello-world/</id>
-    <published>2022-01-26T05:26:24.000Z</published>
-    <updated>2022-01-26T05:26:24.604Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
-        
-      
-    
-    
-    
     
   </entry>
   
