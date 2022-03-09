@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
+    <lastmod>2022-03-09</lastmod>
+  </url>
+  <url>
     <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
     <lastmod>2022-03-05</lastmod>
   </url>

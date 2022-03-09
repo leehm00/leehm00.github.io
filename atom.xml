@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-03-05T14:47:58.254Z</updated>
+  <updated>2022-03-09T15:03:55.840Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis cluster build</title>
+    <link href="https://leehm00.github.io/2022/03/09/redis-cluster-build/"/>
+    <id>https://leehm00.github.io/2022/03/09/redis-cluster-build/</id>
+    <published>2022-03-09T09:14:55.000Z</published>
+    <updated>2022-03-09T15:03:55.840Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;下载redis6-2-1并安装&quot;&gt;&lt;a href=&quot;#下载redis6-2-1并安装&quot; class=&quot;headerlink&quot; title=&quot;下载redis6.2.1并安装&quot;&gt;&lt;/a&gt;下载redis6.2.1并安装&lt;/h1&gt;&lt;pre</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>redis cluster</title>
@@ -468,31 +489,6 @@
     
     
     <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>3W1H | 关于写博客的反思</title>
-    <link href="https://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/"/>
-    <id>https://leehm00.github.io/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/</id>
-    <published>2022-01-26T07:27:31.000Z</published>
-    <updated>2022-01-26T14:45:50.214Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;3W1H-关于写博客的反思&quot;&gt;&lt;a href=&quot;#3W1H-关于写博客的反思&quot; class=&quot;headerlink&quot; title=&quot;3W1H | 关于写博客的反思&quot;&gt;&lt;/a&gt;3W1H | 关于写博客的反思&lt;/h1&gt;&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="随笔" scheme="https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-    
-    <category term="博客" scheme="https://leehm00.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
     
   </entry>
   
