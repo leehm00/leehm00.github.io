@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-03-09T15:03:55.840Z</updated>
+  <updated>2022-03-17T06:02:06.287Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,18 +17,20 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>redis cluster build</title>
-    <link href="https://leehm00.github.io/2022/03/09/redis-cluster-build/"/>
-    <id>https://leehm00.github.io/2022/03/09/redis-cluster-build/</id>
-    <published>2022-03-09T09:14:55.000Z</published>
-    <updated>2022-03-09T15:03:55.840Z</updated>
+    <title>build cluster with bash on one node</title>
+    <link href="https://leehm00.github.io/2022/03/16/build-cluster-with-bash-on-one-node/"/>
+    <id>https://leehm00.github.io/2022/03/16/build-cluster-with-bash-on-one-node/</id>
+    <published>2022-03-16T12:50:28.000Z</published>
+    <updated>2022-03-17T06:02:06.287Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h1 id=&quot;下载redis6-2-1并安装&quot;&gt;&lt;a href=&quot;#下载redis6-2-1并安装&quot; class=&quot;headerlink&quot; title=&quot;下载redis6.2.1并安装&quot;&gt;&lt;/a&gt;下载redis6.2.1并安装&lt;/h1&gt;&lt;pre</summary>
+    <summary type="html">&lt;p&gt;在我自己的机器上进行实验，sh文件实现一条命令部署单个节点集群&lt;/p&gt;
+&lt;p&gt;下面是解析步骤&lt;/p&gt;
+&lt;h2 id=&quot;常量定义&quot;&gt;&lt;a href=&quot;#常量定义&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -38,11 +40,36 @@
   </entry>
   
   <entry>
+    <title>redis cluster build</title>
+    <link href="https://leehm00.github.io/2022/03/09/redis-cluster-build/"/>
+    <id>https://leehm00.github.io/2022/03/09/redis-cluster-build/</id>
+    <published>2022-03-09T09:14:55.000Z</published>
+    <updated>2022-03-15T07:48:38.137Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;下载redis6-2-2并安装&quot;&gt;&lt;a href=&quot;#下载redis6-2-2并安装&quot; class=&quot;headerlink&quot; title=&quot;下载redis6.2.2并安装&quot;&gt;&lt;/a&gt;下载redis6.2.2并安装&lt;/h1&gt;&lt;pre</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>redis cluster</title>
     <link href="https://leehm00.github.io/2022/03/05/redis-cluster/"/>
     <id>https://leehm00.github.io/2022/03/05/redis-cluster/</id>
     <published>2022-03-05T14:45:29.000Z</published>
-    <updated>2022-03-05T14:47:58.254Z</updated>
+    <updated>2022-03-10T06:15:26.925Z</updated>
     
     
       
@@ -55,6 +82,10 @@
     
     
     
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
@@ -130,11 +161,11 @@
   </entry>
   
   <entry>
-    <title>2022.2.24会议记录</title>
-    <link href="https://leehm00.github.io/2022/02/24/2022-2-24-hui-yi-ji-lu/"/>
-    <id>https://leehm00.github.io/2022/02/24/2022-2-24-hui-yi-ji-lu/</id>
+    <title>会议记录</title>
+    <link href="https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/"/>
+    <id>https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/</id>
     <published>2022-02-24T06:01:29.000Z</published>
-    <updated>2022-03-04T09:09:05.745Z</updated>
+    <updated>2022-03-10T09:03:36.004Z</updated>
     
     
     <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
@@ -455,31 +486,6 @@
         
         
     <summary type="html">&lt;h1 id=&quot;单机数据库实现和持久化&quot;&gt;&lt;a href=&quot;#单机数据库实现和持久化&quot; class=&quot;headerlink&quot; title=&quot;单机数据库实现和持久化&quot;&gt;&lt;/a&gt;单机数据库实现和持久化&lt;/h1&gt;&lt;h2 id=&quot;数据库细节实现&quot;&gt;&lt;a href=&quot;#数据库细节实现&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>redis基础</title>
-    <link href="https://leehm00.github.io/2022/01/27/redis-ji-chu/"/>
-    <id>https://leehm00.github.io/2022/01/27/redis-ji-chu/</id>
-    <published>2022-01-26T16:08:30.000Z</published>
-    <updated>2022-01-29T11:10:31.559Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;redis基础&quot;&gt;&lt;a href=&quot;#redis基础&quot; class=&quot;headerlink&quot; title=&quot;redis基础&quot;&gt;&lt;/a&gt;redis基础&lt;/h1&gt;&lt;h2 id=&quot;数据结构&quot;&gt;&lt;a href=&quot;#数据结构&quot; class=&quot;headerlink&quot;</summary>
         
       
     

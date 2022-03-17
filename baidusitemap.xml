@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://leehm00.github.io/2022/03/16/build-cluster-with-bash-on-one-node/</loc>
+    <lastmod>2022-03-17</lastmod>
+  </url>
+  <url>
     <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
-    <lastmod>2022-03-09</lastmod>
+    <lastmod>2022-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/</loc>
+    <lastmod>2022-03-10</lastmod>
   </url>
   <url>
     <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
-    <lastmod>2022-03-05</lastmod>
+    <lastmod>2022-03-10</lastmod>
   </url>
   <url>
     <loc>https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/</loc>
@@ -14,10 +22,6 @@
   </url>
   <url>
     <loc>https://leehm00.github.io/2022/01/31/ti-zhi-nei-huan-shi-ti-zhi-wai-gong-zuo/</loc>
-    <lastmod>2022-03-04</lastmod>
-  </url>
-  <url>
-    <loc>https://leehm00.github.io/2022/02/24/2022-2-24-hui-yi-ji-lu/</loc>
     <lastmod>2022-03-04</lastmod>
   </url>
   <url>
