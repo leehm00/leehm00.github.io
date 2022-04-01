@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-03-17T08:52:01.364Z</updated>
+  <updated>2022-04-01T08:25:17.075Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,47 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>tcp连接数限制因素</title>
+    <link href="https://leehm00.github.io/2022/04/01/tcp-lian-jie-shu-xian-zhi-yin-su/"/>
+    <id>https://leehm00.github.io/2022/04/01/tcp-lian-jie-shu-xian-zhi-yin-su/</id>
+    <published>2022-04-01T08:04:51.000Z</published>
+    <updated>2022-04-01T08:25:17.075Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;一般来说一台服务器建立的tcp连接数是有限的，主要是如下原因：&lt;/p&gt;
+&lt;h2 id=&quot;打开文件数量方面的系统限制&quot;&gt;&lt;a href=&quot;#打开文件数量方面的系统限制&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="实验" scheme="https://leehm00.github.io/categories/%E5%AE%9E%E9%AA%8C/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>apple script使用</title>
+    <link href="https://leehm00.github.io/2022/03/22/apple-script-shi-yong/"/>
+    <id>https://leehm00.github.io/2022/03/22/apple-script-shi-yong/</id>
+    <published>2022-03-22T09:27:00.000Z</published>
+    <updated>2022-03-30T18:18:42.030Z</updated>
+    
+    
+    <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>build cluster with bash on one node</title>
@@ -440,56 +481,6 @@
         
         
     <summary type="html">&lt;h1 id=&quot;redis客户端与服务器&quot;&gt;&lt;a href=&quot;#redis客户端与服务器&quot; class=&quot;headerlink&quot; title=&quot;redis客户端与服务器&quot;&gt;&lt;/a&gt;redis客户端与服务器&lt;/h1&gt;&lt;h2 id=&quot;客户端&quot;&gt;&lt;a href=&quot;#客户端&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>redis事件</title>
-    <link href="https://leehm00.github.io/2022/01/27/redis-shi-jian/"/>
-    <id>https://leehm00.github.io/2022/01/27/redis-shi-jian/</id>
-    <published>2022-01-27T01:13:18.000Z</published>
-    <updated>2022-01-30T14:31:00.523Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;redis事件&quot;&gt;&lt;a href=&quot;#redis事件&quot; class=&quot;headerlink&quot; title=&quot;redis事件&quot;&gt;&lt;/a&gt;redis事件&lt;/h2&gt;&lt;h3 id=&quot;数据结构&quot;&gt;&lt;a href=&quot;#数据结构&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>redis单机数据库以及持久化</title>
-    <link href="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/"/>
-    <id>https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</id>
-    <published>2022-01-27T01:08:58.000Z</published>
-    <updated>2022-01-30T14:31:00.523Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;单机数据库实现和持久化&quot;&gt;&lt;a href=&quot;#单机数据库实现和持久化&quot; class=&quot;headerlink&quot; title=&quot;单机数据库实现和持久化&quot;&gt;&lt;/a&gt;单机数据库实现和持久化&lt;/h1&gt;&lt;h2 id=&quot;数据库细节实现&quot;&gt;&lt;a href=&quot;#数据库细节实现&quot;</summary>
         
       
     
