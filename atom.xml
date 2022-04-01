@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-01T08:25:17.075Z</updated>
+  <updated>2022-04-01T08:59:30.917Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>tc控制带宽等网络资源</title>
+    <link href="https://leehm00.github.io/2022/04/01/tc-kong-zhi-dai-kuan-deng-wang-luo-zi-yuan/"/>
+    <id>https://leehm00.github.io/2022/04/01/tc-kong-zhi-dai-kuan-deng-wang-luo-zi-yuan/</id>
+    <published>2022-04-01T08:26:33.000Z</published>
+    <updated>2022-04-01T08:59:30.917Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;限制单个网卡带宽&quot;&gt;&lt;a href=&quot;#限制单个网卡带宽&quot; class=&quot;headerlink&quot; title=&quot;限制单个网卡带宽&quot;&gt;&lt;/a&gt;限制单个网卡带宽&lt;/h2&gt;&lt;h3 id=&quot;使用-TC-下载限制单个-IP-进行速度控制&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="网络" scheme="https://leehm00.github.io/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>tcp连接数限制因素</title>
@@ -456,31 +481,6 @@
         
         
     <summary type="html">&lt;h2 id=&quot;哨兵Sentinel&quot;&gt;&lt;a href=&quot;#哨兵Sentinel&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>redis客户端与服务器</title>
-    <link href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/"/>
-    <id>https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</id>
-    <published>2022-01-27T01:14:25.000Z</published>
-    <updated>2022-01-30T14:31:00.000Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;redis客户端与服务器&quot;&gt;&lt;a href=&quot;#redis客户端与服务器&quot; class=&quot;headerlink&quot; title=&quot;redis客户端与服务器&quot;&gt;&lt;/a&gt;redis客户端与服务器&lt;/h1&gt;&lt;h2 id=&quot;客户端&quot;&gt;&lt;a href=&quot;#客户端&quot;</summary>
         
       
     
