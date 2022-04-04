@@ -4,9 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Redis hotkey solutions, KV store">
-    <meta name="description" content="一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？
-方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用">
+    <meta name="keywords" content="shell输出重定向, KV store">
+    <meta name="description" content="shell 1&amp;gt;&amp;amp;2 2&amp;gt;&amp;amp;1 &amp;amp;&amp;gt;filename重定向的含义和区别:
+当初在shell中, 看到”&amp;gt;&amp;amp;1″和”&amp;gt;&amp;amp;2″始终不明白什么意思.经过在网上的搜索得以解惑.其">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -18,7 +18,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Redis hotkey solutions | homie&#39;s Home</title>
+    <title>shell输出重定向 | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -313,12 +313,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Redis hotkey solutions</h1>
+                    <h1 class="description center-align post-title">shell输出重定向</h1>
                 </div>
             </div>
         </div>
@@ -432,12 +432,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                                <span class="chip bg-color">学习</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/shell/" class="post-category">
+                                shell
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -446,7 +459,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-03-04
+                    2022-04-04
                 </div>
                 
 
@@ -455,14 +468,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.7k
+                    1.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    4 分
                 </div>
                 
 
@@ -485,42 +498,93 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="一、热点数据的存放"><a href="#一、热点数据的存放" class="headerlink" title="一、热点数据的存放"></a>一、热点数据的存放</h2><h4 id="场景："><a href="#场景：" class="headerlink" title="场景："></a>场景：</h4><p>数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？</p>
-<p><strong>方案：</strong><br>限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存，</p>
-<p>然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.</p>
-<ul>
-<li><strong>设置redis最大占用内存：</strong></li>
-</ul>
-<p>　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！</p>
-<p>　　　　maxmemory 268435456</p>
-<ul>
-<li><strong>设置过期策略：</strong></li>
-</ul>
-<p>　　　　maxmemory-policy volatile-lru</p>
-<ol>
-<li>当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下：</li>
-<li>noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略）</li>
-<li>allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key。</li>
-<li>allkeys-random:在所有key中随机删除一部分key</li>
-<li>volatile-lru: 在设置了超时时间（expire）的key中优先删除最近最少使用的key</li>
-<li>volatile-random：在设置了超时时间的key中随机删除一部分key</li>
-<li>volatile-ttl: 在设置了超时时间的key中优先删除剩余时间（time to live,TTL）的key</li>
+                <h3 id="shell-1-gt-amp-2-2-gt-amp-1-amp-gt-filename重定向的含义和区别"><a href="#shell-1-gt-amp-2-2-gt-amp-1-amp-gt-filename重定向的含义和区别" class="headerlink" title="shell 1>&amp;2 2>&amp;1 &amp;>filename重定向的含义和区别:"></a>shell 1&gt;&amp;2 2&gt;&amp;1 &amp;&gt;filename重定向的含义和区别:</h3><ol>
+<li>当初在shell中, 看到”&gt;&amp;1″和”&gt;&amp;2″始终不明白什么意思.经过在网上的搜索得以解惑.其实这是两种输出.</li>
+<li>在 shell 程式中，最常使用的 FD (file descriptor) 大概有三个, 分别是:</li>
 </ol>
-<p><strong>实际场景：</strong></p>
-<p><strong>redis用作缓存</strong><br>提供一种简单实现缓存失效的思路: LRU(最近少用的淘汰)<br>即redis的缓存每命中一次,就给命中的缓存增加一定ttl(过期时间)(根据具体情况来设定, 比如10分钟).<br>一段时间后, 热数据的ttl都会较大, 不会自动失效, 而冷数据基本上过了设定的ttl就马上失效了.<br><strong>过去24h活跃用户</strong><br>比如用户数据。数据库有2000w条。使用 redis sortSet里 放两天内(为方便取一天内活跃用户)登录过的用户，登录一次ZADD一次，如set已存在则覆盖其分数（登录时间）。键：login:users，值：分数 时间戳、value userid。设置一个周期任务，比如每天03:00:00点删除sort set中前一天3点前的数据（保证set不无序增长、留近一天内活跃用户）。<br>取时，拿到当前时间戳（int 10位），再减1天就可按分数范围取过去24h活跃用户。</p>
-<h2 id="二、怎么发现热key"><a href="#二、怎么发现热key" class="headerlink" title="二、怎么发现热key"></a>二、怎么发现热key</h2><p>方法一:凭借业务经验，进行预估哪些是热key<br>其实这个方法还是挺有可行性的。比如某商品在做秒杀，那这个商品的key就可以判断出是热key。缺点很明显，并非所有业务都能预估出哪些key是热key。</p>
-<p>方法二:在客户端进行收集<br>这个方式就是在操作redis之前，加入一行代码进行数据统计。那么这个数据统计的方式有很多种，也可以是给外部的通讯系统发送一个通知信息。缺点就是对客户端代码造成入侵。</p>
-<p>方法三:在Proxy层做收集<br>有些集群架构是下面这样的，Proxy可以是Twemproxy，是统一的入口。可以在Proxy层做收集上报，但是缺点很明显，并非所有的redis集群架构都有proxy。 </p>
-<p>方法四:用redis自带命令<br>(1)monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。当然，也有现成的分析工具可以给你使用，比如redis-faina。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。<br>(2)hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时加上–hotkeys选项即可。但是该参数在执行的时候，如果key比较多，执行起来比较慢。</p>
-<p>方法五:自己抓包评估<br>Redis客户端使用TCP协议与服务端进行交互，通信协议采用的是RESP。自己写程序监听端口，按照RESP协议规则解析数据，进行分析。缺点就是开发成本高，维护困难，有丢包可能性。</p>
-<p>以上五种方案，各有优缺点。根据自己业务场景进行抉择即可。那么发现热key后，如何解决呢？</p>
-<h2 id="三、高频访问热key的解决方案"><a href="#三、高频访问热key的解决方案" class="headerlink" title="三、高频访问热key的解决方案"></a>三、高频访问热key的解决方案</h2><p><strong>如何解决</strong><br>目前业内的方案有两种</p>
-<p><strong>(1)利用二级缓存</strong><br>比如利用ehcache，或者一个HashMap都可以。在你发现热key以后，把热key加载到系统的JVM中。<br>针对这种热key请求，会直接从jvm中取，而不会走到redis层。<br>假设此时有十万个针对同一个key的请求过来,如果没有本地缓存，这十万个请求就直接怼到同一台redis上了。<br>现在假设，你的应用层有50台机器，OK，你也有jvm缓存了。这十万个请求平均分散开来，每个机器有2000个请求，会从JVM中取到value值，然后返回数据。避免了十万个请求怼到同一台redis上的情形。<br>***(2)备份热key***<br>这个方案也很简单。不要让key走到同一台redis上不就行了。我们把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，我们就在有备份的redis上随机选取一台，进行访问取值，返回数据</p>
-<p> 我们知道在Redis集群中，是通过按照槽点的划分来决定数据最终落在哪个Redis节点上。在集群中，一共存在16384个槽点，如果我们的集群有3个节点组成的话，那么由这3个节点来均分这16384个槽点。如下图</p>
-<p>　　<img src="/2022/03/04/redis-hotkey-solutions/1211299-20210528161536403-484687935.png" alt="img"></p>
-<p>​    假如name@zhangsan的缓存是一个高频访问的数据，那么大量请求访问这个key时，就会出现压力都有redis1这个节点来承担，这样redis1节点就有可能会扛不住压力而罢工了。那么应该怎么解决这个问题呢？</p>
-<p>​    不妨在缓存数据的时候，将这个数据在每个redis节点都缓存一份。而在缓存的时候，将key在程序层面进行加工，如变成name@zhangsan#redis1、name@zhangsan#redis2、name@zhangsan#redis3这样的三个key。此处我们假如这样的3个key会根据crc16算法，将这个三个key分别落在这三个节点之上。那么这样在访问的时候，我们就可以依然遵循这个规则获得一个key，这样一来，获取数据的时候，压力就被分散到不同的redis节点上了。如图</p>
-<p><img src="/2022/03/04/redis-hotkey-solutions/1211299-20210528161547527-1836533042.png" alt="img"></p>
+<p><strong>0 是一个文件描述符，表示标准输入(stdin)</strong></p>
+<p><strong>1 是一个文件描述符，表示标准输出(stdout)</strong></p>
+<p><strong>2 是一个文件描述符，表示标准错误(stderr)</strong></p>
+<ol>
+<li>在标准情况下, 这些FD分别跟如下设备关联:</li>
+</ol>
+<p>stdin(0): keyboard 键盘输入,并返回在前端</p>
+<p>stdout(1): monitor 正确返回值 输出到前端</p>
+<p>stderr(2): monitor 错误返回值 输出到前端</p>
+<h4 id="举例说明吧"><a href="#举例说明吧" class="headerlink" title="举例说明吧:"></a>举例说明吧:</h4><p>当前目录只有一个文件 a.txt.</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># ls 
+a<span class="token punctuation">.</span>txt 
+<span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># ls a<span class="token punctuation">.</span>txt b<span class="token punctuation">.</span>txt 
+<span class="token literal-property property">ls</span><span class="token operator">:</span> b<span class="token punctuation">.</span>txt<span class="token operator">:</span> No such file or directory 由于没有b<span class="token punctuation">.</span>txt这个文件<span class="token punctuation">,</span> 于是返回错误值<span class="token punctuation">,</span> 这就是所谓的<span class="token number">2</span>输出 
+a<span class="token punctuation">.</span>txt 而这个就是所谓的<span class="token number">1</span>输出</code></pre>
+
+<p>复制</p>
+<h4 id="再接着看"><a href="#再接着看" class="headerlink" title="再接着看:"></a>再接着看:</h4><pre class="language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># ls a<span class="token punctuation">.</span>txt b<span class="token punctuation">.</span>txt <span class="token number">1</span><span class="token operator">&gt;</span>file<span class="token punctuation">.</span>out <span class="token number">2</span><span class="token operator">&gt;</span>file<span class="token punctuation">.</span>err</code></pre>
+
+<p>复制</p>
+<p>执行后,没有任何返回值. 原因是, 返回值都重定向到相应的文件中了,而不再前端显示：</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># cat file<span class="token punctuation">.</span>out 
+a<span class="token punctuation">.</span>txt 
+<span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># cat file<span class="token punctuation">.</span>err 
+<span class="token literal-property property">ls</span><span class="token operator">:</span> b<span class="token punctuation">.</span>txt<span class="token operator">:</span> No such file or directory</code></pre>
+
+<p>复制</p>
+<p>一般来说, “1&gt;” 通常可以省略成 “&gt;”. 即可以把如上命令写成: ls a.txt b.txt &gt;file.out 2&gt;file.err</p>
+<p>有了这些认识才能理解 “1&gt;&amp;2” 和 “2&gt;&amp;1”. 1&gt;&amp;2</p>
+<p>正确返回值传递给2输出通道 &amp;2表示2输出通道 如果此处错写成 1&gt;2, 就表示把1输出重定向到文件2中. 2&gt;&amp;1</p>
+<p>错误返回值传递给1输出通道, 同样&amp;1表示1输出通道.</p>
+<h4 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子."></a>举个例子.</h4><pre class="language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># ls a<span class="token punctuation">.</span>txt b<span class="token punctuation">.</span>txt <span class="token number">1</span><span class="token operator">&gt;</span>file<span class="token punctuation">.</span>out <span class="token number">2</span><span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">1</span> 
+<span class="token punctuation">[</span><span class="token punctuation">[</span>email <span class="token keyword">protected</span><span class="token punctuation">]</span> box<span class="token punctuation">]</span># cat file<span class="token punctuation">.</span>out 
+<span class="token literal-property property">ls</span><span class="token operator">:</span> b<span class="token punctuation">.</span>txt<span class="token operator">:</span> No such file or directory 
+a<span class="token punctuation">.</span>txt</code></pre>
+
+<p>复制</p>
+<p>现在, 正确的输出和错误的输出都定向到了file.out这个文件中, 而不显示在前端.</p>
+<p>补充下, 输出不只1和2, 还有其他的类型, 这两种只是最常用和最基本的.</p>
+<p><strong>&gt; 是重定向符，就是把前面输出的内容重定向到后面指定的位置，比如（例1）：</strong></p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript">echo <span class="token string">"一些内容"</span> <span class="token operator">&gt;</span> filename<span class="token punctuation">.</span>txt
+
+上面例子会把 <span class="token string">"一些内容"</span> 写入到 filename<span class="token punctuation">.</span>txt 文件中。</code></pre>
+
+<p>复制</p>
+<p><strong>&gt; 前是可以加数字来说明把什么内容重定向到文件中，默认是把标准输出重定向到文件中，所以下面这个例子和上面那个是一样的（例2）</strong>：</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript">echo <span class="token string">"一些内容"</span> <span class="token number">1</span><span class="token operator">&gt;</span> filename<span class="token punctuation">.</span>txt</code></pre>
+
+<p>复制</p>
+<p><strong>如果是错误信息就不会输出到filename.txt（例3）：</strong></p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript">$ ls nodir <span class="token number">1</span><span class="token operator">&gt;</span> filename<span class="token punctuation">.</span>txt
+$ ls<span class="token operator">:</span> nodir<span class="token operator">:</span> No such file or directory</code></pre>
+
+<p>复制</p>
+<p>上面这个例子中nodir不存在，所以通过ls命令查询时错误信息会输出到 2(stderr)，但我们指定的是把1重定向到filename.txt，所以上面命令执行完后，filename.txt中是没有内容的。但是执行下面命令就会把错误信息写入到filename.txt中（例4）：</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript">$ ls nodir <span class="token number">2</span><span class="token operator">&gt;</span> filename<span class="token punctuation">.</span>txt
+$ cat filename<span class="token punctuation">.</span>txt
+$ ls<span class="token operator">:</span> nodir<span class="token operator">:</span> No such file or directory</code></pre>
+
+<p>复制</p>
+<p>&amp; 是一个描述符，如果1或2前不加&amp;，会被当成一个普通文件。</p>
+<p>1&gt;&amp;2 意思是把标准输出重定向到标准错误。</p>
+<p>2&gt;&amp;1 意思是把标准错误输出重定向到标准输出。</p>
+<p>&amp;&gt;filename 意思是把标准输出和标准错误输出都重定向到文件filename中。</p>
+<p>我们再看一个例子（列5）：</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript">$ ls nodir <span class="token number">1</span><span class="token operator">&gt;</span> filename<span class="token punctuation">.</span>txt <span class="token number">2</span><span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">1</span>
+$ cat filename<span class="token punctuation">.</span>txt
+$ ls<span class="token operator">:</span> nodir<span class="token operator">:</span> No such file or directory</code></pre>
+
+<p>复制</p>
+<p>上面例子把 <strong>标准输出</strong> 重定向到文件 <strong>filename.txt</strong> 然后把 <strong>标准错误</strong> 重定向到 <strong>标准输出</strong>，所以最后的错误信息也通过标准输出写入到了文件中，比较例3，4，5，就能明白其作用。</p>
+<p>下面是来自百度知道的内容，大家可以参考下：</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript">问：Linux重定向中 <span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">2</span> 怎么理解？
+问题补充：echo <span class="token string">"aaaaaaaaaaaaaaaa"</span> <span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">2</span> 怎么理解？</code></pre>
+
+<p>复制</p>
+<p>答：</p>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">2</span> 即 <span class="token number">1</span><span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">2</span> 也就是把结果输出到和标准错误一样；之前如果有定义标准错误重定向到某log文件，那么标准输出也重定向到这个log文件
+如：ls <span class="token number">2</span><span class="token operator">&gt;</span>a1 <span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">2</span> （等同 ls <span class="token operator">&gt;</span>a1 <span class="token number">2</span><span class="token operator">&gt;</span><span class="token operator">&amp;</span><span class="token number">1</span>）
+把标准输出和标准错误都重定向到a1，终端上看不到任何信息。</code></pre>
+
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1139965#:~:text=2%3E%261%20%E6%84%8F%E6%80%9D%E6%98%AF%E6%8A%8A,%E5%AE%9A%E5%90%91%E5%88%B0%E6%96%87%E4%BB%B6filename%E4%B8%AD%E3%80%82&amp;text=%E4%B8%8A%E9%9D%A2%E4%BE%8B%E5%AD%90%E6%8A%8A%E6%A0%87%E5%87%86%E8%BE%93%E5%87%BA,%E5%B0%B1%E8%83%BD%E6%98%8E%E7%99%BD%E5%85%B6%E4%BD%9C%E7%94%A8%E3%80%82">shell 1&gt;&amp;2 2&gt;&amp;1 &amp;&gt;filename重定向的含义和区别</a></p>
 
                 
             </div>
@@ -547,7 +611,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/">https://leehm00.github.io/2022/03/04/redis-hotkey-solutions/</a>
+                    <a href="https://leehm00.github.io/2022/04/04/shell-shu-chu-chong-ding-xiang/">https://leehm00.github.io/2022/04/04/shell-shu-chu-chong-ding-xiang/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -584,7 +648,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                                    <span class="chip bg-color">学习</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -756,17 +824,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/03/05/redis-cluster/">
+                <a href="/2022/04/04/shell-shu-chu-chong-ding-xiang/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/24.jpg" class="responsive-img" alt="redis cluster">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="shell输出重定向">
                         
-                        <span class="card-title">redis cluster</span>
+                        <span class="card-title">shell输出重定向</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -776,26 +845,27 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-03-05
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-04
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
+                            <a href="/categories/shell/" class="post-category">
+                                    shell
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/redis/">
-                        <span class="chip bg-color">redis</span>
+                    <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                        <span class="chip bg-color">学习</span>
                     </a>
                     
                 </div>
@@ -809,13 +879,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/03/04/mac-ming-ling-xing-jia-mi-sha-deng/">
+                <a href="/2022/04/01/tc-kong-zhi-dai-kuan-deng-wang-luo-zi-yuan/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="mac命令行加密sha等">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="tc控制带宽等网络资源">
                         
-                        <span class="card-title">mac命令行加密sha等</span>
+                        <span class="card-title">tc控制带宽等网络资源</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -826,15 +896,27 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-04
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-01
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            homie
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%BD%91%E7%BB%9C/" class="post-category">
+                                    网络
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                        <span class="chip bg-color">学习</span>
+                    </a>
+                    
                 </div>
                 
             </div>

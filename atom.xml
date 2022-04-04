@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-01T08:59:30.917Z</updated>
+  <updated>2022-04-04T15:41:09.881Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>shell输出重定向</title>
+    <link href="https://leehm00.github.io/2022/04/04/shell-shu-chu-chong-ding-xiang/"/>
+    <id>https://leehm00.github.io/2022/04/04/shell-shu-chu-chong-ding-xiang/</id>
+    <published>2022-04-04T15:39:34.000Z</published>
+    <updated>2022-04-04T15:41:09.881Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;shell-1-gt-amp-2-2-gt-amp-1-amp-gt-filename重定向的含义和区别&quot;&gt;&lt;a href=&quot;#shell-1-gt-amp-2-2-gt-amp-1-amp-gt-filename重定向的含义和区别&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="shell" scheme="https://leehm00.github.io/categories/shell/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>tc控制带宽等网络资源</title>
@@ -465,31 +490,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>redis哨兵sentinels</title>
-    <link href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/"/>
-    <id>https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/</id>
-    <published>2022-01-27T01:16:54.000Z</published>
-    <updated>2022-01-29T11:10:27.000Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;哨兵Sentinel&quot;&gt;&lt;a href=&quot;#哨兵Sentinel&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
     
   </entry>
   
