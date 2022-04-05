@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-05T17:55:36.712Z</updated>
+  <updated>2022-04-04T15:41:09.881Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>节点分享</title>
-    <link href="https://leehm00.github.io/2022/04/06/jie-dian-fen-xiang/"/>
-    <id>https://leehm00.github.io/2022/04/06/jie-dian-fen-xiang/</id>
-    <published>2022-04-05T17:54:57.000Z</published>
-    <updated>2022-04-05T17:55:36.712Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;vmess://eyJ2IjoyLCJwcyI6IlZJUDIt5Lit6L2sLeWPsOa5vi1ORi12MjMiLCJhZGQiOiJjbjI4ODkudjJmcmVlLnh5eiIsInBvcnQiOjExODA0LCJpZCI6Ijk2MzJiZDM1LThkZ</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
   
   <entry>
     <title>shell输出重定向</title>
@@ -489,6 +468,28 @@
     
     
     <category term="职位" scheme="https://leehm00.github.io/tags/%E8%81%8C%E4%BD%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>译Dynamo Amazon&#39;s Highly Available Key-value Store</title>
+    <link href="https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/"/>
+    <id>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</id>
+    <published>2022-01-30T14:33:54.000Z</published>
+    <updated>2022-01-31T05:11:44.526Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;转自&lt;a href=&quot;https://arthurchiao.art/blog/amazon-dynamo-zh/&quot;&gt;arthurchiao.art /blog/amazon-dynamo-zh/&lt;/a&gt;&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
     
   </entry>
   
