@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>计算机数据字节顺序</title>
+      <link href="/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/"/>
+      <url>/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</url>
+      
+        <content type="html"><![CDATA[<p>在C/C++写网络程序的时候，往往会遇到字节的网络顺序和主机顺序的问题。</p><p>这是就可能用到<code>htons(), ntohl(), ntohs()，htons()</code>这4个函数。 </p><p>网络字节顺序与本地字节顺序之间的转换函数：   </p><ul><li>htonl()–”Host to Network Long” </li><li>ntohl()–”Network to Host Long” </li><li>htons()–”Host to Network Short” </li><li>ntohs()–”Network to Host Short”   </li></ul><p>之所以需要这些函数是因为计算机数据表示存在两种字节顺序：NBO与HBO  </p><ul><li>网络字节顺序NBO（Network Byte Order）： 按从高到低的顺序存储，在网络上使用统一的网络字节顺序，可以避免兼容性问题。   </li><li>主机字节顺序（HBO，Host Byte Order）：    不同的机器HBO不相同，与CPU设计有关，数据的顺序是由cpu决定的,而与操作系统无关。 </li></ul><p>如 Intel  x86结构下,short型数0x1234表示为34  12, int型数0x12345678表示为78  56  34  12   如IBM  power PC结构下,short型数0x1234表示为12  34, int型数0x12345678表示为12  34  56  78   由于这个原因不同体系结构的机器之间无法通信,所以要转换成一种约定的数序,也就是网络字节顺序,其实就是如同power  pc那样的顺序 。在PC开发中有ntohl和htonl函数可以用来进行网络字节和主机字节的转换。</p><p>网络字节顺序是TCP/IP中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节顺序采用big endian排序方式。 主机字节序就是我们平常说的大端和小端模式：不同的 CPU 有不同的字节序类型，这些字节序是指整数在内存中保存的顺序 这个叫做主机序。</p><p>ntohs()是一个函数名，作用是将一个16位数由网络字节顺序转换为主机字节顺序</p><p>将一个无符号短整型数从网络字节顺序转换为主机字节顺序。 </p><p>#include &lt;netinet/in.h&gt; </p><p>uint16_t ntohs(uint16_t netshort); </p><p>netshort是一个以网络字节顺序表达的16位数。</p><p>本函数将一个16位数从主机字节顺序转换成网络字节顺序。 </p><p>返回值： htons()返回一个网络字节顺序的值。 </p><p>比如网络字节 为 00 01 u_short a如果直接对应的话 a=0100; 为什么呢？因为主机是从高字节到低字节的，所以应该转化后a=ntohs(0001); 这样 a=0001;</p><p>htons和ntohs的使用 网络中抓去的数据包，如果直接按结构体对齐的方式赋值给结构体指针，则结构体中长度大于一个字节的整形数据必须使用htons转换，因为抓取的包字段是按网络字节序排列的，直接通过指针的指向，大于一个字节的数据赋值将与原值不一致，因为内存排列方式不一样</p><p>参考：</p><p><a href="https://blog.csdn.net/qq_38171115/article/details/70232453">ntohs函数的意思</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 内核 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>redis集群</title>
       <link href="/2022/04/14/redis-ji-qun/"/>
       <url>/2022/04/14/redis-ji-qun/</url>

@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-14T13:38:45.743Z</updated>
+  <updated>2022-04-14T16:20:22.207Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>计算机数据字节顺序</title>
+    <link href="https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/"/>
+    <id>https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</id>
+    <published>2022-04-14T16:14:28.000Z</published>
+    <updated>2022-04-14T16:20:22.207Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;在C/C++写网络程序的时候，往往会遇到字节的网络顺序和主机顺序的问题。&lt;/p&gt;
+&lt;p&gt;这是就可能用到&lt;code&gt;htons(), ntohl(), ntohs()，htons()&lt;/code&gt;这4个函数。 &lt;/p&gt;
+&lt;p&gt;网络字节顺序与本地字节顺序之间的转换函数：  </summary>
+        
+      
+    
+    
+    
+    <category term="内核" scheme="https://leehm00.github.io/categories/%E5%86%85%E6%A0%B8/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>redis集群</title>
@@ -479,31 +506,6 @@
     
     
     <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GFS chinese version</title>
-    <link href="https://leehm00.github.io/2022/02/15/gfs-chinese-version/"/>
-    <id>https://leehm00.github.io/2022/02/15/gfs-chinese-version/</id>
-    <published>2022-02-15T11:17:00.000Z</published>
-    <updated>2022-02-15T11:22:34.523Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;The-Google-File-System中文版&quot;&gt;&lt;a href=&quot;#The-Google-File-System中文版&quot; class=&quot;headerlink&quot; title=&quot;The Google File System中文版&quot;&gt;&lt;/a&gt;The Google</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="论文" scheme="https://leehm00.github.io/tags/%E8%AE%BA%E6%96%87/"/>
     
   </entry>
   
