@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-08T11:39:12.633Z</updated>
+  <updated>2022-04-14T13:38:45.743Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,61 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis集群</title>
+    <link href="https://leehm00.github.io/2022/04/14/redis-ji-qun/"/>
+    <id>https://leehm00.github.io/2022/04/14/redis-ji-qun/</id>
+    <published>2022-04-14T13:25:08.000Z</published>
+    <updated>2022-04-14T13:38:45.743Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;redis集群理论&quot;&gt;&lt;a href=&quot;#redis集群理论&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="redis" scheme="https://leehm00.github.io/categories/redis/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>EC-Cache: Load-Balanced, Low-Latency Cluster Caching with Online Erasure Coding,osdi’16</title>
+    <link href="https://leehm00.github.io/2022/04/12/reading-ec-cache-load-balanced-low-latency-cluster-caching-with-online-erasure-coding-osdi-16/"/>
+    <id>https://leehm00.github.io/2022/04/12/reading-ec-cache-load-balanced-low-latency-cluster-caching-with-online-erasure-coding-osdi-16/</id>
+    <published>2022-04-12T08:58:51.000Z</published>
+    <updated>2022-04-13T07:41:00.966Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;em&gt;这其实是一个&lt;strong&gt;读&lt;/strong&gt;占大多数的系统&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;实际上小文件占用磁盘空间不是很大，大文件读的占比更多&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Large Object Reads are</summary>
+        
+      
+    
+    
+    
+    <category term="论文阅读" scheme="https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>overleaf guide</title>
@@ -449,56 +504,6 @@
     
     
     <category term="论文" scheme="https://leehm00.github.io/tags/%E8%AE%BA%E6%96%87/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MIT 6.824 2022 notes 1</title>
-    <link href="https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/"/>
-    <id>https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/</id>
-    <published>2022-02-14T07:31:48.000Z</published>
-    <updated>2022-02-15T16:07:38.689Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;Lecture-1-Introduction&quot;&gt;&lt;a href=&quot;#Lecture-1-Introduction&quot; class=&quot;headerlink&quot; title=&quot;Lecture 1: Introduction&quot;&gt;&lt;/a&gt;Lecture 1:</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>分布式学习资料</title>
-    <link href="https://leehm00.github.io/2022/02/14/fen-bu-shi-xue-xi-zi-liao/"/>
-    <id>https://leehm00.github.io/2022/02/14/fen-bu-shi-xue-xi-zi-liao/</id>
-    <published>2022-02-14T04:32:15.000Z</published>
-    <updated>2022-02-14T04:33:12.452Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;引子&quot;&gt;&lt;a href=&quot;#引子&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="distributed system" scheme="https://leehm00.github.io/tags/distributed-system/"/>
     
   </entry>
   
