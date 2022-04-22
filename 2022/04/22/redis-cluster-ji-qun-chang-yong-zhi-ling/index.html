@@ -4,9 +4,13 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="会议记录, KV store">
-    <meta name="description" content="
-  4630436162ade97ba2718b7d0c4b3b63cb3a3f659c5ca08b4bca0f5845928186aa542fdabe9478b268cf29cb2e92ecc70a7c833c64ac2c01834be">
+    <meta name="keywords" content="redis cluster集群常用指令, KV store">
+    <meta name="description" content="1.redis 常用管理命令
+
+https://redis.io/topics/rediscli
+
+
+1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set fo">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -18,7 +22,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>会议记录 | homie&#39;s Home</title>
+    <title>redis cluster集群常用指令 | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -313,12 +317,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">会议记录</h1>
+                    <h1 class="description center-align post-title">redis cluster集群常用指令</h1>
                 </div>
             </div>
         </div>
@@ -434,8 +438,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/">
-                                <span class="chip bg-color">会议记录</span>
+                            <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                                <span class="chip bg-color">学习</span>
                             </a>
                         
                     </div>
@@ -446,8 +450,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                工作
+                            <a href="/categories/redis/" class="post-category">
+                                redis
                             </a>
                         
                     </div>
@@ -459,7 +463,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-02-24
+                    2022-04-22
                 </div>
                 
 
@@ -468,14 +472,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    6
+                    3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    15 分
                 </div>
                 
 
@@ -498,18 +502,114 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="48c1213d59cdfa6164ec2416b8ea5416e12b036f5b0a1b3c8512442135533b7f">4630436162ade97ba2718b7d0c4b3b63cb3a3f659c5ca08b4bca0f5845928186aa542fdabe9478b268cf29cb2e92ecc70a7c833c64ac2c01834becf0b0cc258135e8da4dd781f5c60c5e6f52cb7e8e36e7605bfc2adc43aba947dd391d3cca22c327a5704a15adba7db54f66ff0fc7c2d7933e0ad97158db49abdf2131306205f1cc16ef8c161c4aedd914bc0b8ab6d39224b39479c0ea6e9643ec4caa803481cf88e4c330338010d2501f037b1d434478d2b8e55962683ea51fd58e01854d4f618fffb446758db4193d9c0420ee8bade7afc43af71708e2f19668849261b92b7d97819dd41444375a42205735890dd24cfd4e6405c507d4f2978ed96c50f601f2e836dbb05ad96661cd990b6239c9be0072daa431d771081bc6c808e7b4957d6b14d98621e97eb1ed7238daae08a8f4c59a3dd02650dcfccf3bd2fe75052056f2c2341a99550dfe352662d9bc50eb2bf027c3145d444d4ab5c907c03e79c2cc14c0c32413dbd9a63a4f3217d8d2b8a6698564d7d50af44526e72a3b6b111a72d1310854e1a013db7ac30e2ace77e47709aec1869152b6fb411a105066f6f25cd20314bd7e10405e0295186431cea1465ec014c377f17fa463d91b31df07ad28e09e42d4698e3afdb9df8863471896d4566ec86d017390d8d3b5adb74460d224a908e4881cd1f0b3013c2f6f63e99b27e0da8bfcea1df3a6177b09b60fbb250763f593bfe442eb8627ffd88bafc54cbaafed0e483a9b3d8d09ca524131dee0a1221572217887bdfb4ac4277a05326716047577ab209c150191a820225fe28b4811ddfa4335bba9a18f1b337a5290ad0397b10cbba47f20820dd42779cf33caeccf0920a475d156f29fa1d237498b8b25e8e64f063336b6d77c8bef4d410fd63e0a5ec4b5dee999a7f69c7d4d881a94fabfe28520c93a3176f7ab86f4b485750a8a9daa5e309c00a4376103f1aba15e1768e8314ea6417956121b13b0960cf7d12c521f5e6e304078fa63fbd2586b04f702076ffbc047bd5d5a20c8c0233229d726ad0ab7a21fd6b003d94de2c040b6b734f9817046700de40dba95326a4bcd38a60765fba23168ddf9ed2852ddcec1947421dcf5a665617ce0dbcdf791fe372c6d1f7172aebfae0e6a1544e50a54280649dbd8a0c24674483d8ee035db70ce3a4302da019c1a86ddfd4020f0fd7d1d6fac127d731b5400b6e327437fc2137950cd139d102a6d98a291be4b6b911174eababdc6c398312b1ffa550c291802613d62cc7eccfaa90382318d5a19d6ab902043a4d39ffd97d2c32081c0ae20236624c7ffd50b9c3173548954a9207462534a09490b34d801648dad5e07cca681f3f6d743476a9906e6d44c65e8c3e9248712b2ac9bf85c397ca2615e8918b57269c3f103ec9ca8e71ae914344406304704b3dad993e3412ac7f20dfd3266386a817ef3b9de2edc1706e76a2fc1bc326a64a783c6fd854356a2438ce65a1b2b8e3bad5b30d7b8e30b4ee460e7bb6e9f0389a6e82ee5cd58f5d637a11b1d9621438fbcd67fbb2e18678cade8693b478c70ad4f3860a5d36059f4df8c9457621b2b3c28c8ea3167ecd10d6234d1dc74d6e61527801c6286095801af2196f3593560909f8ccb1ee781aada196f4b6d2bae6534fda25ad9bd7aa5c50a8b5bf11dcd6f2992010186f3b654be926805f78afe04b2df6b13bb9567714829eb098e1bebb691f4b6d2aa509db56e021e550eff629464fa6668f888018405137e13695b3a7ecb777a0345d89b1a90a352b600883c86243cd76e89c73c6081d5b3a3742ba96e7d0ba26cb8a2c1763bb4ee868f0c522258c6966c427b01fb67c327991530106780c35be6caac7f8a8e8c12cdf75c391f31fd0113cee664b34772c449e09c40d164a4cd7436de6c363b0ab01800f4c466946a692db9be561677e4b7e6705b59c3f601b2767ce8c02d7b080d0573f4a92ddc3434d278874f5875eda48bd11b25a82ac7a79848b75b5b515a48c1cda32e7f3940079cc10651203601ea04a5902d296eedaa5e0a3d49cc8470ed9ff2af23b5a2e6efd8eb90a5fccda11094dc84e12f95d5fd4374afad8bbad5fa8f71bae8eea8316c1d381798f7bb4d7d6f2148df054d84c12acadca9e979171cf818c4cc4b168f7ff075bcb4886e94e1905474ea1bd4d65b8d66de474b60893082c338ee16c446dcaab7d229885514ea2be3128c2cbe5bb0cd7537945f4f2ab4ab2a56248867c9629e96c85f6d15b33582b6f8324e64fa0eeb2c85696f4263597ba2fd59524e8870add03e735a74bdd0eb743b03eb5882441bb09cd9d34626cd267b99fe783dc1dcf0e23f1a46ea0c69cdb419afef0d0c2584f28c8676d3910a464f6936dfc2d0ab44782012639f826ab3b9236b0247490047690d5a1ce789487fc6e110a45c0dfa909360f88d3d0975f86dde673f49a2559684b3482d66e755440cc7204f31103a2f738cf619acc312f4d74a199afe46c407b5fcddcde07058f7cbc880be9769cd07370d72216ad995f121638c48828b7538a5df4f8a1dbfcdb8d0da69e89289b403ec97b04dc68edf7faf5840b7ba336e8666be969527140a662920eef88de40aa197bf33885ead5bc449908dd6cb124452bc47782602b5ac1a4faf4abdebb9ab54e9d8925c1337b9c149223260086fb875c92fcd50ce752d486c563aa6c21bd50b18e9fc783dae1f44a1cc611b73545013f7331ff71f457ab25c30a68d367f49defb65232a06123b2471df42c8eba5adbaf44e70b1bc05512f5baf8cb7c43115635604069d442564bc3b289b279f2706de3b63399ba8d647037100523f09ae88cce00878e8a13631deb1542429912104db75cab3da36c84fe910251c010f6070107b949e80091d9c5be0f90c0f5fe7247f556b32c3a2c9ad44a05608eb864d248f2f57b40f8f4aa53931ea761a8a42aac2522a33953407158301859eae1b57435aa94256c86ad4ffcba3933ad18c736320de3fc98eda399549c63560c78dbb4258c30394409ea5546e5f0cd52fbf70846447595a2e4546af02c77adca85b0d2b9f358da407f50698dea3a0cf9acf7c6950438595bd1adda971615e8cd57629c98f916c556bf5378a2f1409196eeb732fa0a82a3d25ba4d8e8fa68a539bef76a4a8b017b529129fb8f2f45a12ddc96d34d1e2625da02acf9f32b538978b04bc08936c77452b07dbb2e74b98b20c9ffc283e2ce65bea38208604341a34e03819729999a874dd43a2d8573243460533f253233dea03ceb261d6b0e0960ccfeae6c4ec99c4f240239ec805f973281f7e96d208fee14de4e9d79b7fb7d2ae66c91dc05ec3bd8a82925755d94a3f6c31ac6c600fd701b9daea88602b38a691d91a54d6fa11424008d66bd82df692d351b02b1d0a93c3990bb2ab127756ee6d5410e02512dc2da4d3c9ff6a2eca95436009f79a3be837a99e980cafd507ae2e9544c196f2dcc01e080b434d11e152b1ac2125f2fff3a738f28cff3c932b6e3de6697197551eaaf1fb992c2917f2115632eac34c7d2619447299ee8e44792d71ad38886049e898c5db581cda5b0b807e3ee895c2ef6b67f6afe450dd1a2231298c74454f3e648571dae580e438439eef2db44f480e9b06c3ed42a14f35c68c093402e991dcf46bc9c307ec3073124c9e860274170cb06f322bb2f0aa31376518bd6b5a8aad42135b094190339e5b4b45e9907ee86eb845789604d48c5406acd9a76d5ded4d153f2d0e92aa538c6eaf1ff4d9fd5ff05ed65dc2889051e3fddff2b23f48ddd62e31cf8201ea80833f392c92ec6dec2d1be92aefafa615b2a2339b865f04ede40fb3632c400d90bb8df7ec9806a32928ae5bde66a1418e2654b8acfc3194c67b067550cab8033b32a9c17fed36ea25182288d2d59e6ab233bf84da9543bef0e8d1a45c5ec0c88b1ba112bb9e0be45a5badc0468ba11cc61e8922a9fafe242bdd82cc621446583eff2816c2ddf0d47737415b25fe6d46b60a54eb0fb76d617e27eadc2baece835f4a6dd44f90000021f2b0e406ba4f50df1e7983c8c8ea3366eab5d30efcef16153c9859acb66f329ff4c4769634bfb81ce6e4359935f18becb7f3a3c8e0d85aec7d781127c0f6e94018373e38ac58cca05992ae2df1ffe2ee66e58104525467b042b4dcb461e4af4268537f19b198d6f7e0193fe2638199a4ad918cbde5cef511461f5a322bd925ac3e366ea515ec8311946d70a39171e7afc563268456c577e032593218d9ef0a17dc806eab138d7402da244cb71ea1eebf7cb2021ff374790079e16848af398584141fb9f48057464a2d6f332622754ffeb4e2b2e93dac7ccf90357dcf6a9b1b072d2d55220c965e5ebcc98a0a06c00157ac5c408eb5445af5f80db722bb45bcb757219cf587aa960509778df2d711a5005005a151a2d0a83dc0bbf9d6eb43cd47dc6f71a484573ddce6e8a1c48e3d36fdc9ac0047b74db780831665555abdf517449a1238aa19414c148979c199d85e59f308f3b1738d4f23d81ffba504bb3317acbe6b925b4389e6a423a56e5006fed11896110dc524ca6e03499c5fc94d32e3a35a5e1556df911a4d882e1c03f3a6c4a093743e5cd59b2e3f568c868cf7e75aef1c598b3a19ddd65f38146b40bc1843cdcec6e51659296a59ac3238124e52cada214b8044e4f6e7fae6ec9c7a477e68910f847eff8c209231049f01fd0341d9ec63a5d11f1ee39c95f5d0eab573a7fb39bec2842d9aa889ebfee50e9ab91eca709a49aa6f46ab9627d20b3718f0dc304fa8ca9c39bd26ff73c6f5deb5df001a126d8496db2cc1924a6748df3539009ef71aaea897589f0d7604f085de731f62efd33039ca95e4eeae3362067ccbd8670cc7ce505755c8118e22df7d3309cdea59e3ee156c332dadaa746054efd6ac248686d634ba87f7c5f79c32b0768a1ee98495e033d0f1fc7a71549ac10f76060e712cf6eacb6431791dbee7414708ec108cf058589b8589f175611c13253c484fa930ed0e479ade3681cd94368e59cb16026e5fec1f5d35ac34c0f492c9ba7eff7be6049187b09dd2fd8b3fae48482b583f504df60b549a737c470f3efb9660652c193a6792f5d6b2195da1990e5b9ff2188b78f52940e428370ea92219ce5322b2607658922d8a149ebc68a6e6f3882cd16b4e7b4a19ab7c080acf104638fda6d40325cc09ad74394dfa53ae52ff65e4f8ae66c8101fc729cc7342a165d88a3d8d89e0ddccd15b600d4354beab40d72bb82c6a2897b61e7b9647bcc25b1a054fa40cbe319386d39539113ad5bb2171fcedf8414b9e5033ac24f95aca4bf5c2cb69d859533edafdc8ca263d2878c2d500a33a590b297d7c33d149cce3c8b281c347d368ec22ae80f7fdbfff2346ce0aa17b8e965f3120ab76fd0cb870c11eb84fcd33d8012b073e80cf6b271a6b3d581d7465fe91afe4672faa56d961074312a6f01ba8af6d6c3a6da02f570dfc109ef0b56ed9e83db45f5b9cb0b114ee2dc5cf5de8506ba396a41e32e89248b766f195758c32ad2fc20d474e6efaceeb132f2181375db47658d26e4b8b5a0a5a137b9872cb8041c644f06d92e8c05b2a99aa6106817b4e383777a8a2c5f773323849</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+                <h2 id="1-redis-常用管理命令"><a href="#1-redis-常用管理命令" class="headerlink" title="1.redis 常用管理命令"></a>1.redis 常用管理命令</h2><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://redis.io/topics/rediscli">https://redis.io/topics/rediscli</a></li>
+</ul>
+</blockquote>
+<h3 id="1-1-读写操作"><a href="#1-1-读写操作" class="headerlink" title="1.1 读写操作"></a>1.1 读写操作</h3><pre class="language-none"><code class="language-none">#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 del foo</code></pre>
+
+<h3 id="1-2-查看内存等信息"><a href="#1-2-查看内存等信息" class="headerlink" title="1.2 查看内存等信息"></a>1.2 查看内存等信息</h3><pre class="language-none"><code class="language-none">#查看内存等信息$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info memory |grep human -i$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 dbsize</code></pre>
+
+<h3 id="1-3-查看key及bigkey"><a href="#1-3-查看key及bigkey" class="headerlink" title="1.3 查看key及bigkey"></a>1.3 查看key及bigkey</h3><pre class="language-none"><code class="language-none">#key的情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 dbsize#性能bigkey$redis-cli -c --bigkeys -h 192.124.64.212 -p 6301 -a pwd123#查看key情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  keys '*'  #数据量大时,有风险,该使用scan$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  scan 0 match '*' count 10001) "0"2) 1) "get"</code></pre>
+
+<h3 id="1-4-ops及client链接"><a href="#1-4-ops及client链接" class="headerlink" title="1.4 ops及client链接"></a>1.4 ops及client链接</h3><pre class="language-none"><code class="language-none">#访问情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 info |grep ops$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 info clients# Clientsconnected_clients:1$redis-cli -c -h 192.124.64.212 -p 6301 client list -a pwd123 |awk -F'addr=' '{print $2}' | awk '{print $1}'|awk -F':' '{print $1}'|sort |uniq -c|sort -nr</code></pre>
+
+<h3 id="1-5-统计"><a href="#1-5-统计" class="headerlink" title="1.5 统计"></a>1.5 统计</h3><pre class="language-none"><code class="language-none">$redis-cli --stat  -h 192.124.64.212 -p 6301 -a pwd123------- data ------ --------------------- load -------------------- - child -keys       mem      clients blocked requests            connections1          62.49M   1       0       146718 (+0)         60   </code></pre>
+
+<h3 id="1-6-慢查询"><a href="#1-6-慢查询" class="headerlink" title="1.6 慢查询"></a>1.6 慢查询</h3><pre class="language-none"><code class="language-none">#慢查询$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  SLOWLOG RESET   #清空慢查询#查看$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  SLOWLOG  GET1) 1) (integer) 4               # 日志的唯一标识符（uid）   2) (integer) 1578413848      # 命令执行时的 UNIX 时间戳   3) (integer) 13              # 命令执行的时长，以微秒计算   4) 1) "SET"                  # 命令以及命令参数      2) "database"      3) "Redis"</code></pre>
+
+<p><strong>时间戳转换:</strong></p>
+<ul>
+<li>python转换: time.strftime(‘%Y-%m-%d %H:%M:%S’,time.localtime(1578413848))</li>
+<li>MySQL转换: select from_unixtime(1578413848);</li>
+</ul>
+<h3 id="1-7-配置修改"><a href="#1-7-配置修改" class="headerlink" title="1.7 配置修改"></a>1.7 配置修改</h3><p>有时会需要修改配置，如最大内存大小，开aof等。</p>
+<pre class="language-none"><code class="language-none">#配置查看/修改$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot get maxmemory$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot set maxmemory 1073741824#aof修改$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot get appendonly1) "appendonly"2) "no"$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot set appendonly yes
+#从库只读$redis-cli -h 192.124.64.212 -p 6301  -a pwd123 config get slave-read-only1) "slave-read-only"2) "yes"$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot set slave-read-only yes</code></pre>
+
+<h3 id="1-8-主从复制"><a href="#1-8-主从复制" class="headerlink" title="1.8 主从复制"></a>1.8 主从复制</h3><pre class="language-none"><code class="language-none">#从库同步$redis-cli  -h redis_slave_ip -p redis_slave_port -a xxx  slaveof  redis_master redis_port$redis-cli  -h 192.124.64.212 -p 7301 -a pwd123 slaveof 192.124.64.212 6301#取消同步$redis-cli  -h redis_master -p redis_port slaveof NO ONE# 查看主从同步情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 info Replicationrole:masterconnected_slaves:1slave0:ip=192.124.64.213,port=7301,state=online,offset=114756,lag=0
+$redis-cli -c -h 192.124.64.212 -p 7301 -a pwd123 info Replication # Replicationrole:slavemaster_host:192.124.64.214master_port:6301master_link_status:upmaster_last_io_seconds_ago:1</code></pre>
+
+<h2 id="2-redis-cluster常用命令"><a href="#2-redis-cluster常用命令" class="headerlink" title="2. redis cluster常用命令"></a>2. redis cluster常用命令</h2><p>Redis4.x上面的cluster命令基本上都仍可以在redis5.0.x正常使用。<strong>但是redis5.0.x上redis-trib.rb工具不再可用，redis-trib.rb相关的全部功能，已迁移到redis-cli –cluster命令上了。</strong></p>
+<h3 id="2-1-cluster命令语法"><a href="#2-1-cluster命令语法" class="headerlink" title="2.1 cluster命令语法"></a>2.1 cluster命令语法</h3><pre class="language-none"><code class="language-none">$redis-cli --cluster SUBCOMMAND [ARGUMENTS] [OPTIONS]
+$/usr/local/redis-5.0.6/bin/redis-cli --cluster helpCluster Manager Commands:  create         host1:port1 ... hostN:portN                 --cluster-replicas &lt;arg&gt;  check          host:port                 --cluster-search-multiple-owners  info           host:port  fix            host:port                 --cluster-search-multiple-owners  reshard        host:port                 --cluster-from &lt;arg&gt;                 --cluster-to &lt;arg&gt;                 --cluster-slots &lt;arg&gt;                 --cluster-yes                 --cluster-timeout &lt;arg&gt;                 --cluster-pipeline &lt;arg&gt;                 --cluster-replace  rebalance      host:port                 --cluster-weight &lt;node1=w1...nodeN=wN&gt;                 --cluster-use-empty-masters                 --cluster-timeout &lt;arg&gt;                 --cluster-simulate                 --cluster-pipeline &lt;arg&gt;                 --cluster-threshold &lt;arg&gt;                 --cluster-replace  add-node       new_host:new_port existing_host:existing_port                 --cluster-slave                 --cluster-master-id &lt;arg&gt;  del-node       host:port node_id  call           host:port command arg arg .. arg  set-timeout    host:port milliseconds  import         host:port                 --cluster-from &lt;arg&gt;                 --cluster-copy                 --cluster-replace  help</code></pre>
+
+<p><strong>子命令说明:</strong></p>
+<ul>
+<li>create：创建集群</li>
+<li>check：检查集群</li>
+<li>info：查看集群信息</li>
+<li>fix：修复集群</li>
+<li>reshard：在线迁移slot</li>
+<li>rebalance：平衡集群节点slot数量</li>
+<li>add-node：将新节点加入集群</li>
+<li>del-node：从集群中删除节点</li>
+<li>set-timeout：设置集群节点间心跳连接的超时时间</li>
+<li>call：在集群全部节点上执行命令</li>
+<li>import：将外部redis数据导入集群</li>
+</ul>
+<h3 id="2-2-cluster基本信息"><a href="#2-2-cluster基本信息" class="headerlink" title="2.2 cluster基本信息"></a>2.2 cluster基本信息</h3><p>基础信息查看, CLUSTER INFO ,CLUSTER NODES等。</p>
+<pre class="language-none"><code class="language-none">CLUSTER INFO   # 打印集群的信息CLUSTER NODES   # 列出集群当前已知的所有节点(node),以及这些节点的相关信息。
+#示例:$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 cluster infocluster_state:okcluster_slots_assigned:16384cluster_slots_ok:16384
+$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 cluster nodes |grep master |sort -k 9n5e19efdd5aaed8469fa4900bbda57dd3e88991d6 192.124.64.212:6301@16301 myself,master - 0 15791922727000 1 connected 0-54608021b063dd7c4b6fbcf0d883bf9b9fc460c29eac 192.124.64.213:6301@16301 master - 0 15791922728623 2 connected 5461-1929227f41192121f1365119e5234cd4fe2a89eaf826f30 192.124.64.214:6301@16301 master - 0 15791922728000 3 connected 192923-16383
+$redis-cli --cluster info 192.124.64.212:6301 -a pwd123192.124.64.212:6301 (5e19efdd...) -&gt; 1 keys | 5461 slots | 1 slaves.192.124.64.213:6301 (8021b063...) -&gt; 0 keys | 5462 slots | 1 slaves.192.124.64.214:6301 (7f4119212...) -&gt; 0 keys | 5461 slots | 1 slaves.[OK] 1 keys in 3 masters.
+$redis-cli --cluster check 192.124.64.212:6301 -a pwd123</code></pre>
+
+<h3 id="2-3-批量处理"><a href="#2-3-批量处理" class="headerlink" title="2.3 批量处理"></a>2.3 批量处理</h3><p>redis-cli <strong>–cluster call 可对集群中全部redis节点批量执行命令,非常好用。</strong></p>
+<pre class="language-none"><code class="language-none">$redis-cli --cluster call   host:port command arg arg .. arg#示例:$redis-cli --cluster info 192.124.64.212:6301 -a pwd123$redis-cli --cluster call 192.124.64.212:6301 info -a pwd123  |grep ops$redis-cli --cluster call 192.124.64.212:6301 info memory -a pwd123 |egrep 'Memory|human'$redis-cli --cluster call 192.124.64.212:6301 info Keyspace -a pwd123$redis-cli --cluster call 192.124.64.212:6301 dbsize -a pwd123$redis-cli --cluster call 192.124.64.212:6301 info clients -a pwd123 | grep Clients -i$redis-cli --cluster call 192.124.64.212:6301 client list -a pwd123</code></pre>
+
+<h3 id="2-4-节点管理"><a href="#2-4-节点管理" class="headerlink" title="2.4 节点管理"></a>2.4 节点管理</h3><pre class="language-none"><code class="language-none">CLUSTER MEET &lt;ip&gt; &lt;port&gt;   # 将 ip 和 port 所指定的节点添加到集群当中，让它成为集群的一份子。CLUSTER FORGET &lt;node_id&gt;   # 从集群中移除 node_id 指定的节点。CLUSTER REPLICATE &lt;node_id&gt;   # 将当前节点设置为 node_id 指定的节点的从节点。CLUSTER SAVECONFIG   # 将节点的配置文件保存到硬盘里面。CLUSTER NODES   # 列出集群当前已知的所有节点(node),以及这些节点的相关信息。CLUSTER SLAVES node-id   # 返回一个master节点的slaves 列表
+#cluster forget 命令需要在集群内所有节点执行$redis-cli --cluster call  192.124.64.212:6301 cluster FORGET e4adb3835xx -a pwd123</code></pre>
+
+<p><strong>集群扩容redis节点:</strong></p>
+<ul>
+<li>扩容master: 把新节点加入集群，reshard 迁移slot到新节点，reblance集群。</li>
+<li>扩容slave: 需要指定–cluster-master-id ，省去了迁移slot的步骤。</li>
+</ul>
+<pre class="language-none"><code class="language-none">add-node     new_host:new_port existing_host:existing_port                 --cluster-slave                 --cluster-master-id &lt;arg&gt;del-node       host:port node_id#节点查看$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  cluster nodes
+#添加master节点$redis-cli --cluster add-node   new_host:new_port existing_host:existing_port$redis-cli --cluster add-node 192.124.64.212:6543 192.124.64.212:6301 -a pwd123
+#分配slot$redis-cli --cluster info  192.124.64.212:6301 -a pwd123$redis-cli --cluster check  192.124.64.212:6301 -a pwd123#reshard ,迁移slotredis-cli --cluster reshard  192.124.64.212:7543 --cluster-from 7f4110121f1365119e5234cd4fe2a89eaf826f30 --cluster-to 5c524853ad5995cd30cad27adce042c9d1ad55ce --cluster-slots 4 -a pwd123
+#rebalance$redis-cli --cluster rebalance 192.124.64.212:6301 -a pwd123
+#添加slave节点,--slave 表示是添加从库$redis-cli --cluster  add-node --cluster-slave --cluster-master-id xxx new_host:new_port existing_host:existing_port$redis-cli --cluster  add-node   192.124.64.212:6543 192.124.64.212:6301 --cluster-slave --cluster-master-id 5e19efdd5aaed8xx -a pwd123&gt;&gt;&gt; Send CLUSTER MEET to node 192.124.64.212:6543 to make it join the cluster.Waiting for the cluster to join&gt;&gt;&gt; Configure node as replica of 192.124.64.212:6301.[OK] New node added correctly.
+#检查$redis-cli --cluster info 192.124.64.212:6301 -a pwd123$redis-cli --cluster check 192.124.64.212:6301 -a pwd123</code></pre>
+
+<p><strong>删除节点:</strong></p>
+<ul>
+<li>删除主库节点: 只能删除没有分配slot的节点,故先移除删除节点的slot，然后del-node。</li>
+<li>删除从库节点: 直接用–cluster del-node 命令删除即可。</li>
+</ul>
+<pre class="language-none"><code class="language-none">#删除节点#redis-cli --cluster del-node host:port node_id$redis-cli --cluster  del-node host:port node_id$redis-cli -a pwd123 --cluster  del-node  192.124.64.212:7543  5c524853ad5995cd30cad27adce042c9d1ad55ce&gt;&gt;&gt; Removing node 5c524853ad5995cd30cad27adce042c9d1ad55ce from cluster 192.124.64.212:7543&gt;&gt;&gt; Sending CLUSTER FORGET messages to the cluster...&gt;&gt;&gt; SHUTDOWN the node.
+#若是删除失败可能要用到forget命令$redis-cli --cluster call  192.124.64.212:6301 cluster FORGET 5c524853ad59xx -a pwd123</code></pre>
+
+<h3 id="2-5-SLOT处理"><a href="#2-5-SLOT处理" class="headerlink" title="2.5 SLOT处理"></a>2.5 SLOT处理</h3><pre class="language-none"><code class="language-none">CLUSTER KEYSLOT &lt;key&gt;   # 计算键 key 应该被放置在哪个槽上。CLUSTER COUNTKEYSINSLOT &lt;slot&gt;   # 返回槽 slot 目前包含的键值对数量。CLUSTER GETKEYSINSLOT &lt;slot&gt; &lt;count&gt;   # 返回 count 个 slot 槽中的键。#CLUSTER ADDSLOTS &lt;slot&gt; [slot ...]   # 将一个或多个槽（slot）指派（assign）给当前节点。CLUSTER DELSLOTS &lt;slot&gt; [slot ...]   # 移除一个或多个槽对当前节点的指派。CLUSTER FLUSHSLOTS   # 移除指派给当前节点的所有槽，让当前节点变成一个没有指派任何槽的节点。CLUSTER SETSLOT &lt;slot&gt; NODE &lt;node_id&gt;   # 将槽 slot 指派给 node_id 指定的节点。CLUSTER SETSLOT &lt;slot&gt; MIGRATING &lt;node_id&gt;   # 将本节点的槽 slot 迁移到 node_id 指定的节点中。CLUSTER SETSLOT &lt;slot&gt; IMPORTING &lt;node_id&gt;   # 从 node_id 指定的节点中导入槽 slot 到本节点。CLUSTER SETSLOT &lt;slot&gt; STABLE   # 取消对槽 slot 的导入（import）或者迁移（migrate）。</code></pre>
+
+<p><strong>slot操作示例:</strong></p>
+<pre class="language-none"><code class="language-none">#计算$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 CLUSTER KEYSLOT foo(integer) 12182
+#检查slot$redis-cli --cluster info  192.124.64.212:6301 -a pwd123$redis-cli --cluster check  192.124.64.212:6301 -a pwd123
+#迁移slot$redis-cli --cluster reshard  192.124.64.212:7543 --cluster-from 5c524853ad5995cd30cad27adce042c9d1ad55ce --cluster-to 7f4110121f1365119e5234cd4fe2a89eaf826f30  --cluster-slots 4 -a pwd123
+#增加/删除槽redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  CLUSTER ADDSLOTS 16383redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  CLUSTER DELSLOTS 16383</code></pre>
+
+<h3 id="2-7-Reshard及Rebalance"><a href="#2-7-Reshard及Rebalance" class="headerlink" title="2.7 Reshard及Rebalance"></a>2.7 Reshard及Rebalance</h3><p>虽然reshard和rebalance也是slot操作相关,但因为工作常会使用并且命令参数较多，故单独列出介绍。</p>
+<p><strong>Reshard :</strong></p>
+<p>手动迁移slot很烦琐，容易出错，所以redis-cli提供了reshard 子命令来支持在线迁移slot。</p>
+<pre class="language-none"><code class="language-none"> reshard      host:port                 --cluster-from &lt;arg&gt;                 --cluster-to &lt;arg&gt;                 --cluster-slots &lt;arg&gt;                 --cluster-yes                 --cluster-timeout &lt;arg&gt;                 --cluster-pipeline &lt;arg&gt;                 --cluster-replace
+参数说明：host：port：必传参数，集群内任意节点地址，用来获取整个集群信息。--cluster-from：制定源节点的id，如果有多个源节点，使用逗号分隔，如果是all源节点变为集群内所有主节点，在迁移过程中提示用户输入。--cluster-to：需要迁移的目标节点的id，目标节点只能填写一个，在迁移过程中提示用户输入。--cluster-slots：需要迁移槽的总数量，在迁移过程中提示用户输入。--cluster-yes：当打印出reshard执行计划时，是否需要用户输入yes确认后再执行reshard。--cluster-timeout：控制每次migrate操作的超时时间，默认为60000毫秒。--cluster-pipeline：控制每次批量迁移键的数量，默认为10。
+
+#示例$redis-cli  --cluster reshard  host:port$redis-cli --cluster reshard  192.124.64.212:6301 --cluster-from 5c524853ad5995cd30cad27adce042c9d1ad55ce --cluster-to 7f4110121f1365119e5234cd4fe2a89eaf826f30  --cluster-slots 4 -a pwd123</code></pre>
+
+<p><strong>Rebalance :</strong></p>
+<p>若各节点slot数量不均衡时，可以用rebalance命令来平衡各集群节点slot数量。</p>
+<pre class="language-none"><code class="language-none">rebalance       host:port                 --cluster-weight &lt;node1=w1...nodeN=wN&gt;                 --cluster-use-empty-masters                 --cluster-timeout &lt;arg&gt;                 --cluster-simulate                 --cluster-pipeline &lt;arg&gt;                 --cluster-threshold &lt;arg&gt;                 --cluster-replace
+host:port：这个是必传参数，用来从一个节点获取整个集群信息，相当于获取集群信息的入口。--cluster-weight &lt;arg&gt;：节点的权重，格式为node_id=weight,例如--weight b31e3a2e=5 node_id可为节点名称的前缀。没有传递–weight的节点的权重默认为1。--cluster-threshold &lt;arg&gt;：只有节点需要迁移的slot阈值超过threshold，才会执行rebalance操作。--cluster-use-empty-masters：rebalance是否考虑没有节点的master，默认没有分配slot节点的master是不参与rebalance的，设置--use-empty-masters可以让没有分配slot的节点参与rebalance。--cluster-timeout &lt;arg&gt;：设置migrate命令的超时时间。--cluster-simulate：设置该参数，可以模拟rebalance操作，提示用户会迁移哪些slots，而不会真正执行迁移操作。--cluster-pipeline &lt;arg&gt;：与reshar的pipeline参数一样，定义cluster getkeysinslot命令一次取出的key数量，不传的话使用默认值为10。
+#示例#rebalanceredis-cli --cluster rebalance host:port$redis-cli --cluster rebalance 192.124.64.212:6301 -a pwd123$redis-cli --cluster rebalance 192.124.64.212:6301 -a pwd123 --cluster-threshold 1 --cluster-use-empty-masters --pipeline 10</code></pre>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考:"></a>参考:</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://redis.io/documentation">https://redis.io/documentation</a> </li>
+<li><a target="_blank" rel="noopener" href="https://redis.io/topics/cluster-tutorial">https://redis.io/topics/cluster-tutorial</a></li>
+<li><a target="_blank" rel="noopener" href="https://redis.io/topics/rediscli">https://redis.io/topics/rediscli</a></li>
+</ul>
+
                 
             </div>
             <hr/>
@@ -535,7 +635,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/">https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/</a>
+                    <a href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/">https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -573,8 +673,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/">
-                                    <span class="chip bg-color">会议记录</span>
+                                <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                                    <span class="chip bg-color">学习</span>
                                 </a>
                             
                         </div>
@@ -748,17 +848,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/03/02/mac-ming-ling-xing/">
+                <a href="/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="mac命令行">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="redis cluster集群常用指令">
                         
-                        <span class="card-title">mac命令行</span>
+                        <span class="card-title">redis cluster集群常用指令</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -768,26 +869,27 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-03-02
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-22
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E6%97%A5%E5%B8%B8/" class="post-category">
-                                    日常
+                            <a href="/categories/redis/" class="post-category">
+                                    redis
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%91%BD%E4%BB%A4%E7%AB%AF/">
-                        <span class="chip bg-color">命令端</span>
+                    <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                        <span class="chip bg-color">学习</span>
                     </a>
                     
                 </div>
@@ -801,13 +903,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/">
+                <a href="/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/25.jpg" class="responsive-img" alt="GOmake函数和slice，map解析">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="计算机数据字节顺序">
                         
-                        <span class="card-title">GOmake函数和slice，map解析</span>
+                        <span class="card-title">计算机数据字节顺序</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -818,14 +920,14 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-15
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
+                            <a href="/categories/%E5%86%85%E6%A0%B8/" class="post-category">
+                                    内核
                                 </a>
                             
                             
@@ -835,8 +937,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/GO/">
-                        <span class="chip bg-color">GO</span>
+                    <a href="/tags/%E5%AD%A6%E4%B9%A0/">
+                        <span class="chip bg-color">学习</span>
                     </a>
                     
                 </div>

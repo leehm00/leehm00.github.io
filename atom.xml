@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-14T16:20:22.207Z</updated>
+  <updated>2022-04-22T06:30:41.222Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis cluster集群常用指令</title>
+    <link href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/"/>
+    <id>https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</id>
+    <published>2022-04-22T06:27:37.000Z</published>
+    <updated>2022-04-22T06:30:41.222Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-redis-常用管理命令&quot;&gt;&lt;a href=&quot;#1-redis-常用管理命令&quot; class=&quot;headerlink&quot; title=&quot;1.redis 常用管理命令&quot;&gt;&lt;/a&gt;1.redis 常用管理命令&lt;/h2&gt;&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="redis" scheme="https://leehm00.github.io/categories/redis/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>计算机数据字节顺序</title>
@@ -472,31 +499,6 @@
         
         
     <summary type="html">&lt;h1 id=&quot;Lecture-2-RPC-and-threads&quot;&gt;&lt;a href=&quot;#Lecture-2-RPC-and-threads&quot; class=&quot;headerlink&quot; title=&quot;Lecture 2:RPC and threads&quot;&gt;&lt;/a&gt;Lecture</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MIT 6.824 2022 notes 1 chinese version</title>
-    <link href="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-1-chinese-version/"/>
-    <id>https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-1-chinese-version/</id>
-    <published>2022-02-15T16:06:31.000Z</published>
-    <updated>2022-02-15T16:07:35.952Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;chinese-version&quot;&gt;&lt;a href=&quot;#chinese-version&quot; class=&quot;headerlink&quot; title=&quot;chinese version&quot;&gt;&lt;/a&gt;chinese version&lt;/h1&gt;&lt;h2 id=&quot;课程背景&quot;&gt;&lt;a</summary>
         
       
     
