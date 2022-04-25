@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>文件权限是问号的情况处理</title>
+      <link href="/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/"/>
+      <url>/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</url>
+      
+        <content type="html"><![CDATA[<p>之前在试着跨机器共享一个文件夹的时候遇到了sshfs挂载失败的情况，之后再访问那个文件夹就出现permission denied的情况，不管用什么用户都会被拒绝，最开始还不知道是因为挂载失败所以尝试不同用户搞了很久，就算是删除也不行。最后整理得到的方法是：</p><ol><li>首先<code>ls -l</code>确认文件（夹）属性真的全是问号（其他情况我也没遇到过暂且不论）</li><li>使用<code>fuser -k share&lt;--your dir name</code>来删除占有目录的进程</li><li><code>umount -l  share&lt;--your dir name</code>卸载当前的挂载</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> LinuxOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>redis cluster集群常用指令</title>
       <link href="/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/"/>
       <url>/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</url>

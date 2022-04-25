@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-22T06:30:41.222Z</updated>
+  <updated>2022-04-25T07:09:53.058Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>文件权限是问号的情况处理</title>
+    <link href="https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/"/>
+    <id>https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</id>
+    <published>2022-04-25T06:53:29.000Z</published>
+    <updated>2022-04-25T07:09:53.058Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;之前在试着跨机器共享一个文件夹的时候遇到了sshfs挂载失败的情况，之后再访问那个文件夹就出现permission</summary>
+        
+      
+    
+    
+    
+    <category term="LinuxOS" scheme="https://leehm00.github.io/categories/LinuxOS/"/>
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>redis cluster集群常用指令</title>
@@ -483,31 +508,6 @@
     
     
     <category term="GO" scheme="https://leehm00.github.io/tags/GO/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MIT 6.824 2022 notes 2 chinese version</title>
-    <link href="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/"/>
-    <id>https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/</id>
-    <published>2022-02-16T11:05:48.000Z</published>
-    <updated>2022-02-22T14:09:58.018Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;Lecture-2-RPC-and-threads&quot;&gt;&lt;a href=&quot;#Lecture-2-RPC-and-threads&quot; class=&quot;headerlink&quot; title=&quot;Lecture 2:RPC and threads&quot;&gt;&lt;/a&gt;Lecture</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="course" scheme="https://leehm00.github.io/tags/course/"/>
     
   </entry>
   

@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</loc>
+    
+    <lastmod>2022-04-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</loc>
     
     <lastmod>2022-04-22</lastmod>
@@ -382,7 +391,7 @@
 
   <url>
     <loc>https://leehm00.github.io/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -390,84 +399,84 @@
   
   <url>
     <loc>https://leehm00.github.io/tags/%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/redis/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/%E8%81%8C%E4%BD%8D/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/anna/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/distributed-system/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/%E8%AE%BA%E6%96%87/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/course/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/GO/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/%E5%91%BD%E4%BB%A4%E7%AB%AF/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/tags/%E5%B7%A5%E4%BD%9C/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -476,91 +485,98 @@
   
   <url>
     <loc>https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E5%B7%A5%E4%BD%9C/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E6%97%A5%E5%B8%B8/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E5%AE%9E%E9%AA%8C/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/shell/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/pre/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/latex/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/redis/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://leehm00.github.io/categories/%E5%86%85%E6%A0%B8/</loc>
-    <lastmod>2022-04-22</lastmod>
+    <lastmod>2022-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/categories/LinuxOS/</loc>
+    <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
