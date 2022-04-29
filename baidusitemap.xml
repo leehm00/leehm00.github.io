@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
+    <lastmod>2022-04-29</lastmod>
+  </url>
+  <url>
     <loc>https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</loc>
     <lastmod>2022-04-25</lastmod>
   </url>
@@ -55,10 +59,6 @@
   <url>
     <loc>https://leehm00.github.io/2022/03/16/build-cluster-with-bash-on-one-node/</loc>
     <lastmod>2022-03-17</lastmod>
-  </url>
-  <url>
-    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
-    <lastmod>2022-03-15</lastmod>
   </url>
   <url>
     <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
