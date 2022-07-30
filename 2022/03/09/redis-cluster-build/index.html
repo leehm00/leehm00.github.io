@@ -469,7 +469,7 @@ mv redis-6.2.2 r">
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    932
+                    943
                 </div>
                 
 
@@ -558,7 +558,7 @@ sed "s/7000/7005/g" redis-7000.conf &gt; redis-7005.conf</code></pre>
 
 <p>​    选项–replicas 1 ： 表示我们希望为集群中的每个主节点创建一个从节点<br>​    前12个是主节点，后面的是从节点（若节点在不同的机器上，注意主节点的书写位置，要避免主节点在同一台机器上，影响性能）</p>
 <p>请根据自己的机器情况修改对应的IP：port</p>
-<h1 id="分配槽"><a href="#分配槽" class="headerlink" title="分配槽"></a>分配槽</h1><p>一般情况下平均分配好了（在启动的时候会直接分配）</p>
+<h1 id="分配槽"><a href="#分配槽" class="headerlink" title="分配槽"></a>分配槽</h1><p>一般情况下平均分配好了（在启动的时候会直接分配）根据自己的实际情况配置</p>
 <pre class="language-bash" data-language="bash"><code class="language-bash">./src/redis-cli -h <span class="token number">127.0</span>.0.1 -p <span class="token number">7000</span> cluster addslots <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">..</span><span class="token number">2730</span><span class="token punctuation">}</span>
 ./src/redis-cli -h <span class="token number">127.0</span>.0.1 -p <span class="token number">7001</span> cluster addslots <span class="token punctuation">{</span><span class="token number">2731</span><span class="token punctuation">..</span><span class="token number">5461</span><span class="token punctuation">}</span>
 ./src/redis-cli -h <span class="token number">127.0</span>.0.1 -p <span class="token number">7002</span> cluster addslots <span class="token punctuation">{</span><span class="token number">5462</span><span class="token punctuation">..</span><span class="token number">7211</span><span class="token punctuation">}</span>
@@ -1160,7 +1160,7 @@ sed "s/7000/7005/g" redis-7000.conf &gt; redis-7005.conf</code></pre>
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">111.6k</span>
+                        class="white-color">112.4k</span>
             
             
             

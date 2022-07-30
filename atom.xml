@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-04-25T07:09:53.058Z</updated>
+  <updated>2022-07-30T09:32:46.230Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>idea注释和版权快捷方式</title>
+    <link href="https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/"/>
+    <id>https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/</id>
+    <published>2022-07-30T09:00:24.000Z</published>
+    <updated>2022-07-30T09:32:46.230Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;一、概述&lt;br&gt;   </summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>文件权限是问号的情况处理</title>
@@ -348,7 +369,7 @@
     <link href="https://leehm00.github.io/2022/03/09/redis-cluster-build/"/>
     <id>https://leehm00.github.io/2022/03/09/redis-cluster-build/</id>
     <published>2022-03-09T09:14:55.000Z</published>
-    <updated>2022-04-29T14:30:26.795Z</updated>
+    <updated>2022-04-29T14:32:52.130Z</updated>
     
     
       
@@ -469,7 +490,7 @@
     <link href="https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/"/>
     <id>https://leehm00.github.io/2022/02/24/hui-yi-ji-lu/</id>
     <published>2022-02-24T06:01:29.000Z</published>
-    <updated>2022-03-18T08:51:22.815Z</updated>
+    <updated>2022-06-02T05:45:34.490Z</updated>
     
     
     <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
@@ -480,34 +501,6 @@
     
     
     <category term="会议记录" scheme="https://leehm00.github.io/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GOmake函数和slice，map解析</title>
-    <link href="https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/"/>
-    <id>https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/</id>
-    <published>2022-02-21T01:51:37.000Z</published>
-    <updated>2022-02-21T01:52:54.545Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;make函数&quot;&gt;&lt;a href=&quot;#make函数&quot; class=&quot;headerlink&quot; title=&quot;make函数&quot;&gt;&lt;/a&gt;make函数&lt;/h1&gt;&lt;ul&gt;
-&lt;li&gt;首先看个例子&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre class=&quot;language-go&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="GO" scheme="https://leehm00.github.io/tags/GO/"/>
     
   </entry>
   
