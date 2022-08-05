@@ -11,6 +11,15 @@
   </url>
   
   <url>
+    <loc>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</loc>
+    
+    <lastmod>2022-08-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</loc>
     
     <lastmod>2022-08-01</lastmod>
@@ -517,6 +526,13 @@
   
   <url>
     <loc>https://leehm00.github.io/tags/maven/</loc>
+    <lastmod>2022-08-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/tags/java/</loc>
     <lastmod>2022-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

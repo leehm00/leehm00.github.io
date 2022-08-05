@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2022-08-05T10:04:22.764Z</updated>
+  <updated>2022-08-05T15:22:51.854Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,11 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>使用Maven：IDEA环境</title>
+    <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/"/>
+    <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</id>
+    <published>2022-08-05T15:07:34.000Z</published>
+    <updated>2022-08-05T15:22:51.854Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;TIP&lt;/p&gt;
+&lt;p&gt;各个 IDEA 不同版本在具体操作方面存在一定差异，这里我们以 2019.3.3 版本为例进行演示。其它版本大家灵活变通即可。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;第一节-创建父工程&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="工作" scheme="https://leehm00.github.io/categories/%E5%B7%A5%E4%BD%9C/"/>
+    
+    
+    <category term="java" scheme="https://leehm00.github.io/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>使用 Maven：命令行环境</title>
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</id>
     <published>2022-08-05T09:40:59.000Z</published>
-    <updated>2022-08-05T10:04:22.764Z</updated>
+    <updated>2022-08-05T15:23:18.054Z</updated>
     
     
       
@@ -482,30 +511,6 @@
         
         
     <summary type="html">&lt;h2 id=&quot;一、热点数据的存放&quot;&gt;&lt;a href=&quot;#一、热点数据的存放&quot; class=&quot;headerlink&quot; title=&quot;一、热点数据的存放&quot;&gt;&lt;/a&gt;一、热点数据的存放&lt;/h2&gt;&lt;h4 id=&quot;场景：&quot;&gt;&lt;a href=&quot;#场景：&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>mac命令行加密sha等</title>
-    <link href="https://leehm00.github.io/2022/03/04/mac-ming-ling-xing-jia-mi-sha-deng/"/>
-    <id>https://leehm00.github.io/2022/03/04/mac-ming-ling-xing-jia-mi-sha-deng/</id>
-    <published>2022-03-04T08:51:48.000Z</published>
-    <updated>2022-03-04T08:52:42.350Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Note: &lt;code&gt;echo -n&lt;/code&gt; 代表不发送换行符; 不带参数默认发送换行符。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;a</summary>
         
       
     
