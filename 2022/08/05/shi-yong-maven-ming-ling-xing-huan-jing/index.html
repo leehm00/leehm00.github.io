@@ -912,14 +912,16 @@
 <td>无效</td>
 </tr>
 </tbody></table>
-<h3 id="③结论"><a href="#③结论" class="headerlink" title="③结论"></a>③结论</h3><p>compile：通常使用的第三方框架的 jar 包这样在项目实际运行时真正要用到的 jar 包都是以 compile 范围进行依赖的。比如 SSM 框架所需jar包。</p>
+<h3 id="③结论"><a href="#③结论" class="headerlink" title="③结论"></a>③结论</h3><p>compile：通常使用的第三方框架的 jar 包这种在项目实际运行时真正要用到的 jar 包都是以 compile 范围进行依赖的。比如 SSM 框架所需jar包。</p>
 <p>test：测试过程中使用的 jar 包，以 test 范围依赖进来。比如 junit。</p>
 <p>provided：在开发过程中需要用到的“服务器上的 jar 包”通常以 provided 范围依赖进来。比如 servlet-api、jsp-api。而这个范围的 jar 包之所以不参与部署、不放进 war 包，就是避免和服务器上已有的同类 jar 包产生冲突，同时减轻服务器的负担。说白了就是：“<strong>服务器上已经有了，你就别带啦！</strong>”</p>
-<h2 id="2、测试"><a href="#2、测试" class="headerlink" title="2、测试"></a>2、测试</h2><h3 id="①验证-compile-范围对-main-目录有效"><a href="#①验证-compile-范围对-main-目录有效" class="headerlink" title="①验证 compile 范围对 main 目录有效"></a>①验证 compile 范围对 main 目录有效</h3><p>TIP</p>
+<h2 id="2、测试"><a href="#2、测试" class="headerlink" title="2、测试"></a>2、测试</h2><h3 id="①验证-compile-范围对-main-目录有效"><a href="#①验证-compile-范围对-main-目录有效" class="headerlink" title="①验证 compile 范围对 main 目录有效"></a>①验证 compile 范围对 main 目录有效</h3><blockquote>
+<p>TIP</p>
 <p>main目录下的类：HelloServlet 使用compile范围导入的依赖：pro01-atguigu-maven</p>
 <p>验证：使用compile范围导入的依赖对main目录下的类来说是有效的</p>
 <p>有效：HelloServlet 能够使用 pro01-atguigu-maven 工程中的 Calculator 类</p>
 <p>验证方式：在 HelloServlet 类中导入 Calculator 类，然后编译就说明有效。</p>
+</blockquote>
 <h3 id="②验证test范围对main目录无效"><a href="#②验证test范围对main目录无效" class="headerlink" title="②验证test范围对main目录无效"></a>②验证test范围对main目录无效</h3><p>测试方式：在主体程序中导入org.junit.Test这个注解，然后执行编译。</p>
 <p>具体操作：在pro01-maven-java\src\main\java\com\atguigu\maven目录下修改Calculator.java</p>
 <pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">com<span class="token punctuation">.</span>atguigu<span class="token punctuation">.</span>maven</span><span class="token punctuation">;</span>
@@ -1853,7 +1855,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">122.1k</span>
+                        class="white-color">185.6k</span>
             
             
             
