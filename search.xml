@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>diary251104</title>
+      <link href="/2025/11/04/diary251104/"/>
+      <url>/2025/11/04/diary251104/</url>
+      
+        <content type="html"><![CDATA[<p>我其实在思考一件事情，华为这些企业都靠外包干活，那么他们的技术壁垒在哪，是产品和技术，还是供应链。</p><p>当我可以操控对方于手掌的时候，却还是和他平等的对待，我不知道这是不是已识乾坤大，犹怜草木青的另一种说法，或者说更加狭义的一种表现形式。</p><p>专注其实对于做成一件事来说非常非常重要的，但对于绝大多数人来说做到绝对专注是很难的。</p><p>自媒体最大的修炼的点是：了解大众情绪。所以一个人想做自媒体的话，应该好好思考，对于自己来说，能抓住的大众情绪点是什么。做自媒体一定是需要利他的，需要思考你的内容是可以让人开心，还是让人学到点什么，还是让人产生共情。而不是闭门造车，只是自己觉得这个内容很好。同时这也是一个很好量化的东西，通过后台数据去判断内容好不好，而不是凭自己的感觉。后台数据就是最好的量化指标。</p><p>我好像有时候希望自己发的东西很多人看，其实也就自己花了时间剪辑，但是就是自己爽了，没人看。当然我发东西不是为了做自媒体，纯自己觉得自己干过这么多好玩的事情就行，记录生活。如果别人看了，我更开心，而且如果别人会羡慕我，那我超级开心了。</p><p>越在意别人的说法，活得越累。活别人的世界，眼睛里，你将永远无法做自己。</p><p>你不必在意任何人，做自己就好。首先你要快乐，其次，都是其次。</p><p>做人既要有担当，还要有血性，也要有狡黠。</p><p>继续读新野：</p><blockquote><p>如果你认定了一个女人，不再考虑和其他女人接触的可能性，你在女人眼中就会完全丧失吸引力。女人会因为缺乏安全感，一直跟你确认你能一心一意的为她。比如会叫你官宣，叫你把你的手机屏保设成她的照片，不让你接触任何其他女性甚至和男性朋友出去约会。而一旦你真的满足了她的这些所有的安全感需求，围着她转，她就会本能地觉得你竟然弱到被他控制，不能按照自己本心去找多个女人，绝对是一个废物。于是，她就会对你产生一个新的负面感觉：“无聊”。她会觉得你 “没刺激感”，“没新鲜感”，对你 “没有感觉”。这时候，虽然你还是一心一意地对她好，她已经开始在外面追求新的基因提供者以获得 “感觉” 了。</p></blockquote><p>有一说一我觉得这不是性别的问题，而是人的性格的问题，因为我也会这样。如果一个人让我觉得十拿九稳没有新的可以探索的东西的时候，我就会开始想要分手和劈腿了，这也不是一次两次了，我谈过不下十个女朋友，一半以上都是我觉得没啥兴趣了就分掉了，所以我的性格上也比较偏向于女生吗，还是说人都会更喜欢探索和刺激的东西</p><blockquote><p>而女人对男人的感情，其实服务于女人对男人的两大需求。第一个需求是提供优质基因。所以女人在看到本能认为的基因优秀的男人的时候，会陷入一种疯狂的迷恋，想要立刻和对方交配、繁殖。</p><p>女人对男人的第二个需求，就是要求男人提供供养和保护的需求。当然根据公理1，女人这个需求也是有对应的感觉的，而这个感觉就是女人口中的 “安全感”。</p><p>而对于她的丈夫，她还是把她当作长期缓解焦虑感和不安全感的对象，确实是把他当依靠对象和丈夫看的。</p></blockquote><p>同时对于女性找黄毛的问题我觉得也挺难解释的。我能理解婚内丈夫是用来满足安全感的，很多出轨的确实也是这样做的，就是当作供养者。但是外出找人的话，你觉得他们找的人真的比自己的丈夫更好，或者说他们觉得基因更好吗，如果真的为了基因，为什么不生外遇的人的小孩呢。有点解释不清楚的。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 随笔 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 日记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2025/11/04/hello-world/"/>
+      <url>/2025/11/04/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Dependabot build 教程</title>
       <link href="/2025/11/04/dependabot-build-jiao-cheng/"/>
       <url>/2025/11/04/dependabot-build-jiao-cheng/</url>
@@ -23,19 +61,6 @@
             <tag> github </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2025/11/04/hello-world/"/>
-      <url>/2025/11/04/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
       
     </entry>
     

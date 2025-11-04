@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2025-11-04T07:58:32.487Z</updated>
+  <updated>2025-11-04T12:18:00.355Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,11 +17,59 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>diary251104</title>
+    <link href="https://leehm00.github.io/2025/11/04/diary251104/"/>
+    <id>https://leehm00.github.io/2025/11/04/diary251104/</id>
+    <published>2025-11-04T17:42:03.000Z</published>
+    <updated>2025-11-04T12:18:00.355Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;我其实在思考一件事情，华为这些企业都靠外包干活，那么他们的技术壁垒在哪，是产品和技术，还是供应链。&lt;/p&gt;
+&lt;p&gt;当我可以操控对方于手掌的时候，却还是和他平等的对待，我不知道这是不是已识乾坤大，犹怜草木青的另一种说法，或者说更加狭义的一种表现形式。&lt;/p&gt;
+&lt;p&gt;专注其实对</summary>
+        
+      
+    
+    
+    
+    <category term="随笔" scheme="https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+    <category term="日记" scheme="https://leehm00.github.io/tags/%E6%97%A5%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://leehm00.github.io/2025/11/04/hello-world/"/>
+    <id>https://leehm00.github.io/2025/11/04/hello-world/</id>
+    <published>2025-11-04T12:18:00.355Z</published>
+    <updated>2025-11-04T12:18:00.355Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>Dependabot build 教程</title>
     <link href="https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/"/>
     <id>https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/</id>
     <published>2025-11-04T10:31:15.000Z</published>
-    <updated>2025-11-04T07:58:32.487Z</updated>
+    <updated>2025-11-04T12:18:00.345Z</updated>
     
     
       
@@ -42,32 +90,11 @@
   </entry>
   
   <entry>
-    <title>Hello World</title>
-    <link href="https://leehm00.github.io/2025/11/04/hello-world/"/>
-    <id>https://leehm00.github.io/2025/11/04/hello-world/</id>
-    <published>2025-11-04T07:58:32.498Z</published>
-    <updated>2025-11-04T07:58:32.498Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>Deploy hexo in win with wsl</title>
     <link href="https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/"/>
     <id>https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/</id>
     <published>2025-11-04T00:42:27.000Z</published>
-    <updated>2025-11-04T07:58:32.487Z</updated>
+    <updated>2025-11-04T12:18:00.345Z</updated>
     
     
       
@@ -92,7 +119,7 @@
     <link href="https://leehm00.github.io/2025/11/03/dairy251103/"/>
     <id>https://leehm00.github.io/2025/11/03/dairy251103/</id>
     <published>2025-11-03T20:07:38.000Z</published>
-    <updated>2025-11-04T07:58:32.498Z</updated>
+    <updated>2025-11-04T12:18:00.355Z</updated>
     
     
     <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
@@ -111,7 +138,7 @@
     <link href="https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/</id>
     <published>2022-08-09T17:03:30.000Z</published>
-    <updated>2025-11-04T07:58:32.584Z</updated>
+    <updated>2025-11-04T12:18:00.441Z</updated>
     
     
       
@@ -136,7 +163,7 @@
     <link href="https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/</id>
     <published>2022-08-09T17:03:16.000Z</published>
-    <updated>2025-11-04T07:58:32.573Z</updated>
+    <updated>2025-11-04T12:18:00.430Z</updated>
     
     
       
@@ -161,7 +188,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/</id>
     <published>2022-08-09T11:00:53.000Z</published>
-    <updated>2025-11-04T07:58:32.505Z</updated>
+    <updated>2025-11-04T12:18:00.362Z</updated>
     
     
       
@@ -186,7 +213,7 @@
     <link href="https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/"/>
     <id>https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/</id>
     <published>2022-08-09T11:00:00.000Z</published>
-    <updated>2025-11-04T07:58:32.494Z</updated>
+    <updated>2025-11-04T12:18:00.352Z</updated>
     
     
       
@@ -211,7 +238,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/</id>
     <published>2022-08-09T10:35:10.000Z</published>
-    <updated>2025-11-04T07:58:32.506Z</updated>
+    <updated>2025-11-04T12:18:00.363Z</updated>
     
     
       
@@ -236,7 +263,7 @@
     <link href="https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/</id>
     <published>2022-08-09T10:04:06.000Z</published>
-    <updated>2025-11-04T07:58:32.504Z</updated>
+    <updated>2025-11-04T12:18:00.362Z</updated>
     
     
       
@@ -261,7 +288,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/</id>
     <published>2022-08-09T10:00:40.000Z</published>
-    <updated>2025-11-04T07:58:32.506Z</updated>
+    <updated>2025-11-04T12:18:00.363Z</updated>
     
     
       
@@ -286,7 +313,7 @@
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</id>
     <published>2022-08-05T23:07:34.000Z</published>
-    <updated>2025-11-04T07:58:32.642Z</updated>
+    <updated>2025-11-04T12:18:00.498Z</updated>
     
     
       
@@ -315,7 +342,7 @@
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</id>
     <published>2022-08-05T17:40:59.000Z</published>
-    <updated>2025-11-04T07:58:32.641Z</updated>
+    <updated>2025-11-04T12:18:00.497Z</updated>
     
     
       
@@ -340,7 +367,7 @@
     <link href="https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/"/>
     <id>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</id>
     <published>2022-07-31T11:12:32.000Z</published>
-    <updated>2025-11-04T07:58:32.498Z</updated>
+    <updated>2025-11-04T12:18:00.356Z</updated>
     
     
       
@@ -370,7 +397,7 @@
     <link href="https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/"/>
     <id>https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/</id>
     <published>2022-07-30T17:00:24.000Z</published>
-    <updated>2025-11-04T07:58:32.501Z</updated>
+    <updated>2025-11-04T12:18:00.359Z</updated>
     
     
       
@@ -395,7 +422,7 @@
     <link href="https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/"/>
     <id>https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</id>
     <published>2022-04-25T14:53:29.000Z</published>
-    <updated>2025-11-04T07:58:32.642Z</updated>
+    <updated>2025-11-04T12:18:00.498Z</updated>
     
     
       
@@ -420,7 +447,7 @@
     <link href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/"/>
     <id>https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</id>
     <published>2022-04-22T14:27:37.000Z</published>
-    <updated>2025-11-04T07:58:32.520Z</updated>
+    <updated>2025-11-04T12:18:00.378Z</updated>
     
     
       
@@ -447,7 +474,7 @@
     <link href="https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/"/>
     <id>https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</id>
     <published>2022-04-15T00:14:28.000Z</published>
-    <updated>2025-11-04T07:58:32.642Z</updated>
+    <updated>2025-11-04T12:18:00.498Z</updated>
     
     
       
@@ -474,7 +501,7 @@
     <link href="https://leehm00.github.io/2022/04/14/redis-ji-qun/"/>
     <id>https://leehm00.github.io/2022/04/14/redis-ji-qun/</id>
     <published>2022-04-14T21:25:08.000Z</published>
-    <updated>2025-11-04T07:58:32.561Z</updated>
+    <updated>2025-11-04T12:18:00.418Z</updated>
     
     
       
@@ -491,36 +518,6 @@
     
     
     <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>EC-Cache: Load-Balanced, Low-Latency Cluster Caching with Online Erasure Coding,osdi’16</title>
-    <link href="https://leehm00.github.io/2022/04/12/reading-ec-cache-load-balanced-low-latency-cluster-caching-with-online-erasure-coding-osdi-16/"/>
-    <id>https://leehm00.github.io/2022/04/12/reading-ec-cache-load-balanced-low-latency-cluster-caching-with-online-erasure-coding-osdi-16/</id>
-    <published>2022-04-12T16:58:51.000Z</published>
-    <updated>2025-11-04T07:58:32.494Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;em&gt;这其实是一个&lt;strong&gt;读&lt;/strong&gt;占大多数的系统&lt;/em&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;实际上小文件占用磁盘空间不是很大，大文件读的占比更多&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Large Object Reads are</summary>
-        
-      
-    
-    
-    
-    <category term="论文阅读笔记" scheme="https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"/>
-    
-    
-    <category term="ec" scheme="https://leehm00.github.io/tags/ec/"/>
     
   </entry>
   
