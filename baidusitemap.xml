@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</loc>
-    <lastmod>2025-11-04</lastmod>
-  </url>
-  <url>
     <loc>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</loc>
     <lastmod>2025-11-04</lastmod>
   </url>
@@ -26,6 +22,10 @@
   </url>
   <url>
     <loc>https://leehm00.github.io/2022/04/08/lun-wen-xie-zuo-fen-xiang-1/</loc>
+    <lastmod>2025-11-04</lastmod>
+  </url>
+  <url>
+    <loc>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</loc>
     <lastmod>2025-11-04</lastmod>
   </url>
   <url>
@@ -89,11 +89,11 @@
     <lastmod>2025-11-04</lastmod>
   </url>
   <url>
-    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
+    <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
     <lastmod>2025-11-04</lastmod>
   </url>
   <url>
-    <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
+    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
     <lastmod>2025-11-04</lastmod>
   </url>
   <url>
@@ -133,10 +133,6 @@
     <lastmod>2025-11-04</lastmod>
   </url>
   <url>
-    <loc>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</loc>
-    <lastmod>2025-11-04</lastmod>
-  </url>
-  <url>
     <loc>https://leehm00.github.io/2022/03/22/apple-script-shi-yong/</loc>
     <lastmod>2025-11-04</lastmod>
   </url>
@@ -150,6 +146,10 @@
   </url>
   <url>
     <loc>https://leehm00.github.io/2025/11/04/hello-world/</loc>
+    <lastmod>2025-11-04</lastmod>
+  </url>
+  <url>
+    <loc>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</loc>
     <lastmod>2025-11-04</lastmod>
   </url>
   <url>
