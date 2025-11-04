@@ -1261,7 +1261,7 @@
 <li>由于 profile 天然代表众多可选配置中的一个所以由复数形式的 profiles 标签统一管理。</li>
 <li>由于 profile 标签覆盖了 pom.xml 中的默认配置，所以 profiles 标签通常是 pom.xml 中的最后一个标签。</li>
 </ul>
-<h4 id="2-id-标签"><a href="#2-id-标签" class="headerlink" title="[2]id 标签"></a>[2]id 标签</h4><p>每个 profile 都必须有一个 id 标签，指定该 profile 的唯一标识。这个 id 标签的值会在命令行调用 profile 时被用到。这个命令格式是：-D<profile id>。</profile></p>
+<h4 id="2-id-标签"><a href="#2-id-标签" class="headerlink" title="[2]id 标签"></a>[2]id 标签</h4><p>每个 profile 都必须有一个 id 标签，指定该 profile 的唯一标识。这个 id 标签的值会在命令行调用 profile 时被用到。这个命令格式是：-D<profile id="">。</profile></p>
 <h4 id="3-其它允许出现的标签"><a href="#3-其它允许出现的标签" class="headerlink" title="[3]其它允许出现的标签"></a>[3]其它允许出现的标签</h4><p>一个 profile 可以覆盖项目的最终名称、项目依赖、插件配置等各个方面以影响构建行为。</p>
 <ul>
 <li>build<ul>

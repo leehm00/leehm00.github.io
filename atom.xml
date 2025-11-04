@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2025-11-03T15:49:31.186Z</updated>
+  <updated>2025-11-04T05:27:15.997Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,11 +17,84 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Dependabot build 教程</title>
+    <link href="https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/"/>
+    <id>https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/</id>
+    <published>2025-11-04T10:31:15.000Z</published>
+    <updated>2025-11-04T05:27:15.997Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Dependabot-Build教程&quot;&gt;&lt;a href=&quot;#Dependabot-Build教程&quot; class=&quot;headerlink&quot; title=&quot;Dependabot Build教程&quot;&gt;&lt;/a&gt;Dependabot</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="github" scheme="https://leehm00.github.io/tags/github/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://leehm00.github.io/2025/11/04/hello-world/"/>
+    <id>https://leehm00.github.io/2025/11/04/hello-world/</id>
+    <published>2025-11-04T05:27:16.007Z</published>
+    <updated>2025-11-04T05:27:16.007Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Deploy hexo in win with wsl</title>
+    <link href="https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/"/>
+    <id>https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/</id>
+    <published>2025-11-04T00:42:27.000Z</published>
+    <updated>2025-11-04T05:27:15.997Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;在win上进行从零开始的hexo安装部署。&lt;/p&gt;
+&lt;p&gt;首先在微软应用商店安装Ubuntu。&lt;/p&gt;
+&lt;p&gt;建议版本：&lt;br&gt;Ubuntu 22.04 LTS&lt;br&gt;Ubuntu 20.04</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://leehm00.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="装机" scheme="https://leehm00.github.io/tags/%E8%A3%85%E6%9C%BA/"/>
+    
+  </entry>
+  
+  <entry>
     <title>dairy251103</title>
     <link href="https://leehm00.github.io/2025/11/03/dairy251103/"/>
     <id>https://leehm00.github.io/2025/11/03/dairy251103/</id>
-    <published>2025-11-03T12:07:38.000Z</published>
-    <updated>2025-11-03T15:49:31.186Z</updated>
+    <published>2025-11-03T20:07:38.000Z</published>
+    <updated>2025-11-04T05:27:16.007Z</updated>
     
     
     <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
@@ -39,8 +112,8 @@
     <title>springboot后端学习笔记</title>
     <link href="https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/</id>
-    <published>2022-08-09T09:03:30.000Z</published>
-    <updated>2025-11-03T15:49:33.008Z</updated>
+    <published>2022-08-09T17:03:30.000Z</published>
+    <updated>2025-11-04T05:27:16.093Z</updated>
     
     
       
@@ -64,8 +137,8 @@
     <title>springboot前端学习笔记</title>
     <link href="https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/</id>
-    <published>2022-08-09T09:03:16.000Z</published>
-    <updated>2025-11-03T15:49:32.760Z</updated>
+    <published>2022-08-09T17:03:16.000Z</published>
+    <updated>2025-11-04T05:27:16.082Z</updated>
     
     
       
@@ -89,8 +162,8 @@
     <title>maven-微服务实践生产问题</title>
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/</id>
-    <published>2022-08-09T03:00:53.000Z</published>
-    <updated>2025-11-03T15:49:31.297Z</updated>
+    <published>2022-08-09T11:00:53.000Z</published>
+    <updated>2025-11-04T05:27:16.014Z</updated>
     
     
       
@@ -114,8 +187,8 @@
     <title>POM 深入与强化</title>
     <link href="https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/"/>
     <id>https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/</id>
-    <published>2022-08-09T03:00:00.000Z</published>
-    <updated>2025-11-03T15:49:31.103Z</updated>
+    <published>2022-08-09T11:00:00.000Z</published>
+    <updated>2025-11-04T05:27:16.003Z</updated>
     
     
       
@@ -139,8 +212,8 @@
     <title>maven-微服务架构案例</title>
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/</id>
-    <published>2022-08-09T02:35:10.000Z</published>
-    <updated>2025-11-03T15:49:31.304Z</updated>
+    <published>2022-08-09T10:35:10.000Z</published>
+    <updated>2025-11-04T05:27:16.015Z</updated>
     
     
       
@@ -164,8 +237,8 @@
     <title>javaweb-maven单一架构案例</title>
     <link href="https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/</id>
-    <published>2022-08-09T02:04:06.000Z</published>
-    <updated>2025-11-03T15:49:31.279Z</updated>
+    <published>2022-08-09T10:04:06.000Z</published>
+    <updated>2025-11-04T05:27:16.013Z</updated>
     
     
       
@@ -189,8 +262,8 @@
     <title>maven其他核心概念</title>
     <link href="https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/</id>
-    <published>2022-08-09T02:00:40.000Z</published>
-    <updated>2025-11-03T15:49:31.308Z</updated>
+    <published>2022-08-09T10:00:40.000Z</published>
+    <updated>2025-11-04T05:27:16.015Z</updated>
     
     
       
@@ -214,8 +287,8 @@
     <title>使用Maven：IDEA环境</title>
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</id>
-    <published>2022-08-05T15:07:34.000Z</published>
-    <updated>2025-11-03T15:49:33.380Z</updated>
+    <published>2022-08-05T23:07:34.000Z</published>
+    <updated>2025-11-04T05:27:16.150Z</updated>
     
     
       
@@ -243,8 +316,8 @@
     <title>使用 Maven：命令行环境</title>
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</id>
-    <published>2022-08-05T09:40:59.000Z</published>
-    <updated>2025-11-03T15:49:33.355Z</updated>
+    <published>2022-08-05T17:40:59.000Z</published>
+    <updated>2025-11-04T05:27:16.150Z</updated>
     
     
       
@@ -268,8 +341,8 @@
     <title>idea创建javaweb项目并部署运行</title>
     <link href="https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/"/>
     <id>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</id>
-    <published>2022-07-31T03:12:32.000Z</published>
-    <updated>2025-11-03T15:49:31.199Z</updated>
+    <published>2022-07-31T11:12:32.000Z</published>
+    <updated>2025-11-04T05:27:16.007Z</updated>
     
     
       
@@ -298,8 +371,8 @@
     <title>idea注释和版权快捷方式</title>
     <link href="https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/"/>
     <id>https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/</id>
-    <published>2022-07-30T09:00:24.000Z</published>
-    <updated>2025-11-03T15:49:31.249Z</updated>
+    <published>2022-07-30T17:00:24.000Z</published>
+    <updated>2025-11-04T05:27:16.011Z</updated>
     
     
       
@@ -319,8 +392,8 @@
     <title>文件权限是问号的情况处理</title>
     <link href="https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/"/>
     <id>https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</id>
-    <published>2022-04-25T06:53:29.000Z</published>
-    <updated>2025-11-03T15:49:33.401Z</updated>
+    <published>2022-04-25T14:53:29.000Z</published>
+    <updated>2025-11-04T05:27:16.151Z</updated>
     
     
       
@@ -344,8 +417,8 @@
     <title>redis cluster集群常用指令</title>
     <link href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/"/>
     <id>https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</id>
-    <published>2022-04-22T06:27:37.000Z</published>
-    <updated>2025-11-03T15:49:31.679Z</updated>
+    <published>2022-04-22T14:27:37.000Z</published>
+    <updated>2025-11-04T05:27:16.029Z</updated>
     
     
       
@@ -371,8 +444,8 @@
     <title>计算机数据字节顺序</title>
     <link href="https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/"/>
     <id>https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</id>
-    <published>2022-04-14T16:14:28.000Z</published>
-    <updated>2025-11-03T15:49:33.409Z</updated>
+    <published>2022-04-15T00:14:28.000Z</published>
+    <updated>2025-11-04T05:27:16.151Z</updated>
     
     
       
@@ -398,8 +471,8 @@
     <title>redis集群</title>
     <link href="https://leehm00.github.io/2022/04/14/redis-ji-qun/"/>
     <id>https://leehm00.github.io/2022/04/14/redis-ji-qun/</id>
-    <published>2022-04-14T13:25:08.000Z</published>
-    <updated>2025-11-03T15:49:32.580Z</updated>
+    <published>2022-04-14T21:25:08.000Z</published>
+    <updated>2025-11-04T05:27:16.070Z</updated>
     
     
       
@@ -423,8 +496,8 @@
     <title>EC-Cache: Load-Balanced, Low-Latency Cluster Caching with Online Erasure Coding,osdi’16</title>
     <link href="https://leehm00.github.io/2022/04/12/reading-ec-cache-load-balanced-low-latency-cluster-caching-with-online-erasure-coding-osdi-16/"/>
     <id>https://leehm00.github.io/2022/04/12/reading-ec-cache-load-balanced-low-latency-cluster-caching-with-online-erasure-coding-osdi-16/</id>
-    <published>2022-04-12T08:58:51.000Z</published>
-    <updated>2025-11-03T15:49:31.109Z</updated>
+    <published>2022-04-12T16:58:51.000Z</published>
+    <updated>2025-11-04T05:27:16.003Z</updated>
     
     
       
@@ -443,81 +516,6 @@
     
     
     <category term="论文阅读" scheme="https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>overleaf guide</title>
-    <link href="https://leehm00.github.io/2022/04/08/overleaf-guide/"/>
-    <id>https://leehm00.github.io/2022/04/08/overleaf-guide/</id>
-    <published>2022-04-08T11:35:43.000Z</published>
-    <updated>2025-11-03T15:49:31.312Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;Overleaf-指南：30-分钟-LaTeX-入门&quot;&gt;&lt;a href=&quot;#Overleaf-指南：30-分钟-LaTeX-入门&quot; class=&quot;headerlink&quot; title=&quot;Overleaf 指南：30 分钟 LaTeX</summary>
-        
-      
-    
-    
-    
-    <category term="latex" scheme="https://leehm00.github.io/categories/latex/"/>
-    
-    
-    <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>make a perfect pre</title>
-    <link href="https://leehm00.github.io/2022/04/08/make-a-perfect-pre/"/>
-    <id>https://leehm00.github.io/2022/04/08/make-a-perfect-pre/</id>
-    <published>2022-04-08T06:30:30.000Z</published>
-    <updated>2025-11-03T15:49:31.286Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;常见问题&quot;&gt;&lt;a href=&quot;#常见问题&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="pre" scheme="https://leehm00.github.io/categories/pre/"/>
-    
-    
-    <category term="工作" scheme="https://leehm00.github.io/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>论文写作分享1</title>
-    <link href="https://leehm00.github.io/2022/04/08/lun-wen-xie-zuo-fen-xiang-1/"/>
-    <id>https://leehm00.github.io/2022/04/08/lun-wen-xie-zuo-fen-xiang-1/</id>
-    <published>2022-04-08T06:10:05.000Z</published>
-    <updated>2025-11-03T15:49:33.418Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;端正态度&quot;&gt;&lt;a href=&quot;#端正态度&quot; class=&quot;headerlink&quot; title=&quot;端正态度&quot;&gt;&lt;/a&gt;端正态度&lt;/h2&gt;&lt;h3 id=&quot;克服写作障碍&quot;&gt;&lt;a href=&quot;#克服写作障碍&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="论文写作" scheme="https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/"/>
     
     
     <category term="学习" scheme="https://leehm00.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
