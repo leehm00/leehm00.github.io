@@ -365,6 +365,67 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
+                    <a href="/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="GOmake函数和slice，map解析">
+                            
+                            <span class="card-title">GOmake函数和slice，map解析</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                make函数
+首先看个例子
+
+package main
+import (
+ "fmt"
+)
+func main() {
+ var i *int
+ *i=10
+ fmt.Println(*i)
+}
+
+
+这个例子会打印出什么？0还是10?。以上
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-21
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/go/" class="post-category">
+                                    go
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/make%E5%87%BD%E6%95%B0/">
+                            <span class="chip bg-color">make函数</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
                     <a href="/2022/02/16/mit-6-824-2022-notes-2-chinese-version/">
                         <div class="card-image">
                             
@@ -881,59 +942,6 @@ typedef struct multiCmd {
 typedef struct aeEventLoop {
     //当前注册的最大描述符
     int maxfd;   /* highest file desc
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-27
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/kv/" class="post-category">
-                                    kv
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/redis/">
-                            <span class="chip bg-color">redis</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/01/27/redis-dan-ji-shu-ju-ku/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="redis单机数据库以及持久化">
-                            
-                            <span class="card-title">redis单机数据库以及持久化</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                单机数据库实现和持久化数据库细节实现
-数据库的数据结构
-
-源代码：
-typedef struct redisDb {
-    // 数据库键空间，保存着数据库中的所有键值对
-    dict *dict;                 /
                             
                         </div>
                         <div class="publish-info">

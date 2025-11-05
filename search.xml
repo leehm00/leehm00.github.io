@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>Github Action实现自动部署hexo博客</title>
+      <link href="/2025/11/05/github-action-shi-xian-zi-dong-bu-shu-hexo-bo-ke/"/>
+      <url>/2025/11/05/github-action-shi-xian-zi-dong-bu-shu-hexo-bo-ke/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> computer </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> github </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello World</title>
       <link href="/2025/11/05/hello-world/"/>
       <url>/2025/11/05/hello-world/</url>
