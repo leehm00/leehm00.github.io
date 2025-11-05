@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2025-11-05T12:36:53.148Z</updated>
+  <updated>2025-11-05T13:07:17.058Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,11 +17,41 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>diary251105</title>
+    <link href="https://leehm00.github.io/2025/11/05/diary251105/"/>
+    <id>https://leehm00.github.io/2025/11/05/diary251105/</id>
+    <published>2025-11-05T20:37:27.000Z</published>
+    <updated>2025-11-05T13:07:17.058Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;如果你很真诚地对待一个人，他却辜负了你，那么你就是他这辈子遇到的天花板。他之所以辜负你，那是因为他对美好事物感知不强。&lt;/p&gt;
+&lt;p&gt;而这种美好机缘，上天不会再给他第二次。所以不要觉得难过，继续好好往前走吧，大家的运气均值都会慢慢回归。&lt;/p&gt;
+&lt;</summary>
+        
+      
+    
+    
+    
+    <category term="随笔" scheme="https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+    <category term="日记" scheme="https://leehm00.github.io/tags/%E6%97%A5%E8%AE%B0/"/>
+    
+    <category term="杂思" scheme="https://leehm00.github.io/tags/%E6%9D%82%E6%80%9D/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Github Action实现自动部署hexo博客</title>
     <link href="https://leehm00.github.io/2025/11/05/github-action-shi-xian-zi-dong-bu-shu-hexo-bo-ke/"/>
     <id>https://leehm00.github.io/2025/11/05/github-action-shi-xian-zi-dong-bu-shu-hexo-bo-ke/</id>
     <published>2025-11-05T13:11:46.000Z</published>
-    <updated>2025-11-05T12:36:53.148Z</updated>
+    <updated>2025-11-05T13:07:17.053Z</updated>
     
     
       
@@ -45,8 +75,8 @@
     <title>Hello World</title>
     <link href="https://leehm00.github.io/2025/11/05/hello-world/"/>
     <id>https://leehm00.github.io/2025/11/05/hello-world/</id>
-    <published>2025-11-05T12:36:53.154Z</published>
-    <updated>2025-11-05T12:36:53.154Z</updated>
+    <published>2025-11-05T13:07:17.058Z</published>
+    <updated>2025-11-05T13:07:17.058Z</updated>
     
     
       
@@ -67,7 +97,7 @@
     <link href="https://leehm00.github.io/2025/11/04/diary251104/"/>
     <id>https://leehm00.github.io/2025/11/04/diary251104/</id>
     <published>2025-11-04T17:42:03.000Z</published>
-    <updated>2025-11-05T12:36:53.154Z</updated>
+    <updated>2025-11-05T13:07:17.058Z</updated>
     
     
       
@@ -94,7 +124,7 @@
     <link href="https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/"/>
     <id>https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/</id>
     <published>2025-11-04T10:31:15.000Z</published>
-    <updated>2025-11-05T12:36:53.143Z</updated>
+    <updated>2025-11-05T13:07:17.048Z</updated>
     
     
       
@@ -119,7 +149,7 @@
     <link href="https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/"/>
     <id>https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/</id>
     <published>2025-11-04T00:42:27.000Z</published>
-    <updated>2025-11-05T12:36:53.143Z</updated>
+    <updated>2025-11-05T13:07:17.048Z</updated>
     
     
       
@@ -144,7 +174,7 @@
     <link href="https://leehm00.github.io/2025/11/03/dairy251103/"/>
     <id>https://leehm00.github.io/2025/11/03/dairy251103/</id>
     <published>2025-11-03T20:07:38.000Z</published>
-    <updated>2025-11-05T12:36:53.154Z</updated>
+    <updated>2025-11-05T13:07:17.058Z</updated>
     
     
     <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
@@ -163,7 +193,7 @@
     <link href="https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/</id>
     <published>2022-08-09T17:03:30.000Z</published>
-    <updated>2025-11-05T12:36:53.240Z</updated>
+    <updated>2025-11-05T13:07:17.144Z</updated>
     
     
       
@@ -188,7 +218,7 @@
     <link href="https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/</id>
     <published>2022-08-09T17:03:16.000Z</published>
-    <updated>2025-11-05T12:36:53.228Z</updated>
+    <updated>2025-11-05T13:07:17.133Z</updated>
     
     
       
@@ -213,7 +243,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/</id>
     <published>2022-08-09T11:00:53.000Z</published>
-    <updated>2025-11-05T12:36:53.161Z</updated>
+    <updated>2025-11-05T13:07:17.065Z</updated>
     
     
       
@@ -238,7 +268,7 @@
     <link href="https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/"/>
     <id>https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/</id>
     <published>2022-08-09T11:00:00.000Z</published>
-    <updated>2025-11-05T12:36:53.150Z</updated>
+    <updated>2025-11-05T13:07:17.054Z</updated>
     
     
       
@@ -263,7 +293,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/</id>
     <published>2022-08-09T10:35:10.000Z</published>
-    <updated>2025-11-05T12:36:53.161Z</updated>
+    <updated>2025-11-05T13:07:17.066Z</updated>
     
     
       
@@ -288,7 +318,7 @@
     <link href="https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/</id>
     <published>2022-08-09T10:04:06.000Z</published>
-    <updated>2025-11-05T12:36:53.160Z</updated>
+    <updated>2025-11-05T13:07:17.065Z</updated>
     
     
       
@@ -313,7 +343,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/</id>
     <published>2022-08-09T10:00:40.000Z</published>
-    <updated>2025-11-05T12:36:53.162Z</updated>
+    <updated>2025-11-05T13:07:17.066Z</updated>
     
     
       
@@ -338,7 +368,7 @@
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</id>
     <published>2022-08-05T23:07:34.000Z</published>
-    <updated>2025-11-05T12:36:53.298Z</updated>
+    <updated>2025-11-05T13:07:17.202Z</updated>
     
     
       
@@ -367,7 +397,7 @@
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</id>
     <published>2022-08-05T17:40:59.000Z</published>
-    <updated>2025-11-05T12:36:53.297Z</updated>
+    <updated>2025-11-05T13:07:17.201Z</updated>
     
     
       
@@ -392,7 +422,7 @@
     <link href="https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/"/>
     <id>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</id>
     <published>2022-07-31T11:12:32.000Z</published>
-    <updated>2025-11-05T12:36:53.154Z</updated>
+    <updated>2025-11-05T13:07:17.058Z</updated>
     
     
       
@@ -422,7 +452,7 @@
     <link href="https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/"/>
     <id>https://leehm00.github.io/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/</id>
     <published>2022-07-30T17:00:24.000Z</published>
-    <updated>2025-11-05T12:36:53.157Z</updated>
+    <updated>2025-11-05T13:07:17.062Z</updated>
     
     
       
@@ -447,7 +477,7 @@
     <link href="https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/"/>
     <id>https://leehm00.github.io/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/</id>
     <published>2022-04-25T14:53:29.000Z</published>
-    <updated>2025-11-05T12:36:53.298Z</updated>
+    <updated>2025-11-05T13:07:17.202Z</updated>
     
     
       
@@ -472,7 +502,7 @@
     <link href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/"/>
     <id>https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</id>
     <published>2022-04-22T14:27:37.000Z</published>
-    <updated>2025-11-05T12:36:53.176Z</updated>
+    <updated>2025-11-05T13:07:17.081Z</updated>
     
     
       
@@ -491,33 +521,6 @@
     
     
     <category term="redis" scheme="https://leehm00.github.io/tags/redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>计算机数据字节顺序</title>
-    <link href="https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/"/>
-    <id>https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</id>
-    <published>2022-04-15T00:14:28.000Z</published>
-    <updated>2025-11-05T12:36:53.298Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;在C/C++写网络程序的时候，往往会遇到字节的网络顺序和主机顺序的问题。&lt;/p&gt;
-&lt;p&gt;这是就可能用到&lt;code&gt;htons(), ntohl(), ntohs()，htons()&lt;/code&gt;这4个函数。 &lt;/p&gt;
-&lt;p&gt;网络字节顺序与本地字节顺序之间的转换函数：  </summary>
-        
-      
-    
-    
-    
-    <category term="computer" scheme="https://leehm00.github.io/categories/computer/"/>
-    
-    
-    <category term="字节顺序" scheme="https://leehm00.github.io/tags/%E5%AD%97%E8%8A%82%E9%A1%BA%E5%BA%8F/"/>
     
   </entry>
   
