@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>Hello World</title>
+      <link href="/2025/11/09/hello-world/"/>
+      <url>/2025/11/09/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>diary251107</title>
+      <link href="/2025/11/07/diary251107/"/>
+      <url>/2025/11/07/diary251107/</url>
+      
+        <content type="html"><![CDATA[<ol><li><blockquote><p>幸福激素七大来源：</p><p>第一，多巴胺(吃喝、目标达成、睡觉、泡澡）</p><p>第二，内啡肽（运动，如跑步、游泳）</p><p>第三，血清素（阳光照射、规律作息、健康饮食）</p><p>第四，催产素（与亲人拥抱、朋友谈心、爱人相处）</p><p>第五，γ-氨基丁酸（思考，肢体放松练习）</p><p>第六，苯乙胺（恋爱初期）</p><p>第七，乙酰胆碱（学习新技能、探索新事物）</p></blockquote><p>现在说实话纯靠乙酰胆碱撑着。我感觉在导师眼中自己就是一个不听话的学生，然后之前搞砸的一些事情基本上成了我一直的烙印了，现在做的这些也没有说按照他们希望的我以后的发展路线走（简单来说就是没有认真去做系统的工作，而是在狠狠干算法，但是算法就显得他们很多余，系统的实现才是我们实验室培养的博士所应该具有的特质）。</p><p>所以这还是之前的老问题，我的步子跨的有点太大了，老师觉得我对于问题的解决并没有很深入的研究，没有说基于一个系统来做我的研究。我说实话这些听听就行了，自己知道自己几斤几两就好，要是真的以后去了工业界，也没听说师兄们想要和实验室再产生联系的。导师这边算是说不通的古董，基本就是没有办法事事都按照他们的心意发展，如果真的那样卷一年再出一篇asplos之类的文章，本质上和延毕没区别了，但是我还想早点有几篇工作，快点跑路。</p></li><li><blockquote><p>现在鼓励的：买房，结婚，生子，消费，投资A股现在限制的：禁止炒场外黄金，禁止海外开户，禁止直接投资美股，禁止投资虚拟币&nbsp;</p></blockquote><p>含金量懂得都懂。</p></li><li><blockquote><p>当事态不利于你的时候、要记住、事缓则圆、人缓则安。要知道没有任何事情会无缘无故发生在你身上、但同时任何事物的发展趋势都一定不是一条直线、其规律一定是浮动的、它既有不利于你的时候、自然就一定有利于你的时候、有不利于你的一面、一定有利于你的一面。</p><p>一定要学会培养对事情悬而未决的耐受力。避免因急于求成而造成焦虑和烦恼、要允许事情处于灰色地带、接受事情的不可控因素、过度追求掌控、反而容易陷入焦虑与自我消耗。任何问题的到来、你都不需要太着急去回应、否则就是在和自己死磕。</p><p>学会让子弹飞一会儿、绝对是大智慧。事实上、不管多大的事情、到最后都会被解决、不要给自己太大的压力、你的人生也绝对不会因为任何一件单一的事情就毁掉。</p></blockquote><p>是这样的，所以不急。</p></li></ol><p>感觉一直说的要和导师处理好的关系，有点很难处理好了，除非下周我去汇报一点项目相关的东西，表现我给他做了项目，这样符合他的所谓“为实验室作出贡献”的说法，可能会好一些。毕竟我现在做的是有点离经叛道。他本来给了我一篇a，然后想要我出去实习学到一些大模型的从底层到顶层的部署和设计，然后回来帮他完成一篇solid的ai infra工作，但是谁能想到sxf那么菜，那么水呢。但是在他看来，就是我切断了后续和sxf继续合作的可能性，导致唯一的可能的愿意合作的大公司断了。。。这么看起来确实是有点让他非常不开心。</p><p>我自己的工作上现在有点转向算法工作，这和实验室的方向，或者说和导师的利益是有点冲突的，毕竟这些文章就是你自己有用，但是对于老师来说啥用都没有，因为他又不去申请ai口的基金。但是搓两年出来一篇系统或者ai infra的文章，又和我们的发展前景非常割裂，属于是一根筋变成两头堵了。实际上我在和导师相处的过程中一直有一种不自在的感觉，可能是我有些自己的想法，但是他嘴上鼓励我们做自己的事情，有自己的想法结果你去做了，他又会强行给你纠正回来，然后再给你套上一顶浮躁的帽子。又当又立属实是有点难绷。</p><p>但是我现在确实也没有那种独立去做的勇气和底气，只能说我先可以往鼎基老师那边靠一靠，因为我感觉自己找方向有点困难，宴齐玉炜老师似乎有点给不出来实际能做的方向和idea，而我现在自己调研再去做有点干不过来，似乎和鼎基老师合作是最好的选择了。然后那篇算法就只能自己继续悄悄做了，看自己能不能做到铁人模式吧，让恬总多帮帮忙就行。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 随笔 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 日记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>zsh配置</title>
       <link href="/2025/11/07/zsh-pei-zhi/"/>
       <url>/2025/11/07/zsh-pei-zhi/</url>
@@ -23,19 +61,6 @@
             <tag> zsh </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2025/11/06/hello-world/"/>
-      <url>/2025/11/06/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="language-bash" data-language="bash"><code class="language-bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
       
     </entry>
     
