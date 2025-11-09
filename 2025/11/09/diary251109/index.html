@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="GOmake函数和slice，map解析, LLM">
+    <meta name="keywords" content="diary251109, LLM">
     <meta name="description" content="USTC | CS | Distributed System | In-memory Key-Value Store">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>GOmake函数和slice，map解析 | homie&#39;s Home</title>
+    <title>diary251109 | homie&#39;s Home</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -326,12 +326,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">GOmake函数和slice，map解析</h1>
+                    <h1 class="description center-align post-title">diary251109</h1>
                 </div>
             </div>
         </div>
@@ -447,8 +447,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/make%E5%87%BD%E6%95%B0/">
-                                <span class="chip bg-color">make函数</span>
+                            <a href="/tags/%E6%97%A5%E8%AE%B0/">
+                                <span class="chip bg-color">日记</span>
                             </a>
                         
                     </div>
@@ -459,8 +459,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/go/" class="post-category">
-                                go
+                            <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
+                                随笔
                             </a>
                         
                     </div>
@@ -472,7 +472,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-02-21
+                    2025-11-09
                 </div>
                 
 
@@ -486,14 +486,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.3k
+                    2.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    7 分
                 </div>
                 
 
@@ -511,116 +511,58 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="make函数"><a href="#make函数" class="headerlink" title="make函数"></a>make函数</h1><ul>
-<li>首先看个例子</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
-<span class="token keyword">import</span> <span class="token punctuation">(</span>
- <span class="token string">"fmt"</span>
-<span class="token punctuation">)</span>
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
- <span class="token keyword">var</span> i <span class="token operator">*</span><span class="token builtin">int</span>
- <span class="token operator">*</span>i<span class="token operator">=</span><span class="token number">10</span>
- fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">*</span>i<span class="token punctuation">)</span>
-<span class="token punctuation">}</span></code></pre>
-
-<ul>
-<li>这个例子会打印出什么？0还是10?。以上全错，运行的时候会painc，原因如下：</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token builtin">panic</span><span class="token punctuation">:</span> runtime <span class="token builtin">error</span><span class="token punctuation">:</span> invalid memory address or <span class="token boolean">nil</span> pointer dereference</code></pre>
-
-<ul>
-<li>从这个提示中可以看出，对于引用类型的变量，我们不光要声明它，还要为它分配内容空间，否则我们的值放在哪里去呢？这就是上面错误提示的原因</li>
-<li>对于值类型的声明不需要，是因为已经默认帮我们分配好了</li>
-<li>分配内存，Go提供了两种方式，分别是new和make</li>
-</ul>
-<h2 id="new"><a href="#new" class="headerlink" title="new"></a>new</h2><p>Go提供内建函数new</p>
-<pre class="language-swift" data-language="swift"><code class="language-swift"><span class="token keyword">func</span> <span class="token function-definition function">new</span><span class="token punctuation">(</span><span class="token keyword">Type</span><span class="token punctuation">)</span> <span class="token operator">*</span><span class="token keyword">Type</span></code></pre>
-
-<ul>
-<li>它只接受一个参数，这个参数是一个类型，分配好内存后，返回一个指向该类型内存地址的指针。同时请注意它同时把分配的内存置为零，也就是类型的零值。那么上面的函数可以改写成</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
- <span class="token keyword">var</span> i <span class="token operator">*</span><span class="token builtin">int</span>
- i<span class="token operator">=</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">)</span>
- <span class="token operator">*</span>i<span class="token operator">=</span><span class="token number">10</span>
- fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">*</span>i<span class="token punctuation">)</span>
-<span class="token punctuation">}</span></code></pre>
-
-<ul>
-<li>这就是new，它返回的永远是类型的指针，指向分配类型的内存地址</li>
-</ul>
-<h2 id="make"><a href="#make" class="headerlink" title="make"></a>make</h2><ul>
-<li>make也是用于内存分配的，但和new不同，它只用于通道chan、映射map以及切片slice的内存创建</li>
-<li>它的返回的类型就是这三个类型本身，而不是他们的指针类型，因为这三种类型本身就是引用类型</li>
-<li>注意，因为这三种类型是引用类型，所以必须得初始化，但不是置为零值</li>
-</ul>
-<pre class="language-swift" data-language="swift"><code class="language-swift"><span class="token keyword">func</span> <span class="token function-definition function">make</span><span class="token punctuation">(</span>t <span class="token keyword">Type</span><span class="token punctuation">,</span> size <span class="token operator">...</span><span class="token class-name">IntegerType</span><span class="token punctuation">)</span> <span class="token keyword">Type</span></code></pre>
-
-<h2 id="make和new对比"><a href="#make和new对比" class="headerlink" title="make和new对比"></a>make和new对比</h2><ul>
-<li>二者都是内存的分配（堆上），但是make只用于slice、map以及channel的初始化（非零值）；而new用于类型的内存分配，并且内存置为零</li>
-<li>make返回的还是这三个引用类型本身；而new返回的是指向类型的指针</li>
-<li>new不常用，通常都是采用短语句声明以及结构体的字面量达到我们的目的，比如：</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go">i<span class="token operator">:=</span><span class="token number">0</span>
-u<span class="token operator">:=</span>user<span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre>
-
-<ul>
-<li>make函数是无可替代的</li>
-</ul>
-<h1 id="切片slice"><a href="#切片slice" class="headerlink" title="切片slice"></a>切片slice</h1><ul>
-<li>Slice和数组类似，也是表示一个有序元素，但这个序列的长度可变，具有动态长度特性</li>
-<li>切片（slice）是对底层数组一个连续片段的引用，所以切片是一个引用类型</li>
-<li>内部实现的数据结构通过指针引用底层数组，设定相关属性将数据读写操作限定在指定的区域内</li>
-<li>切片本身是一个只读对象，其工作机制类似数组指针的一种封装</li>
-<li>多个切片可以指向同一个底层数组，实现了内存共享</li>
-<li>Slice 的数据结构定义如下:</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">type</span> slice <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-    array unsafe<span class="token punctuation">.</span>Pointer
-    <span class="token builtin">len</span>   <span class="token builtin">int</span>
-    <span class="token builtin">cap</span>   <span class="token builtin">int</span>
-<span class="token punctuation">}</span></code></pre>
-
-<ul>
-<li>切片的结构体由3部分构成，Pointer 是指向一个底层数组的指针，len 代表当前切片的长度，cap 是当前切片的容量，cap 总是大于等于 len 的</li>
-</ul>
-<h2 id="切片的使用"><a href="#切片的使用" class="headerlink" title="切片的使用"></a>切片的使用</h2><ul>
-<li>Go语言提供的内置函数make()可以用于灵活地创建数组切片</li>
-<li>创建方式make([]type, len, cap)，其中，type表示数组元素类型，len表示长度，cap表示容量</li>
-<li>还有一种切片字面量方式创建切片</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token comment">//创建一个初始元素长度为5的数组切片，元素初始值为0： </span>
-mySlice1 <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span> 
-<span class="token comment">//创建一个初始元素长度为5的数组切片，元素初始值为0，并预留10个元素的存储空间： </span>
-mySlice2 <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span> 
-<span class="token comment">//切片字面量创建长度为5容量为5的切片,需要注意的是 [ ] 里面不要写数组的容量，因为如果写了个数以后就是数组了，而不是切片了。</span>
-mySlice3 <span class="token operator">:=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span><span class="token punctuation">{</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token number">40</span><span class="token punctuation">,</span><span class="token number">50</span><span class="token punctuation">}</span></code></pre>
-
-<h1 id="映射map"><a href="#映射map" class="headerlink" title="映射map"></a>映射map</h1><ul>
-<li>map是一种数据结构，用于存储一系列无序的键值对，类似java的HashMap</li>
-<li>通过散列表实现，使用两个数据结构来存储数据，一个数组用于选择桶的散列键的高八位值，可以区分每个键值属于哪个桶；另一个字节数组，用于存储键值对</li>
-<li>创建方式make(map[keyType] valueType, cap)，其中keyType表示键类型，valueType表示值类型，cap表示初始存储能力</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token comment">//创建了一个键类型为string、值类型为PersonInfo</span>
-myMap <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span> PersonInfo<span class="token punctuation">)</span> 
-<span class="token comment">//也可以选择是否在创建时指定该map的初始存储能力，创建了一个初始存储能力为100的map.</span>
-myMap <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span> PersonInfo<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span> 
-<span class="token comment">//创建并初始化map的代码.</span>
-myMap <span class="token operator">=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span> PersonInfo<span class="token punctuation">{</span> 
-  <span class="token string">"1234"</span><span class="token punctuation">:</span> PersonInfo<span class="token punctuation">{</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"Jack"</span><span class="token punctuation">,</span> <span class="token string">"Room 101,..."</span><span class="token punctuation">}</span><span class="token punctuation">,</span> 
-<span class="token punctuation">}</span> </code></pre>
-
-<h1 id="通道channel"><a href="#通道channel" class="headerlink" title="通道channel"></a>通道channel</h1><ul>
-<li>channel的内容在《浅谈Go并发编程》中已经介绍过了 不累赘</li>
-<li>创建方式make(chan type, cap)，其中type表示通道数据类型，cap表示缓存容量</li>
-</ul>
-<pre class="language-go" data-language="go"><code class="language-go"><span class="token comment">//创建有缓存通道</span>
-ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
-<span class="token comment">//创建无缓存通道</span>
-ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span></code></pre>
-
-<p>转自<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f01841004810">Go内建函数make及切片slice、映射map详解</a></p>
+                <p>投完论文的一个月真的是拼了命的在干活，结果落得了一个“感觉你没有积累学习到什么东西，知识非常浅薄”的评价和下场。甚至觉得“你不符合我们的教育的模式和方向，虽然我知道有磨合期，但是你现在的能力还是不如一个合格的我们实验室走出去的博士生”。</p>
+<p>我觉得有点无力到想笑。是我用力过猛了吗。我努力这个月几乎没有休假，七天满勤，搞出来现在的雏形，被批判了不够系统，讲的全是算法的东西，从第一页你的“扁平化”这个形容词出来的时候我就听不懂了，后面就不想听了。</p>
+<p>我真的没办法了。</p>
+<ol>
+<li><blockquote>
+<p>改变自己的信念系统，才能改变你想改变的一切。你相信什么，什么才会出现；你怎么想，你就会怎么经历。 </p>
+</blockquote>
+<p>我觉得确实有些时候需要坚持一些我认为正确的东西，所以我觉得影响双线开始抓，而不是开摆。应该正面面对这些问题。毕竟是自己选择的一些东西，也需要自己去面对。</p>
+</li>
+<li><blockquote>
+<p>“自体晃动”，它大概描述的是你从内心失衡到复原前的一个过程。在自体晃动期间，你会体验到心神不宁、脆弱、孤独、抑郁，它是一种比底色更强烈，会激发你各种“动作”的心理状态。</p>
+<p>比如你的伴侣长时间没有给你回消息，你感觉到惶惶不宁的时候；又或是你被某些人或事“创到”，激发了创伤心境的时候。我甚至还见过一种情况，一个人平时被自己厌恶的工作和生活琐事填充着，偶尔得到了完全空闲的某一天，ta却陷入了一种不知道要做什么的虚无感中，并且体会着一种逐步加剧的心发慌的感觉。</p>
+<p>所谓的晃动，它不及崩解的溃散，却也超出了个人情绪调节的复原能力。人在晃动时是做不了正经事情的，会有一种完全变换了模样的“心境”体验：心可能会一直紧绷着，又或是如同掉进了某个漩涡或无人之境里，人在此时会用很多“失序的行为”去尝试抵消它。比如你可能会不自觉的联系从来不联系的人，可能会有一些强迫行为，可能会有一些比以往更加频繁和程度增强的成瘾行为。</p>
+<p>如果一个人经常会遭遇这种情况，说明当下的生活正缺少着安全和秩序，缺少着价值和意义，缺少着真正的关系体验。还有可能，生活中一直存在着没有被直面和处理的东西，它会在你的“日常”遮盖不了时颠覆你的平衡。</p>
+</blockquote>
+<p>我感觉现在就是那种情况。由于主业上面的受挫之类的开始出现了迷茫和犹豫。虽然我在和同学们的交流中得到了一次又一次的肯定，但是我觉得在自己的内心深处还是没有缓过劲。</p>
+</li>
+<li><blockquote>
+<p>注意用脑卫生。</p>
+<p>什么是不卫生:</p>
+<p>1.没睡好(很好理解，没充满电)</p>
+<p>2.频繁多任务切换(长期损伤执行功能) </p>
+<p>3.信息过载、决策疲劳(能量耗竭) </p>
+<p>4.慢性压力+压抑情绪(毒素，促炎)</p>
+<p>5.高糖饮食(氧化应激反应，攻击线粒体，促炎)</p>
+<p>什么是用脑卫生: </p>
+<p>1.睡眠第一位</p>
+<p>2.深度工作(dive deep) </p>
+<p>3.规律运动</p>
+<p>4.冥想(放松只是冥想微不足道的好处之一) </p>
+<p>5.适当认知挑战(学点新复杂东西)</p>
+<p>6.地中海饮食(优质脂肪，保证膳食纤维，抗氧化，抗炎) </p>
+<p>7.接触自然</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>怎么能做到知识面广一点？我的一点经验。</p>
+<p>第一、最好不上班，而是做生意的。</p>
+<p>因为一旦上班，就会聚焦在工作的一亩三分地上面，天天盯项目，配合同事，知识面必然不宽阔。不知道你们发现没有，一个老板，他的长期朋友往往也是老板，而很少出现，一个老板和一上班的，因为大家关注点不同，没办法一直聊得来。</p>
+<p>第二、保持好奇心，这个最重要。</p>
+<p>看见路边出现一个饭店，立马把自己带入进去，如果自己来经营，如何选址？如何招人？如何做菜单？经营不下去，应该如何退出？</p>
+<p>只要总这么想去琢磨，就会获得很多各行各业的知识。</p>
+<p>第三、会搜索，会结交人脉，会分享。</p>
+<p>现在网络太发达，什么都搜得到，80%的知识只要搜，且会搜，就可以懂。然后剩下的，属于不传之秘，或者比较专业压箱底的，只能去请教业内人士，让业内人士愿意说，这个也需要积累。你懂的多了后，乐于分享自己的知识给别人，别人也会乐意分享给你。</p>
+<p>总结下，就是有空闲时间+喜欢琢磨+乐于分享，只要几年积累，你就是个百事通了。</p>
+</blockquote>
+<p>我一直觉得，其实比起我在前二十多年的学生生涯中学到的知识更重要的，是如何增长自己的见识。当时自己的父母总是说，和人打交道这种东西很简单，你连数学那么难都能学明白，社交根本不算事情。其实自己做了才知道完全不是这回事，很多小心思小九九。自己现在有一种有心去增加自己 的社会经历和见识，结果苦于没有相应的办法和方法的痛苦中。</p>
+</li>
+</ol>
+<p>室友可不可以不要在门口挂上有水馊味的衣服，我真的有点讨厌这种味道。</p>
+<p>今天看比赛，想起来一个很久远的话题，中国的教育。中国教育真的是唯有读书高，这个想法已经成了绝大多数人的刻板印象。所以其他发展，包括艺体生，甚至在我的潜意识里面也都还是多少会看不起的，即使他们中的佼佼者比我强了很多很多，我也会觉得，他们可能在品行，见识方面肯定是不如我的。包括我接触到的家教的学生，甚至拆迁户家庭，单亲妈妈押宝一切在那个并不会认真学习的小孩身上，自己过着微商的苦日子，靠着拆迁来的一套房子度日<strong>，为了给孩子补课甚至借上了几十万贷款</strong>。中国人都被学历绑架了，和做辅导班的同学聊天，原来整个合肥，都是这样，因为城市的极度扩张，使得无数没有文化的农民成了拆一代，他们不知道如何守住手中的财富，便相信的国家的宣传，穷尽所有资源压在了读书上面，期冀着下一代能够光宗耀祖，这也是合肥的家长特别鸡娃的原因所在。</p>
+<p>回到比赛上面，电竞比赛，本来游戏作为大家的消遣，真的投入时间钻研游戏的，都大概会是一些小镇青年类的似乎本来看不到未来的人（在上述中国的体制和观念下）。但是也就像是拆迁一样，资本捧起来了游戏电竞这个行业，他们可能本来就没有成体系的训练，素质也不是很高，所以一切看起来都像是人口红利中的抽卡。那么在游戏管理越来越严格的现在，青黄不接的情况肯定是越来越明显，国内又想通过这个盈利，又不想青少年过度接触游戏，一根筋变成了两头堵。这更加导致只有管理更不严格的地方可能有更多玩游戏的机会，而他们不严格的管理更有可能是家庭教育的缺失的副产品，那么捧出来的电竞选手们，能有多少的见识，素质和度量，能作为偶像存在呢。</p>
 
                 
             </div>
@@ -647,7 +589,7 @@ ch <span class="token operator">:=</span> <span class="token function">make</spa
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/">https://leehm00.github.io/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/</a>
+                    <a href="https://leehm00.github.io/2025/11/09/diary251109/">https://leehm00.github.io/2025/11/09/diary251109/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -685,8 +627,8 @@ ch <span class="token operator">:=</span> <span class="token function">make</spa
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/make%E5%87%BD%E6%95%B0/">
-                                    <span class="chip bg-color">make函数</span>
+                                <a href="/tags/%E6%97%A5%E8%AE%B0/">
+                                    <span class="chip bg-color">日记</span>
                                 </a>
                             
                         </div>
@@ -856,46 +798,48 @@ ch <span class="token operator">:=</span> <span class="token function">make</spa
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/02/24/hui-yi-ji-lu/">
+                <a href="/2025/11/09/diary251109/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="会议记录">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="diary251109">
                         
-                        <span class="card-title">会议记录</span>
+                        <span class="card-title">diary251109</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Here's something encrypted, password is required to continue reading.
+                            
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-02-24
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2025-11-09
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
+                            <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
+                                    随笔
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/">
-                        <span class="chip bg-color">会议记录</span>
+                    <a href="/tags/%E6%97%A5%E8%AE%B0/">
+                        <span class="chip bg-color">日记</span>
                     </a>
                     
                 </div>
@@ -909,13 +853,13 @@ ch <span class="token operator">:=</span> <span class="token function">make</spa
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/02/16/mit-6-824-2022-notes-2-chinese-version/">
+                <a href="/2025/11/09/hello-world/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="MIT 6.824 2022 notes 2 chinese version">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
                         
-                        <span class="card-title">MIT 6.824 2022 notes 2 chinese version</span>
+                        <span class="card-title">Hello World</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -926,27 +870,15 @@ ch <span class="token operator">:=</span> <span class="token function">make</spa
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2025-11-09
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            homie
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/course/">
-                        <span class="chip bg-color">course</span>
-                    </a>
-                    
                 </div>
                 
             </div>

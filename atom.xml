@@ -6,7 +6,7 @@
   <link href="https://leehm00.github.io/atom.xml" rel="self"/>
   
   <link href="https://leehm00.github.io/"/>
-  <updated>2025-11-09T13:59:24.505Z</updated>
+  <updated>2025-11-09T15:48:08.634Z</updated>
   <id>https://leehm00.github.io/</id>
   
   <author>
@@ -17,11 +17,37 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>diary251109</title>
+    <link href="https://leehm00.github.io/2025/11/09/diary251109/"/>
+    <id>https://leehm00.github.io/2025/11/09/diary251109/</id>
+    <published>2025-11-09T21:59:27.000Z</published>
+    <updated>2025-11-09T15:48:08.634Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;投完论文的一个月真的是拼了命的在干活，结果落得了一个“感觉你没有积累学习到什么东西，知识非常浅薄”的评价和下场。甚至觉得“你不符合我们的教育的模式和方向，虽然我知道有磨合期，但是你现在的能力还是不如一个合格的我们实验室走出去的博士生”。&lt;/p&gt;
+&lt;p&gt;我觉得有点无力到想笑。</summary>
+        
+      
+    
+    
+    
+    <category term="随笔" scheme="https://leehm00.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+    <category term="日记" scheme="https://leehm00.github.io/tags/%E6%97%A5%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hello World</title>
     <link href="https://leehm00.github.io/2025/11/09/hello-world/"/>
     <id>https://leehm00.github.io/2025/11/09/hello-world/</id>
-    <published>2025-11-09T13:59:24.505Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
+    <published>2025-11-09T15:48:08.634Z</published>
+    <updated>2025-11-09T15:48:08.634Z</updated>
     
     
       
@@ -42,7 +68,7 @@
     <link href="https://leehm00.github.io/2025/11/07/diary251107/"/>
     <id>https://leehm00.github.io/2025/11/07/diary251107/</id>
     <published>2025-11-07T16:53:41.000Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
+    <updated>2025-11-09T15:48:08.634Z</updated>
     
     
       
@@ -73,7 +99,7 @@
     <link href="https://leehm00.github.io/2025/11/07/zsh-pei-zhi/"/>
     <id>https://leehm00.github.io/2025/11/07/zsh-pei-zhi/</id>
     <published>2025-11-07T00:45:46.000Z</published>
-    <updated>2025-11-09T13:59:24.623Z</updated>
+    <updated>2025-11-09T15:48:08.722Z</updated>
     
     
     
@@ -90,7 +116,7 @@
     <link href="https://leehm00.github.io/2025/11/06/diary251106/"/>
     <id>https://leehm00.github.io/2025/11/06/diary251106/</id>
     <published>2025-11-06T11:15:59.000Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
+    <updated>2025-11-09T15:48:08.634Z</updated>
     
     
       
@@ -118,7 +144,7 @@
     <link href="https://leehm00.github.io/2025/11/05/diary251105/"/>
     <id>https://leehm00.github.io/2025/11/05/diary251105/</id>
     <published>2025-11-05T20:37:27.000Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
+    <updated>2025-11-09T15:48:08.634Z</updated>
     
     
       
@@ -148,7 +174,7 @@
     <link href="https://leehm00.github.io/2025/11/05/github-action-shi-xian-zi-dong-bu-shu-hexo-bo-ke/"/>
     <id>https://leehm00.github.io/2025/11/05/github-action-shi-xian-zi-dong-bu-shu-hexo-bo-ke/</id>
     <published>2025-11-05T13:11:46.000Z</published>
-    <updated>2025-11-09T13:59:24.500Z</updated>
+    <updated>2025-11-09T15:48:08.629Z</updated>
     
     
       
@@ -173,7 +199,7 @@
     <link href="https://leehm00.github.io/2025/11/04/diary251104/"/>
     <id>https://leehm00.github.io/2025/11/04/diary251104/</id>
     <published>2025-11-04T17:42:03.000Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
+    <updated>2025-11-09T15:48:08.634Z</updated>
     
     
       
@@ -200,7 +226,7 @@
     <link href="https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/"/>
     <id>https://leehm00.github.io/2025/11/04/dependabot-build-jiao-cheng/</id>
     <published>2025-11-04T10:31:15.000Z</published>
-    <updated>2025-11-09T13:59:24.495Z</updated>
+    <updated>2025-11-09T15:48:08.624Z</updated>
     
     
       
@@ -225,7 +251,7 @@
     <link href="https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/"/>
     <id>https://leehm00.github.io/2025/11/04/deploy-hexo-in-win-with-wsl/</id>
     <published>2025-11-04T00:42:27.000Z</published>
-    <updated>2025-11-09T13:59:24.495Z</updated>
+    <updated>2025-11-09T15:48:08.624Z</updated>
     
     
       
@@ -250,7 +276,7 @@
     <link href="https://leehm00.github.io/2025/11/03/dairy251103/"/>
     <id>https://leehm00.github.io/2025/11/03/dairy251103/</id>
     <published>2025-11-03T20:07:38.000Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
+    <updated>2025-11-09T15:48:08.634Z</updated>
     
     
     <summary type="html">Here&#39;s something encrypted, password is required to continue reading.</summary>
@@ -269,7 +295,7 @@
     <link href="https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/</id>
     <published>2022-08-09T17:03:30.000Z</published>
-    <updated>2025-11-09T13:59:24.621Z</updated>
+    <updated>2025-11-09T15:48:08.721Z</updated>
     
     
       
@@ -294,7 +320,7 @@
     <link href="https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/"/>
     <id>https://leehm00.github.io/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/</id>
     <published>2022-08-09T17:03:16.000Z</published>
-    <updated>2025-11-09T13:59:24.606Z</updated>
+    <updated>2025-11-09T15:48:08.709Z</updated>
     
     
       
@@ -319,7 +345,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/</id>
     <published>2022-08-09T11:00:53.000Z</published>
-    <updated>2025-11-09T13:59:24.512Z</updated>
+    <updated>2025-11-09T15:48:08.641Z</updated>
     
     
       
@@ -344,7 +370,7 @@
     <link href="https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/"/>
     <id>https://leehm00.github.io/2022/08/09/pom-shen-ru-yu-qiang-hua/</id>
     <published>2022-08-09T11:00:00.000Z</published>
-    <updated>2025-11-09T13:59:24.501Z</updated>
+    <updated>2025-11-09T15:48:08.630Z</updated>
     
     
       
@@ -369,7 +395,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/</id>
     <published>2022-08-09T10:35:10.000Z</published>
-    <updated>2025-11-09T13:59:24.513Z</updated>
+    <updated>2025-11-09T15:48:08.642Z</updated>
     
     
       
@@ -394,7 +420,7 @@
     <link href="https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/"/>
     <id>https://leehm00.github.io/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/</id>
     <published>2022-08-09T10:04:06.000Z</published>
-    <updated>2025-11-09T13:59:24.511Z</updated>
+    <updated>2025-11-09T15:48:08.641Z</updated>
     
     
       
@@ -419,7 +445,7 @@
     <link href="https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/"/>
     <id>https://leehm00.github.io/2022/08/09/maven-qi-ta-he-xin-gai-nian/</id>
     <published>2022-08-09T10:00:40.000Z</published>
-    <updated>2025-11-09T13:59:24.513Z</updated>
+    <updated>2025-11-09T15:48:08.642Z</updated>
     
     
       
@@ -444,7 +470,7 @@
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</id>
     <published>2022-08-05T23:07:34.000Z</published>
-    <updated>2025-11-09T13:59:24.698Z</updated>
+    <updated>2025-11-09T15:48:08.778Z</updated>
     
     
       
@@ -473,7 +499,7 @@
     <link href="https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/"/>
     <id>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</id>
     <published>2022-08-05T17:40:59.000Z</published>
-    <updated>2025-11-09T13:59:24.697Z</updated>
+    <updated>2025-11-09T15:48:08.777Z</updated>
     
     
       
@@ -490,36 +516,6 @@
     
     
     <category term="maven" scheme="https://leehm00.github.io/tags/maven/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>idea创建javaweb项目并部署运行</title>
-    <link href="https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/"/>
-    <id>https://leehm00.github.io/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/</id>
-    <published>2022-07-31T11:12:32.000Z</published>
-    <updated>2025-11-09T13:59:24.505Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;在创建项目的时候选择module并选择javaweb，之后就会出现同时带有web文件夹和src文件夹的一个项目&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;在web文件夹实现前端代码，在src实现后端代码&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;编写好代码之后就可以配置当</summary>
-        
-      
-    
-    
-    
-    <category term="java" scheme="https://leehm00.github.io/categories/java/"/>
-    
-    
-    <category term="javaweb" scheme="https://leehm00.github.io/tags/javaweb/"/>
     
   </entry>
   
