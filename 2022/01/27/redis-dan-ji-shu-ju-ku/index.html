@@ -1,0 +1,484 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>redis单机数据库以及持久化 | homie's Home</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="单机数据库实现和持久化数据库细节实现 数据库的数据结构  源代码： typedef struct redisDb {     &#x2F;&#x2F; 数据库键空间，保存着数据库中的所有键值对     dict *dict;                 &#x2F;* The keyspace for this DB *&#x2F;     &#x2F;&#x2F; 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳     dict *">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis单机数据库以及持久化">
+<meta property="og:url" content="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="单机数据库实现和持久化数据库细节实现 数据库的数据结构  源代码： typedef struct redisDb {     &#x2F;&#x2F; 数据库键空间，保存着数据库中的所有键值对     dict *dict;                 &#x2F;* The keyspace for this DB *&#x2F;     &#x2F;&#x2F; 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳     dict *">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:published_time" content="2022-01-27T09:08:58.000Z">
+<meta property="article:modified_time" content="2025-11-10T14:00:07.574Z">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "redis单机数据库以及持久化",
+  "url": "https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/",
+  "image": "https://leehm00.github.io/img/ibuki.png",
+  "datePublished": "2022-01-27T09:08:58.000Z",
+  "dateModified": "2025-11-10T14:00:07.574Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "homie",
+      "url": "https://leehm00.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'redis单机数据库以及持久化',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a><a class="nav-page-title" href="/"><span class="site-name">redis单机数据库以及持久化</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">redis单机数据库以及持久化</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-01-27T09:08:58.000Z" title="发表于 2022-01-27 09:08:58">2022-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kv/">kv</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="单机数据库实现和持久化"><a href="#单机数据库实现和持久化" class="headerlink" title="单机数据库实现和持久化"></a>单机数据库实现和持久化</h1><h2 id="数据库细节实现"><a href="#数据库细节实现" class="headerlink" title="数据库细节实现"></a>数据库细节实现</h2><ul>
+<li><p>数据库的数据结构</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisDb</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 数据库键空间，保存着数据库中的所有键值对</span>
+    dict <span class="token operator">*</span>dict<span class="token punctuation">;</span>                 <span class="token comment">/* The keyspace for this DB */</span>
+    <span class="token comment">// 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳</span>
+    dict <span class="token operator">*</span>expires<span class="token punctuation">;</span>              <span class="token comment">/* Timeout of keys with a timeout set */</span>
+    <span class="token comment">// 正处于阻塞状态的键</span>
+    dict <span class="token operator">*</span>blocking_keys<span class="token punctuation">;</span>        <span class="token comment">/* Keys with clients waiting for data (BLPOP)*/</span>
+    <span class="token comment">// 可以解除阻塞的键</span>
+    dict <span class="token operator">*</span>ready_keys<span class="token punctuation">;</span>           <span class="token comment">/* Blocked keys that received a PUSH */</span>
+    <span class="token comment">// 正在被 WATCH 命令监视的键</span>
+    dict <span class="token operator">*</span>watched_keys<span class="token punctuation">;</span>         <span class="token comment">/* WATCHED keys for MULTI/EXEC CAS */</span>
+    <span class="token comment">//数据库编码</span>
+    <span class="token keyword">int</span> id<span class="token punctuation">;</span>                     <span class="token comment">/* Database ID */</span>
+    <span class="token comment">// 数据库的键的平均 TTL ，统计信息</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> avg_ttl<span class="token punctuation">;</span>          <span class="token comment">/* Average TTL, just for stats */</span>
+    <span class="token comment">//过期指针</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> expires_cursor<span class="token punctuation">;</span> <span class="token comment">/* Cursor of the active expire cycle. */</span>
+    <span class="token comment">//即将整理的键名称,用一个list保存</span>
+    list <span class="token operator">*</span>defrag_later<span class="token punctuation">;</span>         <span class="token comment">/* List of key names to attempt to defrag one by one, gradually. */</span>
+<span class="token punctuation">}</span> redisDb<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>Hash table type implementation</p>
+<ul>
+<li>tryResizeHashTables()用于缩小字典体积：如果字典的使用率比 HASHTABLE_MIN_MINFILL 常量要低，那么通过缩小字典的体积来节约内存,htNeedsResize()就是比较这两个大小的函数,在有孩子进程的时候不会进行resize</li>
+<li>服务器在对数据库执行增删改查命令时会对数据库进行渐进式 rehash ,但如果服务器长期没有执行命令的话，数据库字典的 rehash 就可能一直没办法完成,为了防止出现这种情况，incrementallyRehash()主动 rehash ,执行了rehash之后返回1,否则返回0</li>
+</ul>
+</li>
+</ul>
+<h3 id="过期功能实现"><a href="#过期功能实现" class="headerlink" title="过期功能实现"></a>过期功能实现</h3><ul>
+<li><p>设置生存和过期时间</p>
+<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211110165635236.png" alt="image-20211110165635236"></p>
+</li>
+<li><p>带有生存和过期时间的数据库</p>
+<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211110165743757.png" alt="image-20211110165743757"></p>
+<p>添加过期时间就是在过期字典中添加项目,移除过期时间就是在过期字典中删除对应的项目,键过期时间和当前时间做差就可以计算出生存时间.</p>
+</li>
+<li><p>过期键删除:</p>
+<ul>
+<li><p>惰性删除</p>
+<ul>
+<li><p>db.c的expireIfNeeded()函数对于所有的输入键检查是否过期,过期的键直接删除</p>
+<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111154024925.png" alt="image-20211111154024925"></p>
+<ul>
+<li>定期删除<ul>
+<li>由expire.c中的activeExpireCycle()函数实现定期删除,当服务器定期执行server.c的serverCron()函数时,就会调用,在expire字典中随机检查一部分键的过期时间,并且删除其中的过期键.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RDB对于过期键处理</p>
+<ul>
+<li>生成时过期键不加入RDB文件中</li>
+<li>主服务器载入时检查键是否过期,过期键不加入数据库;从服务器不检查,但是会和主服务器同步数据,同步的时候也会清除过期键</li>
+</ul>
+</li>
+<li><p>AOF对于过期键处理</p>
+<ul>
+<li><p>写入时如果键过期但没有删除,不会影响,当(惰性或者定期)删除的时候追加一条DEL</p>
+<ul>
+<li><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111214557807.png" alt="image-20211111214557807"></li>
+</ul>
+</li>
+<li><p>重写入的时候检查键是否过期,过期键不加入数据库</p>
+</li>
+</ul>
+</li>
+<li><p>复制对于过期键处理</p>
+<ul>
+<li><p>主服务器处理,之后对从服务器发送DEL,从服务器对于过期键不做处理</p>
+</li>
+<li><p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111220239415.png" alt="image-20211111220239415"></p>
+<p><img src="/2022/01/27/redis-dan-ji-shu-ju-ku/image-20211111220255616.png" alt="image-20211111220255616"></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据库通知"><a href="#数据库通知" class="headerlink" title="数据库通知"></a>数据库通知</h3><ul>
+<li><p>可以监视对键的操作情况,或者是监视某个指令的使用情况</p>
+</li>
+<li><p>由notify.c/notifyKeyspaceEvent()函数实现:</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre class="language-c#" data-language="c#"><code class="language-c#">
+/* The API provided to the rest of the Redis core is a simple function:
+ *实现了发送数据库通知的功能
+ * notifyKeyspaceEvent(int type, char *event, robj *key, int dbid);
+ *
+ * 'type' is the notification class we define in `server.h`.
+ * type是当前想要发送的通知的类型,根据这个判断通知发送与否,提前在server.h中定义过种类
+ * 'event' is a C string representing the event name.
+ *  event 参数是一个字符串表示的事件名
+ * 'key' is a Redis object representing the key name.
+ * key 参数是一个 Redis 对象表示的键名,是产生事件的键
+ * 'dbid' is the database ID where the key lives.
+ * dbid 参数为键所在(产生事件)的数据库  
+ * 每当一个redis命令需要发送数据库通知的时候,都会调用此函数,向函数传递命令的相关信息*/
+void notifyKeyspaceEvent(int type, char *event, robj *key, int dbid) {
+    sds chan;
+    robj *chanobj, *eventobj;
+    int len = -1;
+    char buf[24];
+
+    /* If any modules are interested in events, notify the module system now.
+     * This bypasses the notifications configuration, but the module engine
+     * will only call event subscribers if the event type matches the types
+     * they are interested in. */
+     moduleNotifyKeyspaceEvent(type, event, key, dbid);
+
+    /* If notifications for this class of events are off, return ASAP. 
+    如果给定通知不是服务器允许发送的通知,直接返回*/
+    if (!(server.notify_keyspace_events &amp; type)) return;
+
+    eventobj = createStringObject(event,strlen(event));
+
+    /* __keyspace@&lt;db&gt;__:&lt;key&gt; &lt;event&gt; notifications. */
+    //发送键空间通知
+    if (server.notify_keyspace_events &amp; NOTIFY_KEYSPACE) {
+        chan = sdsnewlen("__keyspace@",11);
+        len = ll2string(buf,sizeof(buf),dbid);
+        chan = sdscatlen(chan, buf, len);
+        chan = sdscatlen(chan, "__:", 3);
+        chan = sdscatsds(chan, key-&gt;ptr);
+        chanobj = createObject(OBJ_STRING, chan);
+        pubsubPublishMessage(chanobj, eventobj);//通过publish发送通知
+        decrRefCount(chanobj);
+    }
+
+    /* __keyevent@&lt;db&gt;__:&lt;event&gt; &lt;key&gt; notifications. */
+    //发送键时间通知
+    if (server.notify_keyspace_events &amp; NOTIFY_KEYEVENT) {
+        chan = sdsnewlen("__keyevent@",11);
+        //初始化为-1,加入前面发送键空间通知的时候计算过了就不会是-1,少计算一次
+        if (len == -1) len = ll2string(buf,sizeof(buf),dbid);
+        chan = sdscatlen(chan, buf, len);
+        chan = sdscatlen(chan, "__:", 3);
+        chan = sdscatsds(chan, eventobj-&gt;ptr);
+        chanobj = createObject(OBJ_STRING, chan);
+        pubsubPublishMessage(chanobj, key);
+        decrRefCount(chanobj);
+    }
+    decrRefCount(eventobj);
+}</code></pre>
+
+
+<p>​    </p>
+<h2 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h2><p>redis是内存数据库,RDB持久化将数据库状态保存到磁盘里面,避免数据意外丢失</p>
+<p>RDB文件时压缩的二进制文件,可以用这个文件恢复数据库状态,主要使用save和bgsave实现</p>
+<h3 id="创建和载入"><a href="#创建和载入" class="headerlink" title="创建和载入"></a>创建和载入</h3><ul>
+<li>save创建RDB文件,但是会阻塞服务器;bgsave生成一个子进程,专门负责生成RDB文件</li>
+<li>只要有RDB文件在,就会自动载入RDB文件(如果开启了AOF持久化功能,会优先使用AOF文件还原数据库)</li>
+<li>bgsave执行期间不能执行save,bgsave(防止竞争条件);也不能执行bgrewriteaof,因为都会有大量的磁盘写入</li>
+</ul>
+<h3 id="自动保存"><a href="#自动保存" class="headerlink" title="自动保存"></a>自动保存</h3><h4 id="设置自动保存条件"><a href="#设置自动保存条件" class="headerlink" title="设置自动保存条件"></a>设置自动保存条件</h4><p>设定自动保存的条件,达到条件时自动运行bgsave</p>
+<p>条件保存在redisServer的saveparams属性中</p>
+<h4 id="dirty计数器和lastsave属性"><a href="#dirty计数器和lastsave属性" class="headerlink" title="dirty计数器和lastsave属性"></a>dirty计数器和lastsave属性</h4><ul>
+<li>dirty计数器记录上次成功执行save或者bgsave之后服务器对数据库进行修改的次数</li>
+<li>lastsave记录了上次成功save的时间</li>
+</ul>
+<h4 id="检查保存条件"><a href="#检查保存条件" class="headerlink" title="检查保存条件"></a>检查保存条件</h4><p>serverCron函数默认没100ms就要执行一次,维护当前运行的数据库,同时也检查了自动保存条件是否满足,只要有一个条件满足了就要执行bgsave</p>
+<h2 id="AOF持久化-Append-Only-File"><a href="#AOF持久化-Append-Only-File" class="headerlink" title="AOF持久化(Append Only File)"></a>AOF持久化(Append Only File)</h2><p>通过保存所有的写命令记录数据库状态</p>
+<p>写命令执行之后加到redisServer的aof_buf缓冲区末尾,在处理事件循环的时候决定是否将缓冲区的值写入到AOF文件</p>
+<p>数据还原的时候先创建不带网络连接的伪客户端,直接使用来自AOF文件中的命令,挨个执行,最终执行完毕就是数据库的状态</p>
+<h3 id="AOF文件重写"><a href="#AOF文件重写" class="headerlink" title="AOF文件重写"></a>AOF文件重写</h3><ul>
+<li><p>直接读取当前状态,对于每个键直接使用add指令读取最后的状态作为一个add添加进去.</p>
+</li>
+<li><p>开始执行重写之后可能会继续执行指令,对于数据库进行修改,因此建立了AOF重写缓冲区,新指令同时同步到AOF缓冲区和AOF重写缓冲区</p>
+</li>
+<li><p>完成重写之后直接覆盖原来的AOF文件</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://leehm00.github.io">homie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/">https://leehm00.github.io/2022/01/27/redis-dan-ji-shu-ju-ku/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://leehm00.github.io" target="_blank">homie's Home</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis/">redis</a></div><div class="post-share"><div class="social-share" data-image="/img/ibuki.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-ji-chu/" title="redis基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">redis基础</div></div><div class="info-2"><div class="info-item-1">redis基础数据结构sds 字符串长度保存在本体中,获取需要常数时间复杂度 header包含的部分: len: 表示字符串的真正长度（不包含NULL结束符在内）。 alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。 flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。   缓冲区不会溢出 减少修改时的内存重分配次数 空间预分配 alloca记录分配的总空间,惰性空间释放   除了自己加上的头部字段,其他和c函数一样,兼容相关函数  链表 双向链表 无环,头指针的prev,尾指针的next都指向null 自带指向头指针和尾指针的指针 链表具有链表长度计数器,标识长度 void *可以保存不同类型的值  dict基于哈希表实现,采用某个哈希函数从key计算得到在哈希表中的位置，采用拉链法解决冲突，并在装载因子超过预定值时自动扩展内存，引发重哈希,并且在重哈希的过程中,每次增删改查推进一步重哈希,避免重哈希期间单个请求的响应时间剧烈增加. 实现增量式重哈希，dict的数据结构里包含两个哈希表。在重哈希期间，数据从第一个哈希表向第二个哈希表迁移...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2022/03/04/redis-hotkey-solutions/" title="Redis hotkey solutions"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="info-item-2">Redis hotkey solutions</div></div><div class="info-2"><div class="info-item-1">一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？ 方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存， 然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.  设置redis最大占用内存：  　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！ 　　　　maxmemory 268435456  设置过期策略：  　　　　maxmemory-policy volatile-lru  当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下： noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略） allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key...</div></div></div></a><a class="pagination-related" href="/2022/03/16/build-cluster-with-bash-on-one-node/" title="build cluster with bash on one node"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-16</div><div class="info-item-2">build cluster with bash on one node</div></div><div class="info-2"><div class="info-item-1">在我自己的机器上进行实验，sh文件实现一条命令部署单个节点集群 下面是解析步骤 常量定义定义在另一个文件中 #!/bin/bash  # Redis_Cluster  # REDIS_SERVER_BIN="/home/k8s/homie/redis/src/redis-server" BASE_DIR=/home/k8s/homie REDIS_SERVER_BIN=$BASE_DIR/redis/src/redis-server REDIS_CLI_BIN=$BASE_DIR/redis/src/redis-cli REDIS_CLUSTER_BASE=$BASE_DIR/redis_cluster NODELIST="node2 node3 node4 node5" PORTS=`seq 7000 7005` BASEPORT=${ENTRY_PORT} HG_BASEPORT=${HG_PORT}  根据自己需要进行修改 安装redis# Check redis command if [ ! -f $REDIS_SERVER_BIN ]; then   echo "Red...</div></div></div></a><a class="pagination-related" href="/2022/03/09/redis-cluster-build/" title="redis cluster build"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-09</div><div class="info-item-2">redis cluster build</div></div><div class="info-2"><div class="info-item-1">下载redis6.2.2并安装wget http://download.redis.io/releases/redis-6.2.2.tar.gz tar -zxvf ./redis-6.2.2.tar.gz mv redis-6.2.2 redis cd redis make  准备配置文件1、新建目录，并拷贝出6个节点的配置文件cd  redis-6.2.2 mkdir -p config mkdir -p log mkdir -p data mkdir -p node cp redis.conf ./config/redis-7000.conf  2、修改每个节点的配置文件内容远程访问需要把bind注释掉         # bind 127.0.0.1 修改端口号         port 7000 默认启动时为后台启动，yes为后台启动         daemonize yes 指定进程信息存储文件         pidfile /var/run/redis_7000.pid 指定日志文件(改成自己的路径)         logfile "/home/k8s/hom...</div></div></div></a><a class="pagination-related" href="/2022/03/05/redis-cluster/" title="redis cluster"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-05</div><div class="info-item-2">redis cluster</div></div><div class="info-2"><div class="info-item-1">redis集群理论单机遇到内存、并发、流量等瓶颈时，可以采用Cluster架构方案来达到负载均衡 一 基础理论1.1分区规则数据集按照分区规则映射到各个节点  常见哈希分区：  节点取余分区 使用特定的数据，如Redis的键或用户ID，再根据节点数量N使用公式： hash（key）%N计算出哈希值，用来决定数据映射到哪一个节点上。 缺点：当节点数量变化时，如扩容或收缩节点，数据节点映射关系需要重新计算，会导致数据的重新迁移。 优点：这种方式的突出优点是简单，易理解； 这种方式常用于数据库的分库分表规则，一般采 用预分区的方式，提前根据数据量规划好分区数，比如划分为512或1024张 表，保证可支撑未来一段时间的数据量，再根据负载情况将表迁移到其他数 据库中。扩容时通常采用翻倍扩容，避免数据映射全部被打乱导致全量迁移 的情况  一致性哈希分区 一致性哈希分区（Distributed Hash Table）实现思路是为系统中每个节点分配一个token（范围一般在0~2^32），这些token构成一个哈希环。 数据读写 执行节点查找操作时，先根据key计算hash值，然后顺时针找到第一...</div></div></div></a><a class="pagination-related" href="/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/" title="redis cluster集群常用指令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-22</div><div class="info-item-2">redis cluster集群常用指令</div></div><div class="info-2"><div class="info-item-1">1.redis 常用管理命令  https://redis.io/topics/rediscli   1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 del foo  1.2 查看内存等信息#查看内存等信息$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info memory |grep human -i$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 dbsize  1.3 查看key及bigkey#key的情况$redis-cli -c -h 192.124.64.212 -p ...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-27</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%95%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E5%92%8C%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">单机数据库实现和持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.</span> <span class="toc-text">数据库细节实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E6%9C%9F%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">过期功能实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E9%80%9A%E7%9F%A5"><span class="toc-number">1.1.2.</span> <span class="toc-text">数据库通知</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDB%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">RDB持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E8%BD%BD%E5%85%A5"><span class="toc-number">1.2.1.</span> <span class="toc-text">创建和载入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E4%BF%9D%E5%AD%98"><span class="toc-number">1.2.2.</span> <span class="toc-text">自动保存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%87%AA%E5%8A%A8%E4%BF%9D%E5%AD%98%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">设置自动保存条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dirty%E8%AE%A1%E6%95%B0%E5%99%A8%E5%92%8Clastsave%E5%B1%9E%E6%80%A7"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">dirty计数器和lastsave属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5%E4%BF%9D%E5%AD%98%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">检查保存条件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOF%E6%8C%81%E4%B9%85%E5%8C%96-Append-Only-File"><span class="toc-number">1.3.</span> <span class="toc-text">AOF持久化(Append Only File)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF%E6%96%87%E4%BB%B6%E9%87%8D%E5%86%99"><span class="toc-number">1.3.1.</span> <span class="toc-text">AOF文件重写</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/diary251110/" title="diary251110">diary251110</a><time datetime="2025-11-10T15:55:41.000Z" title="发表于 2025-11-10 15:55:41">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/hello-world/" title="Hello World">Hello World</a><time datetime="2025-11-10T14:00:07.549Z" title="发表于 2025-11-10 14:00:07">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/09/diary251109/" title="diary251109">diary251109</a><time datetime="2025-11-09T21:59:27.000Z" title="发表于 2025-11-09 21:59:27">2025-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/diary251107/" title="diary251107">diary251107</a><time datetime="2025-11-07T16:53:41.000Z" title="发表于 2025-11-07 16:53:41">2025-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/zsh-pei-zhi/" title="zsh配置">zsh配置</a><time datetime="2025-11-07T00:45:46.000Z" title="发表于 2025-11-07 00:45:46">2025-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2025 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liQESFXsU1YySKCu',
+      clientSecret: '8ffed0b5a974ee263dce9a1f772883682eeffa4a',
+      repo: 'https://github.com/leehm00/homepage_comment',
+      owner: 'leehm00',
+      admin: ['leehm00'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'f2479749b2fffa5ecf26edcec1c5e9e4'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>

@@ -1,0 +1,904 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>redis客户端与服务器 | homie's Home</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="redis客户端与服务器客户端 cli命令行 typedef struct multiCmd {     &#x2F;&#x2F;参数     robj **argv;     &#x2F;&#x2F;参数数量     int argc;     &#x2F;&#x2F;命令指针     struct redisCommand *cmd; } multiCmd;  client结构(直接对于所有的数据结构进行了解释) &#x2F;&#x2F;I&#x2F;O复用,所以需要为每个客户端维">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis客户端与服务器">
+<meta property="og:url" content="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="redis客户端与服务器客户端 cli命令行 typedef struct multiCmd {     &#x2F;&#x2F;参数     robj **argv;     &#x2F;&#x2F;参数数量     int argc;     &#x2F;&#x2F;命令指针     struct redisCommand *cmd; } multiCmd;  client结构(直接对于所有的数据结构进行了解释) &#x2F;&#x2F;I&#x2F;O复用,所以需要为每个客户端维">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:published_time" content="2022-01-27T09:14:25.000Z">
+<meta property="article:modified_time" content="2025-11-10T14:00:07.600Z">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "redis客户端与服务器",
+  "url": "https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/",
+  "image": "https://leehm00.github.io/img/ibuki.png",
+  "datePublished": "2022-01-27T09:14:25.000Z",
+  "dateModified": "2025-11-10T14:00:07.600Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "homie",
+      "url": "https://leehm00.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'redis客户端与服务器',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a><a class="nav-page-title" href="/"><span class="site-name">redis客户端与服务器</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">redis客户端与服务器</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-01-27T09:14:25.000Z" title="发表于 2022-01-27 09:14:25">2022-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kv/">kv</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">7.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>27分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="redis客户端与服务器"><a href="#redis客户端与服务器" class="headerlink" title="redis客户端与服务器"></a>redis客户端与服务器</h1><h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><ul>
+<li><p>cli命令行</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">multiCmd</span> <span class="token punctuation">{</span>
+    <span class="token comment">//参数</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">;</span>
+    <span class="token comment">//参数数量</span>
+    <span class="token keyword">int</span> argc<span class="token punctuation">;</span>
+    <span class="token comment">//命令指针</span>
+    <span class="token keyword">struct</span> <span class="token class-name">redisCommand</span> <span class="token operator">*</span>cmd<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> multiCmd<span class="token punctuation">;</span></code></pre>
+</li>
+<li><p>client结构(直接对于所有的数据结构进行了解释)</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//I/O复用,所以需要为每个客户端维持一个状态,多个客户端在服务器用链表链接</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+    <span class="token comment">//client的id</span>
+    <span class="token class-name">uint64_t</span> id<span class="token punctuation">;</span>            <span class="token comment">/* Client incremental unique ID. */</span>
+    connection <span class="token operator">*</span>conn<span class="token punctuation">;</span>
+    <span class="token comment">//协议版本</span>
+    <span class="token keyword">int</span> resp<span class="token punctuation">;</span>               <span class="token comment">/* RESP protocol version. Can be 2 or 3. */</span>
+    <span class="token comment">//当前正在使用的数据库</span>
+    redisDb <span class="token operator">*</span>db<span class="token punctuation">;</span>            <span class="token comment">/* Pointer to currently SELECTed DB. */</span>
+    <span class="token comment">//客户端名字</span>
+    robj <span class="token operator">*</span>name<span class="token punctuation">;</span>             <span class="token comment">/* As set by CLIENT SETNAME. */</span>
+    <span class="token comment">//缓冲区,用于储存指令</span>
+    sds querybuf<span class="token punctuation">;</span>           <span class="token comment">/* Buffer we use to accumulate client queries. */</span>
+    <span class="token comment">//在指令缓冲区中已经读到的位置</span>
+    <span class="token class-name">size_t</span> qb_pos<span class="token punctuation">;</span>          <span class="token comment">/* The position we have read in querybuf. */</span>
+    sds pending_querybuf<span class="token punctuation">;</span>   <span class="token comment">/* If this client is flagged as master, this buffer
+                               represents the yet not applied portion of the
+                               replication stream that we are receiving from
+                               the master. */</span>
+    <span class="token comment">//最近时间内缓冲区长度最大值</span>
+    <span class="token class-name">size_t</span> querybuf_peak<span class="token punctuation">;</span>   <span class="token comment">/* Recent (100ms or more) peak of querybuf size. */</span>
+    <span class="token comment">//当前指令的参数数量</span>
+    <span class="token keyword">int</span> argc<span class="token punctuation">;</span>               <span class="token comment">/* Num of arguments of current command. */</span>
+    <span class="token comment">//当前指令参数值</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">;</span>            <span class="token comment">/* Arguments of current command. */</span>
+    <span class="token comment">//参数有可能是重写过的,记录了原来的参数数量</span>
+    <span class="token keyword">int</span> original_argc<span class="token punctuation">;</span>      <span class="token comment">/* Num of arguments of original command if arguments were rewritten. */</span>
+    <span class="token comment">//参数有可能是重写过的,记录了原来的参数值</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>original_argv<span class="token punctuation">;</span>   <span class="token comment">/* Arguments of original command if arguments were rewritten. */</span>
+    <span class="token class-name">size_t</span> argv_len_sum<span class="token punctuation">;</span>    <span class="token comment">/* Sum of lengths of objects in argv list. */</span>
+    <span class="token comment">//记录客户端执行的命令</span>
+    <span class="token keyword">struct</span> <span class="token class-name">redisCommand</span> <span class="token operator">*</span>cmd<span class="token punctuation">,</span> <span class="token operator">*</span>lastcmd<span class="token punctuation">;</span>  <span class="token comment">/* Last command executed. */</span>
+    <span class="token comment">//与之前定义的user对应,从而赋予相应的权限,NULL是管理员</span>
+    user <span class="token operator">*</span>user<span class="token punctuation">;</span>             <span class="token comment">/* User associated with this connection. If the
+                               user is set to NULL the connection can do
+                               anything (admin). */</span>
+    <span class="token comment">//指令类型,一条指令还是多条(内联)</span>
+    <span class="token keyword">int</span> reqtype<span class="token punctuation">;</span>            <span class="token comment">/* Request protocol type: PROTO_REQ_* */</span>
+    <span class="token comment">//还未读取的指令数量</span>
+    <span class="token keyword">int</span> multibulklen<span class="token punctuation">;</span>       <span class="token comment">/* Number of multi bulk arguments left to read. */</span>
+    <span class="token comment">//未读指令的</span>
+    <span class="token keyword">long</span> bulklen<span class="token punctuation">;</span>           <span class="token comment">/* Length of bulk argument in multi bulk request. */</span>
+    <span class="token comment">//回复链表</span>
+    list <span class="token operator">*</span>reply<span class="token punctuation">;</span>            <span class="token comment">/* List of reply objects to send to the client. */</span>
+    <span class="token comment">//回复链表中对象的总大小</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> reply_bytes<span class="token punctuation">;</span> <span class="token comment">/* Tot bytes of objects in reply list. */</span>
+    <span class="token comment">// 已发送字节，用于处理 short write </span>
+    <span class="token class-name">size_t</span> sentlen<span class="token punctuation">;</span>         <span class="token comment">/* Amount of bytes already sent in the current
+                               buffer or object being sent. */</span>
+    <span class="token comment">//创建客户端时间</span>
+    <span class="token class-name">time_t</span> ctime<span class="token punctuation">;</span>           <span class="token comment">/* Client creation time. */</span>
+    <span class="token keyword">long</span> duration<span class="token punctuation">;</span>          <span class="token comment">/* Current command duration. Used for measuring latency of blocking/non-blocking cmds */</span>
+    <span class="token comment">// 客户端最后一次和服务器互动的时间</span>
+    <span class="token class-name">time_t</span> lastinteraction<span class="token punctuation">;</span> <span class="token comment">/* Time of the last interaction, used for timeout */</span>
+    <span class="token class-name">time_t</span> obuf_soft_limit_reached_time<span class="token punctuation">;</span>
+    <span class="token comment">//客户端状态CLIENT_*</span>
+    <span class="token class-name">uint64_t</span> flags<span class="token punctuation">;</span>         <span class="token comment">/* Client flags: CLIENT_* macros. */</span>
+    <span class="token keyword">int</span> authenticated<span class="token punctuation">;</span>      <span class="token comment">/* Needed when the default user requires auth. */</span>
+    <span class="token comment">//复制状态</span>
+    <span class="token keyword">int</span> replstate<span class="token punctuation">;</span>          <span class="token comment">/* Replication state if this is a slave. */</span>
+    <span class="token keyword">int</span> repl_put_online_on_ack<span class="token punctuation">;</span> <span class="token comment">/* Install slave write handler on first ACK. */</span>
+    <span class="token comment">// 用于保存主服务器传来的 RDB 文件的文件描述符</span>
+    <span class="token keyword">int</span> repldbfd<span class="token punctuation">;</span>           <span class="token comment">/* Replication DB file descriptor. */</span>
+    <span class="token comment">// 读取主服务器传来的 RDB 文件的偏移量</span>
+    <span class="token class-name">off_t</span> repldboff<span class="token punctuation">;</span>        <span class="token comment">/* Replication DB file offset. */</span>
+    <span class="token comment">// 主服务器传来的 RDB 文件的大小</span>
+    <span class="token class-name">off_t</span> repldbsize<span class="token punctuation">;</span>       <span class="token comment">/* Replication DB file size. */</span>
+    sds replpreamble<span class="token punctuation">;</span>       <span class="token comment">/* Replication DB preamble. */</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> read_reploff<span class="token punctuation">;</span> <span class="token comment">/* Read replication offset if this is a master. */</span>
+    <span class="token comment">// 主服务器的复制偏移量</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> reploff<span class="token punctuation">;</span>      <span class="token comment">/* Applied replication offset if this is a master. */</span>
+    <span class="token comment">// 从服务器最后一次发送 REPLCONF ACK 时的偏移量</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> repl_ack_off<span class="token punctuation">;</span> <span class="token comment">/* Replication ack offset, if this is a slave. */</span>
+    <span class="token comment">// 从服务器最后一次发送 REPLCONF ACK 的时间</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> repl_ack_time<span class="token punctuation">;</span><span class="token comment">/* Replication ack time, if this is a slave. */</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> repl_last_partial_write<span class="token punctuation">;</span> <span class="token comment">/* The last time the server did a partial write from the RDB child pipe to this replica  */</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> psync_initial_offset<span class="token punctuation">;</span> <span class="token comment">/* FULLRESYNC reply offset other slaves
+                                       copying this slave output buffer
+                                       should use. */</span>
+    <span class="token comment">// 主服务器的 master run ID</span>
+    <span class="token comment">// 保存在客户端，用于执行部分重同步</span>
+    <span class="token keyword">char</span> replid<span class="token punctuation">[</span>CONFIG_RUN_ID_SIZE<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">/* Master replication ID (if master). */</span>
+    <span class="token comment">// 从服务器的监听端口号</span>
+    <span class="token keyword">int</span> slave_listening_port<span class="token punctuation">;</span> <span class="token comment">/* As configured with: REPLCONF listening-port */</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>slave_addr<span class="token punctuation">;</span>       <span class="token comment">/* Optionally given by REPLCONF ip-address */</span>
+    <span class="token keyword">int</span> slave_capa<span class="token punctuation">;</span>         <span class="token comment">/* Slave capabilities: SLAVE_CAPA_* bitwise OR. */</span>
+    <span class="token comment">//事务状态</span>
+    multiState mstate<span class="token punctuation">;</span>      <span class="token comment">/* MULTI/EXEC state */</span>
+    <span class="token comment">//阻塞类型</span>
+    <span class="token keyword">int</span> btype<span class="token punctuation">;</span>              <span class="token comment">/* Type of blocking op if CLIENT_BLOCKED. */</span>
+    <span class="token comment">//阻塞状态</span>
+    blockingState bpop<span class="token punctuation">;</span>     <span class="token comment">/* blocking state */</span>
+    <span class="token comment">// 最后被写入的全局复制偏移量</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> woff<span class="token punctuation">;</span>         <span class="token comment">/* Last write global replication offset. */</span>
+    list <span class="token operator">*</span>watched_keys<span class="token punctuation">;</span>     <span class="token comment">/* Keys WATCHED for MULTI/EXEC CAS */</span>
+    <span class="token comment">// 这个字典记录了客户端所有订阅的频道</span>
+    <span class="token comment">// 键为频道名字，值为 NULL</span>
+    <span class="token comment">// 也即是，一个频道的集合</span>
+    dict <span class="token operator">*</span>pubsub_channels<span class="token punctuation">;</span>  <span class="token comment">/* channels a client is interested in (SUBSCRIBE) */</span>
+    <span class="token comment">// 链表，包含多个 pubsubPattern 结构</span>
+    <span class="token comment">// 记录了所有订阅频道的客户端的信息</span>
+    <span class="token comment">// 新 pubsubPattern 结构总是被添加到表尾</span>
+    list <span class="token operator">*</span>pubsub_patterns<span class="token punctuation">;</span>  <span class="token comment">/* patterns a client is interested in (SUBSCRIBE) */</span>
+    sds peerid<span class="token punctuation">;</span>             <span class="token comment">/* Cached peer ID. */</span>
+    sds sockname<span class="token punctuation">;</span>           <span class="token comment">/* Cached connection target address. */</span>
+    listNode <span class="token operator">*</span>client_list_node<span class="token punctuation">;</span> <span class="token comment">/* list node in client list */</span>
+    listNode <span class="token operator">*</span>paused_list_node<span class="token punctuation">;</span> <span class="token comment">/* list node within the pause list */</span>
+    RedisModuleUserChangedFunc auth_callback<span class="token punctuation">;</span> <span class="token comment">/* Module callback to execute
+                                               * when the authenticated user
+                                               * changes. */</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>auth_callback_privdata<span class="token punctuation">;</span> <span class="token comment">/* Private data that is passed when the auth
+                                   * changed callback is executed. Opaque for
+                                   * Redis Core. */</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>auth_module<span class="token punctuation">;</span>      <span class="token comment">/* The module that owns the callback, which is used
+                             * to disconnect the client if the module is
+                             * unloaded for cleanup. Opaque for Redis Core.*/</span>
+
+    <span class="token comment">/* If this client is in tracking mode and this field is non zero,
+     * invalidation messages for keys fetched by this client will be send to
+     * the specified client ID. */</span>
+    <span class="token class-name">uint64_t</span> client_tracking_redirection<span class="token punctuation">;</span>
+    rax <span class="token operator">*</span>client_tracking_prefixes<span class="token punctuation">;</span> <span class="token comment">/* A dictionary of prefixes we are already
+                                      subscribed to in BCAST mode, in the
+                                      context of client side caching. */</span>
+    <span class="token comment">/* In clientsCronTrackClientsMemUsage() we track the memory usage of
+     * each client and add it to the sum of all the clients of a given type,
+     * however we need to remember what was the old contribution of each
+     * client, and in which category the client was, in order to remove it
+     * before adding it the new value. */</span>
+    <span class="token class-name">uint64_t</span> client_cron_last_memory_usage<span class="token punctuation">;</span>
+    <span class="token keyword">int</span>      client_cron_last_memory_type<span class="token punctuation">;</span>
+    <span class="token comment">/* Response buffer */</span>
+    <span class="token comment">// 回复偏移量</span>
+    <span class="token keyword">int</span> bufpos<span class="token punctuation">;</span>
+    <span class="token class-name">size_t</span> buf_usable_size<span class="token punctuation">;</span> <span class="token comment">/* Usable size of buffer. */</span>
+    <span class="token comment">/* Note that 'buf' must be the last field of client struct, because memory
+     * allocator may give us more memory than our apply for reducing fragments,
+     * but we want to make full use of given memory, i.e. we may access the
+     * memory after 'buf'. To avoid make others fields corrupt, 'buf' must be
+     * the last one. */</span>
+    <span class="token comment">//回复缓冲区</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span>PROTO_REPLY_CHUNK_BYTES<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> client<span class="token punctuation">;</span></code></pre>
+
+<p>所有的client属性连成了一个链表,保存在redisServer的clients属性中,对于不同状态的client也有其他的链表保存.</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">redisServer</span> <span class="token punctuation">{</span>
+	<span class="token comment">//...</span>
+	<span class="token comment">//链表,保存了所有的客户端状态</span>
+    list <span class="token operator">*</span>clients<span class="token punctuation">;</span>              <span class="token comment">/* List of active clients */</span>
+    <span class="token comment">//保存所有的待关闭客户端</span>
+    list <span class="token operator">*</span>clients_to_close<span class="token punctuation">;</span>     <span class="token comment">/* Clients to close asynchronously */</span>
+    <span class="token comment">//将要写的客户端列表</span>
+    list <span class="token operator">*</span>clients_pending_write<span class="token punctuation">;</span> <span class="token comment">/* There is to write or install handler. */</span>
+    <span class="token comment">//将要读的客户端列表(已经知道有指令输入了)</span>
+    list <span class="token operator">*</span>clients_pending_read<span class="token punctuation">;</span>  <span class="token comment">/* Client has pending read socket buffers. */</span>
+    <span class="token comment">//...</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></li>
+</ul>
+<h3 id="客户端属性"><a href="#客户端属性" class="headerlink" title="客户端属性"></a>客户端属性</h3><p>包含通用属性(所有客户端执行基础功能都必须需要的)和特定功能(执行特定功能)相关的属性</p>
+<ul>
+<li><p>套接字描述符uint64_t id;</p>
+<ul>
+<li>伪客户端:id为-1,载入AOF文件时使用,或者是执行Lua脚本中包含的redis命令</li>
+<li>普通客户端的id大于-1,表示是正常的客户端</li>
+</ul>
+</li>
+<li><p>名字robj *name;</p>
+<ul>
+<li>可有可无,一个robj对象,没有的时候指定为NULL</li>
+</ul>
+</li>
+<li><p>标志uint64_t flags;</p>
+<ul>
+<li><p>表示了当前客户端的角色和状态</p>
+</li>
+<li><p>可以是单个也可以是多个标志的二进制取或.见CLIENT_*的定义可知,都是一位表示的</p>
+</li>
+<li><p>源代码：</p>
+<pre class="language-c#" data-language="c#"><code class="language-c#">/* Client flags */
+//主从服务器进行复制时,相互都是客户端的关系,slave和master区分两个服务器
+#define CLIENT_SLAVE (1&lt;&lt;0)   /* This client is a replica */
+#define CLIENT_MASTER (1&lt;&lt;1)  /* This client is a master */
+//正在执行monitor指令,是一个从客户端
+#define CLIENT_MONITOR (1&lt;&lt;2) /* This client is a slave monitor, see MONITOR */
+//执行事务
+#define CLIENT_MULTI (1&lt;&lt;3)   /* This client is in a MULTI context */
+//客户端被阻塞
+#define CLIENT_BLOCKED (1&lt;&lt;4) /* The client is waiting in a blocking operation */
+//事务使用WATCH监视的数据库键已经被修改,EXEC执行过程中会直接fail
+#define CLIENT_DIRTY_CAS (1&lt;&lt;5)
+//用户对这个客户端执行了 CLIENT KILL命令或者客户端发送给服务器的命令中协议内容有误, 
+//服务器会将客户端积存在输出缓冲区中的所有内容发送给客户端,然后关闭客户端
+#define CLIENT_CLOSE_AFTER_REPLY (1&lt;&lt;6) /* Close after writing entire reply. */
+//从阻塞中解除,只有在之前阻塞过才可用
+#define CLIENT_UNBLOCKED (1&lt;&lt;7) /* This client was unblocked and is stored in
+                                  server.unblocked_clients */
+//专门处理Lua脚本的客户端
+#define CLIENT_LUA (1&lt;&lt;8) /* This is a non connected client used by Lua */
+//客户端向集群节点（ 运行在集群模式下的服务器） 发送了ASKING 命令
+#define CLIENT_ASKING (1&lt;&lt;9)     /* Client issued the ASKING command */
+//客户端的输出缓冲区大小超出了服务器允许的范围，
+//服务器会在下一次执行 serverCron 函数时关闭这个客户端,以免影响服务器的稳定性
+//积存在输出缓冲区中的所有内容会直接被释放,不会返回给客户端.
+#define CLIENT_CLOSE_ASAP (1&lt;&lt;10)/* Close this client ASAP */
+//服务器使用 UNIX 套接字来连接客户端
+#define CLIENT_UNIX_SOCKET (1&lt;&lt;11) /* Client connected via Unix domain socket */
+//事务在命令入队时出现了错误, 和CLIENT_DIRTY_CAS 都表示了事务不安全,EXEC会执行失败
+#define CLIENT_DIRTY_EXEC (1&lt;&lt;12)  /* EXEC will fail for errors while queueing */
+//在主从服务器进行命令传播期间,从服务器需要向主服务器发送REPLICATION ACK命令
+//发送命令之前需要打开这个标志以允许发送操作执行
+#define CLIENT_MASTER_FORCE_REPLY (1&lt;&lt;13)  /* Queue replies even if is master */
+//执行PUBSUB指令时打开,强制服务器将当前执行的命令写人到 AOF 文件里面
+#define CLIENT_FORCE_AOF (1&lt;&lt;14)   /* Force AOF propagation of current cmd. */
+//执行SCRIPT LOADD指令时打开,强制主服务器将当前执行的命令复制给所有从服务器
+#define CLIENT_FORCE_REPL (1&lt;&lt;15)  /* Force replication of current cmd. */
+//主服务器不能使用PSYNC命令与当前低版本从服务器进行同步.
+//这个标志只能在 REDIS_SLAVE 标志处于打开状态时使用
+#define CLIENT_PRE_PSYNC (1&lt;&lt;16)   /* Instance don't understand PSYNC. */
+#define CLIENT_READONLY (1&lt;&lt;17)    /* Cluster client is in read-only state. */
+#define CLIENT_PUBSUB (1&lt;&lt;18)      /* Client is in Pub/Sub mode. */
+#define CLIENT_PREVENT_AOF_PROP (1&lt;&lt;19)  /* Don't propagate to AOF. */
+#define CLIENT_PREVENT_REPL_PROP (1&lt;&lt;20)  /* Don't propagate to slaves. */
+#define CLIENT_PREVENT_PROP (CLIENT_PREVENT_AOF_PROP|CLIENT_PREVENT_REPL_PROP)
+#define CLIENT_PENDING_WRITE (1&lt;&lt;21) /* Client has output to send but a write
+                                        handler is yet not installed. */
+#define CLIENT_REPLY_OFF (1&lt;&lt;22)   /* Don't send replies to client. */
+#define CLIENT_REPLY_SKIP_NEXT (1&lt;&lt;23)  /* Set CLIENT_REPLY_SKIP for next cmd */
+#define CLIENT_REPLY_SKIP (1&lt;&lt;24)  /* Don't send just this reply. */
+#define CLIENT_LUA_DEBUG (1&lt;&lt;25)  /* Run EVAL in debug mode. */
+#define CLIENT_LUA_DEBUG_SYNC (1&lt;&lt;26)  /* EVAL debugging without fork() */
+#define CLIENT_MODULE (1&lt;&lt;27) /* Non connected client used by some module. */
+#define CLIENT_PROTECTED (1&lt;&lt;28) /* Client should not be freed for now. */
+#define CLIENT_PENDING_READ (1&lt;&lt;29) /* The client has pending reads and was put
+                                       in the list of clients we can read
+                                       from. */
+#define CLIENT_PENDING_COMMAND (1&lt;&lt;30) /* Indicates the client has a fully
+                                        * parsed command ready for execution. */
+#define CLIENT_TRACKING (1ULL&lt;&lt;31) /* Client enabled keys tracking in order to
+                                   perform client side caching. */
+#define CLIENT_TRACKING_BROKEN_REDIR (1ULL&lt;&lt;32) /* Target client is invalid. */
+#define CLIENT_TRACKING_BCAST (1ULL&lt;&lt;33) /* Tracking in BCAST mode. */
+#define CLIENT_TRACKING_OPTIN (1ULL&lt;&lt;34)  /* Tracking in opt-in mode. */
+#define CLIENT_TRACKING_OPTOUT (1ULL&lt;&lt;35) /* Tracking in opt-out mode. */
+#define CLIENT_TRACKING_CACHING (1ULL&lt;&lt;36) /* CACHING yes/no was given,
+                                              depending on optin/optout mode. */
+#define CLIENT_TRACKING_NOLOOP (1ULL&lt;&lt;37) /* Don't send invalidation messages
+                                             about writes performed by myself.*/
+#define CLIENT_IN_TO_TABLE (1ULL&lt;&lt;38) /* This client is in the timeout table. */
+#define CLIENT_PROTOCOL_ERROR (1ULL&lt;&lt;39) /* Protocol error chatting with it. */
+#define CLIENT_CLOSE_AFTER_COMMAND (1ULL&lt;&lt;40) /* Close after executing commands
+                                               * and writing entire reply. */
+#define CLIENT_DENY_BLOCKING (1ULL&lt;&lt;41) /* Indicate that the client should not be blocked.
+                                           currently, turned on inside MULTI, Lua, RM_Call,
+                                           and AOF client */
+#define CLIENT_REPL_RDBONLY (1ULL&lt;&lt;42) /* This client is a replica that only wants RDB without replication buffer. */</code></pre>
+
+
+</li>
+<li><p>PUBSUB命令:本身不修改数据库,但是向频道的所有订阅者发送消息的行为带有副作用， 接收到消息的所有客户端的状态都会因为这个命令而改变,所以也需要写入AOF.</p>
+</li>
+<li><p>SCRIPT LOAD命令:类似的,它修改了服务器状态,也带有副作用,同时因为涉及到主从服务器,CLIENT_FORCE_REPL将指令发给所有的从服务器.</p>
+</li>
+</ul>
+</li>
+<li><p>输入缓冲区</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c#" data-language="c#"><code class="language-c#">typedef struct client {
+	//缓冲区,用于储存指令
+    sds querybuf;           /* Buffer we use to accumulate client queries. */
+}client;</code></pre>
+
+
+</li>
+<li><p>保存用户发送的命令请求,根据输入内容动态变化大小</p>
+</li>
+</ul>
+</li>
+<li><p>命令和命令参数</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+	<span class="token comment">//当前指令的参数数量</span>
+    <span class="token keyword">int</span> argc<span class="token punctuation">;</span>               <span class="token comment">/* Num of arguments of current command. */</span>
+    <span class="token comment">//当前指令参数值</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">;</span>            <span class="token comment">/* Arguments of current command. */</span>
+    <span class="token comment">//参数有可能是重写过的,记录了原来的参数数量</span>
+    <span class="token keyword">int</span> original_argc<span class="token punctuation">;</span>      <span class="token comment">/* Num of arguments of original command if arguments were rewritten. */</span>
+    <span class="token comment">//参数有可能是重写过的,记录了原来的参数值</span>
+    robj <span class="token operator">*</span><span class="token operator">*</span>original_argv<span class="token punctuation">;</span>   <span class="token comment">/* Arguments of original command if arguments were rewritten. */</span>
+    <span class="token class-name">size_t</span> argv_len_sum<span class="token punctuation">;</span>    <span class="token comment">/* Sum of lengths of objects in argv list. */</span>
+    
+<span class="token punctuation">}</span>client<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>命令实现函数</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+	<span class="token comment">//记录客户端执行的命令</span>
+    <span class="token keyword">struct</span> <span class="token class-name">redisCommand</span> <span class="token operator">*</span>cmd<span class="token punctuation">,</span> <span class="token operator">*</span>lastcmd<span class="token punctuation">;</span>  <span class="token comment">/* Last command executed. */</span>
+<span class="token punctuation">}</span>client<span class="token punctuation">;</span></code></pre>
+
+
+</li>
+<li><p>根据项argv[0] 的值,在命令表中査找命令所对应的命令实现函数,找到之后将客户端状态的cmd执行那个在命令表之中的这个结构,这个结构保存了命令的实现函数、 命令的标志 、 命令应该给定的参数个数、 命令的总执行次数和总消耗时长等统计信息</p>
+</li>
+</ul>
+</li>
+<li><p>输出缓冲区</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">client</span> <span class="token punctuation">{</span>
+    <span class="token comment">//...</span>
+	<span class="token comment">/* Response buffer */</span>
+    <span class="token comment">// 回复偏移量</span>
+    <span class="token keyword">int</span> bufpos<span class="token punctuation">;</span>
+    <span class="token class-name">size_t</span> buf_usable_size<span class="token punctuation">;</span> <span class="token comment">/* Usable size of buffer. */</span>
+    <span class="token comment">/* Note that 'buf' must be the last field of client struct, because memory
+     * allocator may give us more memory than our apply for reducing fragments,
+     * but we want to make full use of given memory, i.e. we may access the
+     * memory after 'buf'. To avoid make others fields corrupt, 'buf' must be
+     * the last one. */</span>
+    <span class="token comment">//回复缓冲区,放在最后,因为内存分配的时候可能多给了一些内存,实际上并没有用到</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span>PROTO_REPLY_CHUNK_BYTES<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> client<span class="token punctuation">;</span></code></pre>
+</li>
+<li><p>当 buf 数组的空间已经用完,或者回复因为太大而没办法放进 buf 数组里面时， 服务器就会开始使用可变大小缓冲区<code>list *reply;</code>,一个链表连接多个字符串对象,可以保存很长的回复信息</p>
+</li>
+</ul>
+</li>
+<li><p>身份验证</p>
+<ul>
+<li>int authenticated;</li>
+<li>启用了身份验证之后,当属性为0时,除了AUTH指令,其他指令都会被拒绝.</li>
+</ul>
+</li>
+<li><p>时间</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//创建客户端时间</span>
+   <span class="token class-name">time_t</span> ctime<span class="token punctuation">;</span>           <span class="token comment">/* Client creation time. */</span>
+   <span class="token keyword">long</span> duration<span class="token punctuation">;</span>          <span class="token comment">/* Current command duration. Used for measuring latency of blocking/non-blocking cmds */</span>
+   <span class="token comment">// 客户端最后一次和服务器互动的时间	,即客户端空转时间</span>
+   <span class="token class-name">time_t</span> lastinteraction<span class="token punctuation">;</span> <span class="token comment">/* Time of the last interaction, used for timeout */</span>
+<span class="token comment">//达到buf软性限制的时间,太长的话会被kill</span>
+   <span class="token class-name">time_t</span> obuf_soft_limit_reached_time<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>限制缓冲区大小</p>
+<ul>
+<li>硬性限制（ hard limit ): 如果输出缓冲区的大小超过了硬性限制所设置的大小， 那么服务器立即关闭客户端。</li>
+<li>软性限制（ softlimit ): 如果输出缓冲区的大小超过了软性限制所设置的大小， 但还没超过硬性限制， 那么服务器将使用客户端状态结构的 <code>obuf_soft_limit_ reached_time </code>属性记录下客户端到达软性限制的起始时间； 之后服务器会继续监视客户端， 如果输出缓冲区的大小一直超出软性限制， 并且持续时间超过服务器设定的时长， 那么服务器将关闭客户端;如果不再超过的话就直接清零属性值,不关闭客户端</li>
+</ul>
+</li>
+</ul>
+<h3 id="客户端的类型"><a href="#客户端的类型" class="headerlink" title="客户端的类型"></a>客户端的类型</h3><ul>
+<li><p>普通客户端</p>
+<ul>
+<li>直接按照之前的模式执行相关程序即可</li>
+</ul>
+</li>
+<li><p>Lua脚本的伪客户端</p>
+<ul>
+<li>Lua_client 伪客户端在服务器初始化的时候就创建了,服务器运行的整个生命期中会一直存在,服务器被关闭时， 这个客户端才会被关闭</li>
+</ul>
+</li>
+</ul>
+<h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><h3 id="命令请求的执行过程"><a href="#命令请求的执行过程" class="headerlink" title="命令请求的执行过程"></a>命令请求的执行过程</h3><h4 id="发送请求"><a href="#发送请求" class="headerlink" title="发送请求"></a>发送请求</h4><p>Redis 服务器的命令请求来自 Redis 客户端， 当用户在客户端中键人一个命令请求时，客户端会将这个命令请求转换成协议格式， 然后通过连接到服务器的套接字， 将协议格式的命令请求发送给服务器</p>
+<pre class="language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">graph</span> LR
+id1<span class="token text string">[用户]</span><span class="token inter-arrow-label"><span class="token arrow-head arrow operator">--</span><span class="token label property">键入命令请求</span><span class="token arrow operator">--&gt;</span></span>id2<span class="token text string">[客户端]</span><span class="token inter-arrow-label"><span class="token arrow-head arrow operator">--</span><span class="token label property">将命令转换为协议的格式并发送</span><span class="token arrow operator">--&gt;</span></span>id3<span class="token text string">[服务器]</span></code></pre>
+
+<h4 id="读取请求"><a href="#读取请求" class="headerlink" title="读取请求"></a>读取请求</h4><p>客户端与服务器之间的连接套接字因为客户端的写入而变得可读,服务器将调用命令请求处理器:</p>
+<ol>
+<li>读取套接字中协议格式的命令请求， 并保存到客户端的输入缓冲区里面</li>
+<li>对输入缓冲区中的命令请求进行分析， 提取出命令请求中包含的命令参数， 以及命<br>令参数的个数， 然后分别将参数和参数个数保存到客户端的argv属性和argc 属性里面</li>
+<li>调用命令执行器， 执行客户端指定的命令</li>
+</ol>
+<h4 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h4><h5 id="查找命令实现"><a href="#查找命令实现" class="headerlink" title="查找命令实现"></a>查找命令实现</h5><p>根据客户端状态的 argv [ 0 ] 参数， 在命令表中查找参数所指定的命令， 并将找到的命令保存到客户端的 cmd 属性.</p>
+<blockquote>
+<p>命令表(redisCommandTable)是一个字典,键是命令名字,值是redisCommand结构,记录了命令的实现信息</p>
+</blockquote>
+<h5 id="执行预备操作"><a href="#执行预备操作" class="headerlink" title="执行预备操作"></a>执行预备操作</h5><p>检查上一步执行结果和执行命令的环境,权限等</p>
+<h5 id="调用命令实现函数"><a href="#调用命令实现函数" class="headerlink" title="调用命令实现函数"></a>调用命令实现函数</h5><p>执行<code>client-&gt;cmd-&gt;proc(client);</code>,执行函数之后产生相应的命令回复,保存在客户端状态的输出缓冲区(buf和reply)</p>
+<h5 id="执行后续工作"><a href="#执行后续工作" class="headerlink" title="执行后续工作"></a>执行后续工作</h5><p>记录日志等后续</p>
+<h4 id="将回复发送给客户端"><a href="#将回复发送给客户端" class="headerlink" title="将回复发送给客户端"></a>将回复发送给客户端</h4><p>命令实现函数会将命令回复保存到客户端的输出缓冲区里面， 并为客户端的套接字关联命令回复处理器， 当客户端套接字变为可写状态时， 服务器就会执行命令回复处理器， 将保存在客户端输出缓冲区中的命令回复发送给客户端。  发送完之后将缓冲区清空.</p>
+<h4 id="客户端接受并打印命令回复"><a href="#客户端接受并打印命令回复" class="headerlink" title="客户端接受并打印命令回复"></a>客户端接受并打印命令回复</h4><p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112225309381.png" alt="image-20211112225309381"></p>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>SET KEY VALUE</p>
+<ol>
+<li><p>先由客户端转换成协议<code>*3\r\n$3\r\nSET\r\n$3\r\nKEY\r\n$5\r\nVALUE\r\n  </code>并发送给服务器</p>
+</li>
+<li><p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112111306721.png" alt="image-20211112111306721"><img src="/2022/01/27/redis-ke-hu-duan/image-20211112111326098.png" alt="image-20211112111326098"></p>
+</li>
+<li><p>命令执行过程</p>
+<ol>
+<li><p>查找命令实现</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112195218882.png" alt="image-20211112195218882"></p>
+</li>
+<li><p>调用实现函数</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112223826504.png" alt="image-20211112223826504"></p>
+</li>
+<li><p>保存回复到缓冲区</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211112224130202.png" alt="image-20211112224130202"></p>
+</li>
+</ol>
+</li>
+<li><p>将<code>+OK\r\n</code>发送给客户端</p>
+</li>
+<li><p>客户端转换格式为<code>OK\n</code>并显示</p>
+</li>
+</ol>
+<h3 id="serverCron函数"><a href="#serverCron函数" class="headerlink" title="serverCron函数"></a>serverCron函数</h3><ul>
+<li><p>默认每隔 100 毫秒执行一次</p>
+</li>
+<li><p>负责管理服务器的资源， 并保持服务器自身的良好运转</p>
+</li>
+<li><p>更新的内容:</p>
+<ul>
+<li><p>更新服务器时间缓存</p>
+<p>实时获取系统当前时间开销比较大,对于时间精度要求不是很高的使用地方使用缓存时间就可以.</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//保存秒级精度的系统当前UNIX时间戳</span>
+redisAtomic <span class="token class-name">time_t</span> unixtime<span class="token punctuation">;</span>
+<span class="token comment">//毫秒级精度的当前时间戳</span>
+<span class="token class-name">mstime_t</span> mstime<span class="token punctuation">;</span>            
+<span class="token comment">//微秒级精度的当前时间戳</span>
+<span class="token class-name">ustime_t</span> ustime<span class="token punctuation">;</span></code></pre>
+
+<p>serverCron就是定时更新时间缓存的</p>
+</li>
+<li><p>更新LRU时钟</p>
+</li>
+<li><p>更新redis对象的空转时长属性</p>
+</li>
+<li><p>更新服务器每秒执行命令次数</p>
+<p>嵌套调用的trackOperationsPerSecond函数抽样调查服务器一秒执行命令数量</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//抽样记录服务器每秒执行的命令数量</span>
+    <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+        <span class="token keyword">long</span> <span class="token keyword">long</span> last_sample_time<span class="token punctuation">;</span> <span class="token comment">/* Timestamp of last sample in ms */</span>
+        <span class="token keyword">long</span> <span class="token keyword">long</span> last_sample_count<span class="token punctuation">;</span><span class="token comment">/* Count in last sample */</span>
+        <span class="token keyword">long</span> <span class="token keyword">long</span> samples<span class="token punctuation">[</span>STATS_METRIC_SAMPLES<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> idx<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> inst_metric<span class="token punctuation">[</span>STATS_METRIC_COUNT<span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+
+<p>每次执行和上次执行的记录结果做比较,估算这一秒的执行情况</p>
+</li>
+<li><p>更新服务器内存峰值记录</p>
+<pre class="language-none"><code class="language-none">size_t stat_peak_memory;//已用内存峰值</code></pre>
+
+<p>查看使用的内存数量,记录使用时的最大值</p>
+</li>
+<li><p>处理sigterm信号</p>
+<p>为信号关联处理器sigtermHandler函数,负责在服务器接到sigterm信号的时候根据shutdown_asap决定是否关闭服务器(关闭之前先完成持久化操作)</p>
+</li>
+<li><p>管理客户端资源</p>
+<p>clientsCron函数对客户端进行检查,连接是否超时,输入缓冲区是否过大.</p>
+</li>
+<li><p>管理数据库资源</p>
+<p>databasesCron函数对数据库和其中的过期键,字典进行检查</p>
+</li>
+<li><p>执行被延迟的BGREWRITEAOGF</p>
+<p>在服务器执行bgsave命令的期间， 如果客户端向服务器发来 BGREWRITEAOF 命令，那 么 服 务 器 会 将 命 令 的 执 行 时 间 延 迟 到 bgsave命 令 执 行 完 毕 之 后</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="初始化服务器"><a href="#初始化服务器" class="headerlink" title="初始化服务器"></a>初始化服务器</h3><h4 id="初始化状态结构"><a href="#初始化状态结构" class="headerlink" title="初始化状态结构"></a>初始化状态结构</h4><p>创建一个<code>struct redisServer</code>实例变量,设置默认值,创建命令表</p>
+<p>主要由initServerConfig函数完成</p>
+<h4 id="载入配置选项"><a href="#载入配置选项" class="headerlink" title="载入配置选项"></a>载入配置选项</h4><p>根据redis.config文件或者启动时指定的配置项配置其他选项</p>
+<h4 id="初始化服务器数据结构"><a href="#初始化服务器数据结构" class="headerlink" title="初始化服务器数据结构"></a>初始化服务器数据结构</h4><p>创建服务器需要的除命令表之外的其他数据结构,需要用到之前的配置信息</p>
+<p>initServre负责初始化这些数据结构和一些其他的设置操作,包括:</p>
+<ul>
+<li>为服务器设置进程信号处理器。</li>
+<li>创建共享对象： 这些对象包含 Redis 服务器经常用到的一些值， 比如包含”OK”和”ERR”回复的字符串对象， 包含整数 1 到 10000 的字符串对象等等， 服务器通过重用这些共享对象来避免反复创建相同的对象。</li>
+<li>打开服务器的监听端口， 并为监听套接字关联连接应答事件处理器， 等待服务器正<br>式运行时接受客户端的连接。</li>
+<li>为 serverCron 函数创建时间事件， 等待服务器正式运行时执行 serverCron 函数。</li>
+<li>如果 AOF 持久化功能已经打开， 那么打开现有的 AOF 文件， 如果 AOF 文件不存在，<br>那么创建并打开一个新的 AOF 文件， 为 AOF 写入做好准备。</li>
+<li>初始化服务器的后台 I/O 模块（ bio )， 为将来的 I/O 操作做好准备</li>
+</ul>
+<h4 id="还原数据库状态"><a href="#还原数据库状态" class="headerlink" title="还原数据库状态"></a>还原数据库状态</h4><p>载入AOF或者RDB文件</p>
+<h4 id="执行事件循环"><a href="#执行事件循环" class="headerlink" title="执行事件循环"></a>执行事件循环</h4><p>打开事件循环,之后就可以接受命令</p>
+<h1 id="多机数据库实现"><a href="#多机数据库实现" class="headerlink" title="多机数据库实现"></a>多机数据库实现</h1><h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p>SLAVEOF可以让从服务器复制主服务器的内容,二者保存的数据是一致的</p>
+<h3 id="旧版复制功能"><a href="#旧版复制功能" class="headerlink" title="旧版复制功能"></a>旧版复制功能</h3><p>以前直接在重连的时候复制整个数据库的RDB文件,bgsave开销非常大(相当于重新执行了一次sync,期间对于主服务器不能执行其他命令,需要保存在缓冲区)</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211117222257569.png" alt="image-20211117222257569"></p>
+<p>执行SYNC命令:</p>
+<ul>
+<li>主服务器需要执行BGSAVE命令来生成 RDB 文件， 这个生成操作会耗费主服务器大量的 CPU、 内存和磁盘 I/O 资源。</li>
+<li>主服务器需要将自己生成的 RDB 文件发送给从服务器， 这个发送操作会耗费主从服务器大量的网络资源（ 带宽和流量 ）， 并对主服务器响应命令请求的时间产生影响。</li>
+<li>接收到 RDB 文件的从服务器需要载入主服务器发来的 RDB 文件， 并且在载入期间， 从服务器会因为阻塞而没办法处理命令请求。</li>
+</ul>
+<p>每次主服务器改数据库之后都要传播该条命令</p>
+<h3 id="新版复制功能"><a href="#新版复制功能" class="headerlink" title="新版复制功能"></a>新版复制功能</h3><p>使用PSYNC实现</p>
+<ul>
+<li>完整重同步:初始复制主服务器,与之前的SYNC没有什么不同</li>
+<li>部分重同步:断线后重连复制,条件允许时直接将断开连接期间的写命令发给从服务器.</li>
+</ul>
+<p>重连之后从服务器发送PSYNC命令,主服务器向从服务器返回+CONTINUE回复,表示执行部分重同步,从服务器接受回复,准备执行部分重同步,主服务器发送断线期间的写命令,从服务器接受并执行,完成同步</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118101021620.png" alt="image-20211118101021620"></p>
+<h4 id="复制偏移量"><a href="#复制偏移量" class="headerlink" title="复制偏移量"></a>复制偏移量</h4><p>主从服务器都会维护复制偏移量,主服务器发送n数据,从服务器接受n数据,都会分别给自己的复制偏移量添加n.</p>
+<p>如果master和slave的偏移量是相同的，那么主从数据处于一致的状态</p>
+<h4 id="复制积压缓冲区"><a href="#复制积压缓冲区" class="headerlink" title="复制积压缓冲区"></a>复制积压缓冲区</h4><p>主服务器维护的一个FIFO队列,固定默认1MB大小</p>
+<p>当master向slave传播命令时，会将命令<strong>写入到复制积压缓冲区</strong>,复制积压缓冲区记录了最近向slave传播的命令；并且为每个字节记录了相应的复制偏移量</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118105510397.png" alt="image-20211118105510397"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118105606106.png" alt="image-20211118105606106"></p>
+<p>当slave断线后重新连接master时，向master发送PSYNC命令会将自己的复制偏移量发送给master。</p>
+<p>master会根据这个偏移量决定对slave执行<strong>部分同步</strong>还是<strong>完全同步；</strong></p>
+<ul>
+<li>slave的偏移量在复制积压缓冲区，执行部分同步 ；</li>
+<li>slave的偏移量不在复制积压缓冲区，则执行完全同步；</li>
+</ul>
+<h4 id="服务器运行ID"><a href="#服务器运行ID" class="headerlink" title="服务器运行ID"></a>服务器运行ID</h4><p>slave对master初次复制时，会保存master的运行id；</p>
+<ul>
+<li><p>当slave重新连接到master时，slave向master发送之前保存的mater run id；</p>
+</li>
+<li><p>如果slave保存的master run id和重新连接的master run id不一致，（换了master），则执行完全同步；</p>
+</li>
+</ul>
+<p>相反，如果一致则尝试执行部分同步</p>
+<h3 id="PSYNC执行过程"><a href="#PSYNC执行过程" class="headerlink" title="PSYNC执行过程"></a>PSYNC执行过程</h3><p><strong>PSYNC命令调用方式有两种：</strong></p>
+<ol>
+<li><p><strong><code>PSYNC ? -1</code> 全量复制</strong><br>当从服务没有复制过主服务器，或者从服务执行过<code>SLAVEOF NO ONE</code>命令（取消复制），那么从服务将发送<code>PSYNC ？-1</code>命令；</p>
+</li>
+<li><p><strong><code>PSYNC &lt;runid&gt; &lt;offset&gt; </code>部分复制</strong><br>从服务已经复制过主服务器，那么从服务将向主服务器发送<code>PSYNC &lt;runid&gt; &lt;offset&gt;</code>， runid是主服务器的id，offset服务器当前的偏移量；</p>
+<p>主服务器接受到<code>PSYNC &lt;runid&gt; &lt;offset&gt;</code> 命令后，主服务会判断是否能“部分同步”，向从服务回复相应的命令；</p>
+</li>
+</ol>
+<p><strong>主服务向从服务的三种回复：</strong></p>
+<ol>
+<li><strong><code>+FULLRESYNC &lt;runid&gt; &lt;offset&gt;</code> 执行完全重同步；</strong></li>
+<li><strong><code>+CONTINUE</code> 执行部分重同步；</strong></li>
+<li><strong><code>-ERR</code> 不支持psync同步操作，从服务将发送sync命令到主服务器,执行完全重同步；</strong></li>
+</ol>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118170432055.png" alt="image-20211118170432055"></p>
+<p>注意图片有个情况没写出来</p>
+<ol>
+<li><p>设置主服务器的地址和端口</p>
+<p>通过向从服务器发送SLAVE命令，可以让一个从服务器去复制一个主服务器</p>
+<p>slaveof要做的主要是给“从服务”设置的“主服务”地址和端口，会保存到从服务器的<strong>masterhost</strong>和<strong>masterport</strong>属性中(<strong>replication.c/replicaofCommand</strong>)</p>
+<p>slaveof是一个异步命令，完成设置后，会给客户端返回OK; 实际复制工作将在OK返回后真正开始执行；</p>
+<p>执行<code>SLAVEOF 127.0.0.1&nbsp;6379</code>,设置好之后</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118204602440.png" alt="image-20211118204602440"></p>
+</li>
+<li><p>建立套接字连接</p>
+<p>根据前一步保存的属性开始连接主服务器套接字(<strong>server.c/serverCron</strong> &gt; <strong>replication.c/replicationCron</strong> &gt; <strong>replication.c/connectWithMaster</strong>)</p>
+<p>如果从服务和主服务器连接成功，从服务器会给这个套接字关联一个处理复制工作的文件处理器(<strong>replication.c/syncWithMaster</strong>),处理器完成后续工作,包括接受RDB文件,接受后续传来的写命令</p>
+<p>主服务器在接受（ accept ) 从服务器的套接字连接之后， 将为该套接字创建相应的客户端状态， 并将从服务器看作是一个连接到主服务器的客户端来对待， 这时从服务器将同时具有服务器和客户端两个身份. </p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221239382.png" alt="image-20211118221239382"></p>
+</li>
+<li><p>发送ping命令</p>
+<ul>
+<li>检查套接字连接情况</li>
+<li>检查主服务器是否能正常处理命令</li>
+</ul>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221522707.png" alt="image-20211118221522707"></p>
+</li>
+<li><p>身份验证</p>
+<ul>
+<li>如果从服务器设置了 masterauth 选项， 那么进行身份验证。</li>
+<li>如果从服务器没有设置 masterauth 选项， 那么不进行身份验证。</li>
+</ul>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221720561.png" alt="image-20211118221720561"></p>
+</li>
+<li><p>发送端口信息</p>
+<p>从服务将执行<code>REPLCONF listen-port &lt;port-number&gt;</code>，向主服务器发送从服务监听的端口号</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221853890.png" alt="image-20211118221853890"></p>
+<p>主服务器接受到这个命令后，将从服务的端口号记录到客户端状态中的 slave_listening_port属性中</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118221942590.png" alt="image-20211118221942590"></p>
+</li>
+<li><p>同步</p>
+<p>从服务器向主服务器发送PSYNC命令</p>
+<p>在同步操作执行之前， 只有从服务器是主服务器的客户端， 但是在执行同步操作之后， 他们互为客户端,因为主服务器也需要发送写命令给从服务器</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211118223802314.png" alt="image-20211118223802314"></p>
+</li>
+<li><p>命令传播</p>
+<p>写命令传播给从服务器</p>
+</li>
+</ol>
+<h3 id="心跳检测"><a href="#心跳检测" class="headerlink" title="心跳检测"></a>心跳检测</h3><p>在命令传播阶段，从服务默认每秒一次的频率向主服务器发送 <code>REPLCONF ACK &lt;replicaiotn_offset&gt; </code>(<code>replication_offset</code>是当前从服务器的复制偏移量)</p>
+<p>心跳检测的代码入口位于：<code>server.c/serverCron &gt; replication.c/replicationCron &gt;  replication.c/replicationSendAck</code></p>
+<h4 id="检测与主服务的网络连接状态"><a href="#检测与主服务的网络连接状态" class="headerlink" title="检测与主服务的网络连接状态"></a><strong>检测与主服务的网络连接状态</strong></h4><p>主从服务器通过发送和接受<code>REPLCONF</code> 命令检查网络连接是否正常；<br>如果从服务器超过一秒没有接收到从服务的<code>REPLCONF</code> 命令，主服务器就知道从服务连接出了问题； </p>
+<p>主服务器对每个从服务器保存一个lag值记录上次收到心跳包的时间</p>
+<h4 id="辅助实现min-slave选项"><a href="#辅助实现min-slave选项" class="headerlink" title="辅助实现min-slave选项"></a><strong>辅助实现min-slave选项</strong></h4><p>redis的<code>min-slave-to-write</code>和<code>min-salve-max-lag</code>可以防止主服务在不安全的情况下执行写命令；</p>
+<p>例如 主服务的min-slave-to-write和min-salve-max-lag配置如下：<br>min-salve-max-lag 10<br>min-slave-to-write 3</p>
+<p>那么从服务的数量少于3个，或者3个从服务的延时（lag）值大于等于10秒时，主服务都不能执行写命令；</p>
+<h4 id="检测命令丢失"><a href="#检测命令丢失" class="headerlink" title="检测命令丢失"></a><strong>检测命令丢失</strong></h4><p>如果因为网络原因，主服务传播给从服务的命令丢失了。那么当从服务向主服务器放松RELPCONF ACK 命令时，主服务会发觉 从服务 的复制偏移量少于主服务的复制偏移量；</p>
+<p>然后主服务会将丢失的部分发送给从服务器(这里是没有断线的部分重同步,与断线之后的PSYNC区分)</p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211119111122087.png" alt="image-20211119111122087"></p>
+<p><img src="/2022/01/27/redis-ke-hu-duan/image-20211119111136634.png" alt="image-20211119111136634"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://leehm00.github.io">homie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/">https://leehm00.github.io/2022/01/27/redis-ke-hu-duan/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://leehm00.github.io" target="_blank">homie's Home</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis/">redis</a></div><div class="post-share"><div class="social-share" data-image="/img/ibuki.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/01/27/redis-shao-bing-sentinels/" title="redis哨兵sentinels"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">redis哨兵sentinels</div></div><div class="info-2"><div class="info-item-1">哨兵SentinelSentinel节点本质上是一个特殊的Redis节点 它可以监视任意多个主服务器以及这些主服务器属下的所有从服务器，并在被监视的主服务器进人下线状态时(根据ping的时间间隔判断是否是下线了)， 自动将下线主服务器属下的某个从服务器升级为新的主服务器， 然后由新的主服务器代替已下线的主服务器继续处理命令请求    当 serverl 的下线时长超过用户设定的下线时长上限时， Sentinel 系统就会对server1 执行故障转移操作：  首先， Sentinel 系统会挑选 server1属下的其中一个从服务器， 并将这个被选中的从服务器升级为新的主服务器。   之后， Sentinel 系统会向 serverl 属下的所有从服务器发送新的复制指令， 让它们成为新的主服务器的从服务器， 当所有从服务器都开始复制新的主服务器时， 故障转移操作执行完毕。 另外， Sentinel 还会继续监视已下线的 serverl， 并在它重新上线时， 将它设置为新的主服务器的从服务器。   网络连接每个Sentinel实例会维护与所监测的主从实例之间的两个连接，分别是命令连...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2022/03/04/redis-hotkey-solutions/" title="Redis hotkey solutions"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="info-item-2">Redis hotkey solutions</div></div><div class="info-2"><div class="info-item-1">一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？ 方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存， 然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.  设置redis最大占用内存：  　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！ 　　　　maxmemory 268435456  设置过期策略：  　　　　maxmemory-policy volatile-lru  当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下： noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略） allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key...</div></div></div></a><a class="pagination-related" href="/2022/03/16/build-cluster-with-bash-on-one-node/" title="build cluster with bash on one node"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-16</div><div class="info-item-2">build cluster with bash on one node</div></div><div class="info-2"><div class="info-item-1">在我自己的机器上进行实验，sh文件实现一条命令部署单个节点集群 下面是解析步骤 常量定义定义在另一个文件中 #!/bin/bash  # Redis_Cluster  # REDIS_SERVER_BIN="/home/k8s/homie/redis/src/redis-server" BASE_DIR=/home/k8s/homie REDIS_SERVER_BIN=$BASE_DIR/redis/src/redis-server REDIS_CLI_BIN=$BASE_DIR/redis/src/redis-cli REDIS_CLUSTER_BASE=$BASE_DIR/redis_cluster NODELIST="node2 node3 node4 node5" PORTS=`seq 7000 7005` BASEPORT=${ENTRY_PORT} HG_BASEPORT=${HG_PORT}  根据自己需要进行修改 安装redis# Check redis command if [ ! -f $REDIS_SERVER_BIN ]; then   echo "Red...</div></div></div></a><a class="pagination-related" href="/2022/03/09/redis-cluster-build/" title="redis cluster build"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-09</div><div class="info-item-2">redis cluster build</div></div><div class="info-2"><div class="info-item-1">下载redis6.2.2并安装wget http://download.redis.io/releases/redis-6.2.2.tar.gz tar -zxvf ./redis-6.2.2.tar.gz mv redis-6.2.2 redis cd redis make  准备配置文件1、新建目录，并拷贝出6个节点的配置文件cd  redis-6.2.2 mkdir -p config mkdir -p log mkdir -p data mkdir -p node cp redis.conf ./config/redis-7000.conf  2、修改每个节点的配置文件内容远程访问需要把bind注释掉         # bind 127.0.0.1 修改端口号         port 7000 默认启动时为后台启动，yes为后台启动         daemonize yes 指定进程信息存储文件         pidfile /var/run/redis_7000.pid 指定日志文件(改成自己的路径)         logfile "/home/k8s/hom...</div></div></div></a><a class="pagination-related" href="/2022/03/05/redis-cluster/" title="redis cluster"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-05</div><div class="info-item-2">redis cluster</div></div><div class="info-2"><div class="info-item-1">redis集群理论单机遇到内存、并发、流量等瓶颈时，可以采用Cluster架构方案来达到负载均衡 一 基础理论1.1分区规则数据集按照分区规则映射到各个节点  常见哈希分区：  节点取余分区 使用特定的数据，如Redis的键或用户ID，再根据节点数量N使用公式： hash（key）%N计算出哈希值，用来决定数据映射到哪一个节点上。 缺点：当节点数量变化时，如扩容或收缩节点，数据节点映射关系需要重新计算，会导致数据的重新迁移。 优点：这种方式的突出优点是简单，易理解； 这种方式常用于数据库的分库分表规则，一般采 用预分区的方式，提前根据数据量规划好分区数，比如划分为512或1024张 表，保证可支撑未来一段时间的数据量，再根据负载情况将表迁移到其他数 据库中。扩容时通常采用翻倍扩容，避免数据映射全部被打乱导致全量迁移 的情况  一致性哈希分区 一致性哈希分区（Distributed Hash Table）实现思路是为系统中每个节点分配一个token（范围一般在0~2^32），这些token构成一个哈希环。 数据读写 执行节点查找操作时，先根据key计算hash值，然后顺时针找到第一...</div></div></div></a><a class="pagination-related" href="/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/" title="redis cluster集群常用指令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-22</div><div class="info-item-2">redis cluster集群常用指令</div></div><div class="info-2"><div class="info-item-1">1.redis 常用管理命令  https://redis.io/topics/rediscli   1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 del foo  1.2 查看内存等信息#查看内存等信息$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info memory |grep human -i$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 dbsize  1.3 查看key及bigkey#key的情况$redis-cli -c -h 192.124.64.212 -p ...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-27</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#redis%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">redis客户端与服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.1.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B1%9E%E6%80%A7"><span class="toc-number">1.1.1.</span> <span class="toc-text">客户端属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.2.</span> <span class="toc-text">客户端的类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%AF%B7%E6%B1%82%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">命令请求的执行过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E8%AF%B7%E6%B1%82"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">发送请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E8%AF%B7%E6%B1%82"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">读取请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">命令执行</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E5%91%BD%E4%BB%A4%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.1.3.1.</span> <span class="toc-text">查找命令实现</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E9%A2%84%E5%A4%87%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.1.3.2.</span> <span class="toc-text">执行预备操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E5%91%BD%E4%BB%A4%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.1.3.3.</span> <span class="toc-text">调用命令实现函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%90%8E%E7%BB%AD%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.2.1.3.4.</span> <span class="toc-text">执行后续工作</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86%E5%9B%9E%E5%A4%8D%E5%8F%91%E9%80%81%E7%BB%99%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.2.1.4.</span> <span class="toc-text">将回复发送给客户端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A5%E5%8F%97%E5%B9%B6%E6%89%93%E5%8D%B0%E5%91%BD%E4%BB%A4%E5%9B%9E%E5%A4%8D"><span class="toc-number">1.2.1.5.</span> <span class="toc-text">客户端接受并打印命令回复</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">1.2.1.6.</span> <span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#serverCron%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">serverCron函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.2.3.</span> <span class="toc-text">初始化服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%8A%B6%E6%80%81%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">初始化状态结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BD%BD%E5%85%A5%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">载入配置选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">初始化服务器数据结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%98%E5%8E%9F%E6%95%B0%E6%8D%AE%E5%BA%93%E7%8A%B6%E6%80%81"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">还原数据库状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.2.3.5.</span> <span class="toc-text">执行事件循环</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">多机数据库实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6"><span class="toc-number">2.1.</span> <span class="toc-text">复制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A7%E7%89%88%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD"><span class="toc-number">2.1.1.</span> <span class="toc-text">旧版复制功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E7%89%88%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD"><span class="toc-number">2.1.2.</span> <span class="toc-text">新版复制功能</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">复制偏移量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%A7%AF%E5%8E%8B%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">复制积压缓冲区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8CID"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">服务器运行ID</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PSYNC%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-number">2.1.3.</span> <span class="toc-text">PSYNC执行过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%83%E8%B7%B3%E6%A3%80%E6%B5%8B"><span class="toc-number">2.1.4.</span> <span class="toc-text">心跳检测</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E4%B8%8E%E4%B8%BB%E6%9C%8D%E5%8A%A1%E7%9A%84%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E7%8A%B6%E6%80%81"><span class="toc-number">2.1.4.1.</span> <span class="toc-text">检测与主服务的网络连接状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%85%E5%8A%A9%E5%AE%9E%E7%8E%B0min-slave%E9%80%89%E9%A1%B9"><span class="toc-number">2.1.4.2.</span> <span class="toc-text">辅助实现min-slave选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E5%91%BD%E4%BB%A4%E4%B8%A2%E5%A4%B1"><span class="toc-number">2.1.4.3.</span> <span class="toc-text">检测命令丢失</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/diary251110/" title="diary251110">diary251110</a><time datetime="2025-11-10T15:55:41.000Z" title="发表于 2025-11-10 15:55:41">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/hello-world/" title="Hello World">Hello World</a><time datetime="2025-11-10T14:00:07.549Z" title="发表于 2025-11-10 14:00:07">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/09/diary251109/" title="diary251109">diary251109</a><time datetime="2025-11-09T21:59:27.000Z" title="发表于 2025-11-09 21:59:27">2025-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/diary251107/" title="diary251107">diary251107</a><time datetime="2025-11-07T16:53:41.000Z" title="发表于 2025-11-07 16:53:41">2025-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/zsh-pei-zhi/" title="zsh配置">zsh配置</a><time datetime="2025-11-07T00:45:46.000Z" title="发表于 2025-11-07 00:45:46">2025-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2025 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liQESFXsU1YySKCu',
+      clientSecret: '8ffed0b5a974ee263dce9a1f772883682eeffa4a',
+      repo: 'https://github.com/leehm00/homepage_comment',
+      owner: 'leehm00',
+      admin: ['leehm00'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '899fbf2bfa328ce6aea4925920bc28f4'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>

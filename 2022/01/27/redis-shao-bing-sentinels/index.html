@@ -1,0 +1,790 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>redis哨兵sentinels | homie's Home</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="哨兵SentinelSentinel节点本质上是一个特殊的Redis节点 它可以监视任意多个主服务器以及这些主服务器属下的所有从服务器，并在被监视的主服务器进人下线状态时(根据ping的时间间隔判断是否是下线了)， 自动将下线主服务器属下的某个从服务器升级为新的主服务器， 然后由新的主服务器代替已下线的主服务器继续处理命令请求    当 serverl 的下线时长超过用户设定的下线时长上限时， S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis哨兵sentinels">
+<meta property="og:url" content="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="哨兵SentinelSentinel节点本质上是一个特殊的Redis节点 它可以监视任意多个主服务器以及这些主服务器属下的所有从服务器，并在被监视的主服务器进人下线状态时(根据ping的时间间隔判断是否是下线了)， 自动将下线主服务器属下的某个从服务器升级为新的主服务器， 然后由新的主服务器代替已下线的主服务器继续处理命令请求    当 serverl 的下线时长超过用户设定的下线时长上限时， S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:published_time" content="2022-01-27T09:16:54.000Z">
+<meta property="article:modified_time" content="2025-11-10T14:00:07.586Z">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "redis哨兵sentinels",
+  "url": "https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/",
+  "image": "https://leehm00.github.io/img/ibuki.png",
+  "datePublished": "2022-01-27T09:16:54.000Z",
+  "dateModified": "2025-11-10T14:00:07.586Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "homie",
+      "url": "https://leehm00.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'redis哨兵sentinels',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a><a class="nav-page-title" href="/"><span class="site-name">redis哨兵sentinels</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">redis哨兵sentinels</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-01-27T09:16:54.000Z" title="发表于 2022-01-27 09:16:54">2022-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kv/">kv</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="哨兵Sentinel"><a href="#哨兵Sentinel" class="headerlink" title="哨兵Sentinel"></a>哨兵Sentinel</h2><p>Sentinel节点本质上是一个特殊的Redis节点</p>
+<p>它可以监视任意多个主服务器以及这些主服务器属下的所有从服务器，并在被监视的主服务器进人下线状态时(根据ping的时间间隔判断是否是下线了)， 自动将下线主服务器属下的某个从服务器升级为新的主服务器， 然后由新的主服务器代替已下线的主服务器继续处理命令请求  </p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211119220249825.png" alt="image-20211119220249825"></p>
+<p>当 serverl 的下线时长超过用户设定的下线时长上限时， Sentinel 系统就会对server1 执行故障转移操作：</p>
+<ul>
+<li>首先， Sentinel 系统会挑选 server1属下的其中一个从服务器， 并将这个被选中的从服务器升级为新的主服务器。  </li>
+<li>之后， Sentinel 系统会向 serverl 属下的所有从服务器发送新的复制指令， 让它们成为新的主服务器的从服务器， 当所有从服务器都开始复制新的主服务器时， 故障转移操作执行完毕。</li>
+<li>另外， Sentinel 还会继续监视已下线的 serverl， 并在它重新上线时， 将它设置为新的主服务器的从服务器。</li>
+</ul>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211119220709722.png" alt="image-20211119220709722"></p>
+<h3 id="网络连接"><a href="#网络连接" class="headerlink" title="网络连接"></a>网络连接</h3><p>每个Sentinel实例会维护与所监测的主从实例之间的两个连接，分别是命令连接（Command Connection）和发布/订阅连接（Pub/Sub Connection）。但是<strong>Sentinel和其他Sentinel之间只有一个命令连接</strong>。</p>
+<h4 id="命令连接"><a href="#命令连接" class="headerlink" title="命令连接"></a>命令连接</h4><p>Sentinel维护命令连接是为了与其他主从实例以及Sentinel实例通过发送接收命令的方式进行通信</p>
+<p>作用包括：</p>
+<ol>
+<li>Sentinel会默认以每1s间隔发送PING 命令给其他实例以主观判断其他实例是否下线。</li>
+<li>Sentinel会通过Sentinel和主实例之间的命令连接每隔10s发送INFO命令给主从实例以得到主实例和从实例的最新信息。</li>
+<li>在主实例下线的情况下，Sentinel会通过Sentinel和从实例的命令连接发送SLAVEOF NO ONE命令给选定的从实例从而使从实例提升为新的主节点。</li>
+<li>Sentinel会默认每隔1s发送is-master-down-by-addr命令以询问其他Sentinel节点关于监控的主节点是否下线。</li>
+</ol>
+<p>实现函数sentinel.c/sentinelReconnectInstance</p>
+<h4 id="发布-订阅连接"><a href="#发布-订阅连接" class="headerlink" title="发布/订阅连接"></a>发布/订阅连接</h4><p>Sentinel维护和其他主从节点的发布/订阅连接作用是为了获知其他监控相同主从实例的Sentinel实例的存在，并且从其他Sentinel实例中更新对所监控的主从实例以及发送的Sentinel实例的认知。例如在故障转移完成后，其他Sentinel通过读取领头Sentinel的频道消息来更新新的主节点的相关信息（地址，端口号等）。</p>
+<p>Sentinel在默认每隔2秒钟会发送Hello消息包到其对应的主从实例的_<em>sentinel</em>_:hello频道中。Hello消息格式如下：</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">__sentinel__:hello <span class="token operator">&lt;</span>sentinel地址<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>sentinel端口号<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>sentinel运行id<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>sentinel配置纪元<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>主节点名字 <span class="token operator">&gt;</span> <span class="token operator">&lt;</span>主节点地址<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>主节点端口号<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>主节点配置纪元<span class="token operator">&gt;</span></code></pre>
+
+<p>当Sentinel通过订阅连接收到其他Sentinel发送的的Hello包时，会更新对主从节点以及发送Sentinel的实例，如果收到自己发送的Hello包，则简单的丢弃不做任何处理。</p>
+<p>处理hello信息实现函数sentinel.c/sentinelProcessHelloMessage</p>
+<p>发布/订阅连接实现函数sentinel.c/sentinelReconnectInstance</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>sentinel本质是一个特殊模式的redis的服务器，代码的入口一样位于server.c/main函数</p>
+<p>与普通的节点有不同:</p>
+<p>**sertinet.c/initSentinelConfig()**函数将会覆盖普通redis服务器的一些默认配置</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">/**
+ * 此函数用于设置Sentinel的默认值
+ * 覆盖普通redis config默认值。
+ */</span> 
+<span class="token comment">/* This function overwrites a few normal Redis config default with Sentinel
+ * specific defaults. */</span>
+<span class="token keyword">void</span> <span class="token function">initSentinelConfig</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//使用26379作为sentinel的默认端口</span>
+    server<span class="token punctuation">.</span>port <span class="token operator">=</span> REDIS_SENTINEL_PORT<span class="token punctuation">;</span> 
+    server<span class="token punctuation">.</span>protected_mode <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">/* Sentinel must be exposed. */</span>
+<span class="token punctuation">}</span></code></pre>
+
+
+
+<p>使用<strong>sentinel.c/sentinelcmds</strong>作为sentinel的命令表</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//sentinel 模块初始化</span>
+<span class="token comment">/* Perform the Sentinel mode initialization. */</span>
+<span class="token keyword">void</span> <span class="token function">initSentinel</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> j<span class="token punctuation">;</span>
+ 
+    <span class="token comment">// 清空常用命令；只添加sentinel 命令</span>
+    <span class="token comment">/* Remove usual Redis commands from the command table, then just add
+     * the SENTINEL command. */</span>
+    <span class="token function">dictEmpty</span><span class="token punctuation">(</span>server<span class="token punctuation">.</span>commands<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>sentinelcmds<span class="token punctuation">)</span><span class="token operator">/</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>sentinelcmds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> retval<span class="token punctuation">;</span>
+        <span class="token keyword">struct</span> <span class="token class-name">redisCommand</span> <span class="token operator">*</span>cmd <span class="token operator">=</span> sentinelcmds<span class="token operator">+</span>j<span class="token punctuation">;</span>
+ 
+        retval <span class="token operator">=</span> <span class="token function">dictAdd</span><span class="token punctuation">(</span>server<span class="token punctuation">.</span>commands<span class="token punctuation">,</span> <span class="token function">sdsnew</span><span class="token punctuation">(</span>cmd<span class="token operator">-&gt;</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span> cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">serverAssert</span><span class="token punctuation">(</span>retval <span class="token operator">==</span> DICT_OK<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+ 
+    <span class="token comment">//......</span>
+    <span class="token comment">//初始化各种数据结构</span>
+    <span class="token comment">//......</span>
+<span class="token punctuation">}</span>
+ 
+ 
+<span class="token comment">//所有sentinel可以执行的命令</span>
+<span class="token keyword">struct</span> <span class="token class-name">redisCommand</span> sentinelcmds<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">{</span><span class="token string">"ping"</span><span class="token punctuation">,</span>pingCommand<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"fast @connection"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"sentinel"</span><span class="token punctuation">,</span>sentinelCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"admin"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"subscribe"</span><span class="token punctuation">,</span>subscribeCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"pub-sub"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"unsubscribe"</span><span class="token punctuation">,</span>unsubscribeCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"pub-sub"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"psubscribe"</span><span class="token punctuation">,</span>psubscribeCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"pub-sub"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"punsubscribe"</span><span class="token punctuation">,</span>punsubscribeCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"pub-sub"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"publish"</span><span class="token punctuation">,</span>sentinelPublishCommand<span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token string">"pub-sub fast"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"info"</span><span class="token punctuation">,</span>sentinelInfoCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"random @dangerous"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"role"</span><span class="token punctuation">,</span>sentinelRoleCommand<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"fast read-only @dangerous"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"client"</span><span class="token punctuation">,</span>clientCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"admin random @connection"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"shutdown"</span><span class="token punctuation">,</span>shutdownCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"admin"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"auth"</span><span class="token punctuation">,</span>authCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"no-auth fast @connection"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"hello"</span><span class="token punctuation">,</span>helloCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">"no-auth fast @connection"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"acl"</span><span class="token punctuation">,</span>aclCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">"admin"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token string">"command"</span><span class="token punctuation">,</span>commandCommand<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"random @connection"</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+
+
+
+<p>初始化sentinel状态</p>
+<p>接下来服务器会初始化一个<strong>sentinel.c/sentinelState</strong>，用于保存所有与sentinel功能有关的状态(redisServer保存了一般的状态)</p>
+<pre class="language-c" data-language="c"><code class="language-c"> 
+<span class="token comment">/**
+ * sentinel 状态 
+*/</span>
+<span class="token comment">/* Main state. */</span>
+<span class="token keyword">struct</span> <span class="token class-name">sentinelState</span> <span class="token punctuation">{</span>
+    <span class="token keyword">char</span> myid<span class="token punctuation">[</span>CONFIG_RUN_ID_SIZE<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">/* This sentinel ID. */</span>
+    <span class="token class-name">uint64_t</span> current_epoch<span class="token punctuation">;</span>         <span class="token comment">/* Current epoch. */</span> <span class="token comment">//当前纪元用户实现故障转移</span>
+ 
+    <span class="token comment">/**
+     * 当前哨兵监听的所有master字典
+     * key是实例名，value是指向sentinelRedisInstance 结构的指针
+     */</span> 
+    dict <span class="token operator">*</span>masters<span class="token punctuation">;</span>      <span class="token comment">/* Dictionary of master sentinelRedisInstances.
+                           Key is the instance name, value is the
+                           sentinelRedisInstance structure pointer. */</span>
+    <span class="token comment">//是否进入了TILT模式                                          </span>
+    <span class="token keyword">int</span> tilt<span class="token punctuation">;</span>           <span class="token comment">/* Are we in TILT mode? */</span>
+    <span class="token comment">//目前正在执行的脚本数量</span>
+    <span class="token keyword">int</span> running_scripts<span class="token punctuation">;</span>    <span class="token comment">/* Number of scripts in execution right now. */</span>
+    <span class="token comment">//进入tilt模式的时间</span>
+    <span class="token class-name">mstime_t</span> tilt_start_time<span class="token punctuation">;</span>       <span class="token comment">/* When TITL started. */</span>
+    <span class="token comment">//最后一次执行处理器的时间</span>
+    <span class="token class-name">mstime_t</span> previous_time<span class="token punctuation">;</span>         <span class="token comment">/* Last time we ran the time handler. */</span>
+    <span class="token comment">//FIFO队列，包含所有需要执行的用户脚本</span>
+    list <span class="token operator">*</span>scripts_queue<span class="token punctuation">;</span>            <span class="token comment">/* Queue of user scripts to execute. */</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>announce_ip<span class="token punctuation">;</span>  <span class="token comment">/* IP addr that is gossiped to other sentinels if
+                           not NULL. */</span>
+    <span class="token keyword">int</span> announce_port<span class="token punctuation">;</span>  <span class="token comment">/* Port that is gossiped to other sentinels if
+                           non zero. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> simfailure_flags<span class="token punctuation">;</span> <span class="token comment">/* Failures simulation. */</span>
+    <span class="token keyword">int</span> deny_scripts_reconfig<span class="token punctuation">;</span> <span class="token comment">/* Allow SENTINEL SET ... to change script
+                                  paths at runtime? */</span>
+<span class="token punctuation">}</span> sentinel<span class="token punctuation">;</span>
+ 
+ 
+ 
+<span class="token comment">//sentinel 模块初始化</span>
+<span class="token comment">/* Perform the Sentinel mode initialization. */</span>
+<span class="token keyword">void</span> <span class="token function">initSentinel</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> j<span class="token punctuation">;</span>
+    <span class="token comment">//...............</span>
+    <span class="token comment">// 清空常用命令；只添加sentinel 命令</span>
+    <span class="token comment">//..............</span>
+ 
+    <span class="token comment">//初始化各种数据结构</span>
+    <span class="token comment">/* Initialize various data structures. */</span>
+    sentinel<span class="token punctuation">.</span>current_epoch <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>masters <span class="token operator">=</span> <span class="token function">dictCreate</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>instancesDictType<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>tilt <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>tilt_start_time <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>previous_time <span class="token operator">=</span> <span class="token function">mstime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>running_scripts <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>scripts_queue <span class="token operator">=</span> <span class="token function">listCreate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>announce_ip <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>announce_port <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>simfailure_flags <span class="token operator">=</span> SENTINEL_SIMFAILURE_NONE<span class="token punctuation">;</span>
+    sentinel<span class="token punctuation">.</span>deny_scripts_reconfig <span class="token operator">=</span> SENTINEL_DEFAULT_DENY_SCRIPTS_RECONFIG<span class="token punctuation">;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span>sentinel<span class="token punctuation">.</span>myid<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>sentinel<span class="token punctuation">.</span>myid<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>初始化sentinel状态的master属性</p>
+<p>sentinelState状态中的master属性记录所有被sentinel监视的所有相关信息；</p>
+<ul>
+<li>sentinelState.masters的结构是hash；</li>
+<li>字典键的被监视主服务的名字；</li>
+<li>字典值则是 sentinel.c/sentinelRedisInstance结构体；</li>
+</ul>
+<p>根据sentinel启动时的指定的配置项或者配置文件来初始化</p>
+<p>如果按照下图指定:</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155233753.png" alt="image-20211121155233753"></p>
+<p>则最后的字典值为:</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155311843.png" alt="image-20211121155311843"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155327607.png" alt="image-20211121155327607"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121155342021.png" alt="image-20211121155342021"></p>
+<p>创建与主服务器的网络连接</p>
+<p>sentinel会与被监控的master建立连接，sentinel将会成为master的客户端</p>
+<p>sentinel会创建两个连接向master的异步网络连接：</p>
+<ul>
+<li>一个是命令连接，用于向master发送命令并接受回复</li>
+<li>一个是订阅连接，用于订阅master的<code>__sentinel__:hello</code>频道</li>
+</ul>
+<blockquote>
+<p><strong>为什么要有两个连接</strong></p>
+<p>目前发布和订阅的功能，被发送的信息都不会保存在服务器里面；</p>
+<p>如果发送时接受信息的客户端不在线，那么客户端就会丢失这条数据；为了不丢失<code>__sentinel__:hello</code>频道的任何信息，所以sentinel必须创建一个订阅连接来接受消息</p>
+<p>因为是多个连接,所以必须是异步的</p>
+<p><strong>创建入口：</strong><br>server.c/main -&gt; server.c/serverCron() -&gt; sentinel.c/sentinelTimer -&gt; sentinel.c/sentinelHandleDictOfRedisInstances() -&gt; sentinel.c/sentinelHandleRedisInstance</p>
+</blockquote>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//对于特定的redis实例执行预操作</span>
+<span class="token comment">/* Perform scheduled operations for the specified Redis instance. */</span>
+<span class="token keyword">void</span> <span class="token function">sentinelHandleRedisInstance</span><span class="token punctuation">(</span>sentinelRedisInstance <span class="token operator">*</span>ri<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">/* ========== MONITORING HALF ============ */</span>
+    <span class="token comment">/* Every kind of instance */</span>
+    <span class="token comment">//监控所有类型的实例(master,slave,sentinel)</span>
+    <span class="token function">sentinelReconnectInstance</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">sentinelSendPeriodicCommands</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* ============== ACTING HALF ============= */</span>
+    <span class="token comment">/* We don't proceed with the acting half if we are in TILT mode.
+     * TILT happens when we find something odd with the time, like a
+     * sudden change in the clock. */</span>
+    <span class="token comment">//对于tilt模式下哨兵已经不可信,这时候检测是否时钟恢复正常,如果正常就推出tilt模式</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>sentinel<span class="token punctuation">.</span>tilt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">mstime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span>sentinel<span class="token punctuation">.</span>tilt_start_time <span class="token operator">&lt;</span> sentinel_tilt_period<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        sentinel<span class="token punctuation">.</span>tilt <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token function">sentinelEvent</span><span class="token punctuation">(</span>LL_WARNING<span class="token punctuation">,</span><span class="token string">"-tilt"</span><span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">,</span><span class="token string">"#tilt mode exited"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* Every kind of instance */</span>
+    <span class="token function">sentinelCheckSubjectivelyDown</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* Masters and slaves */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>flags <span class="token operator">&amp;</span> <span class="token punctuation">(</span>SRI_MASTER<span class="token operator">|</span>SRI_SLAVE<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">/* Nothing so far. */</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* Only masters */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>flags <span class="token operator">&amp;</span> SRI_MASTER<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">sentinelCheckObjectivelyDown</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">sentinelStartFailoverIfNeeded</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token function">sentinelAskMasterStateToOtherSentinels</span><span class="token punctuation">(</span>ri<span class="token punctuation">,</span>SENTINEL_ASK_FORCED<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">sentinelFailoverStateMachine</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">sentinelAskMasterStateToOtherSentinels</span><span class="token punctuation">(</span>ri<span class="token punctuation">,</span>SENTINEL_NO_FLAGS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121204051572.png" alt="image-20211121204051572"></p>
+<h3 id="获取主服务器信息"><a href="#获取主服务器信息" class="headerlink" title="获取主服务器信息"></a>获取主服务器信息</h3><p>sentinel默认每10s一次频率向 master &amp; slale发送info命令</p>
+<p>实现的入口:(server.c/main -&gt; server.c/serverCron() -&gt; sentinel.c/sentinelTimer -&gt; sentinel.c/sentinelHandleDictOfRedisInstances() -&gt; sentinel.c/sentinelSendPeriodicCommands)</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">/**
+ * 定期向指定的slave或master发送PING、INFO, 发布到消息到 “订阅”的channel
+ */</span>
+<span class="token comment">//类似于心跳检测</span>
+<span class="token comment">/* Send periodic PING, INFO, and PUBLISH to the Hello channel to
+ * the specified master or slave instance. */</span>
+<span class="token keyword">void</span> <span class="token function">sentinelSendPeriodicCommands</span><span class="token punctuation">(</span>sentinelRedisInstance <span class="token operator">*</span>ri<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">mstime_t</span> now <span class="token operator">=</span> <span class="token function">mstime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">mstime_t</span> info_period<span class="token punctuation">,</span> ping_period<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> retval<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Return ASAP if we have already a PING or INFO already pending, or
+     * in the case the instance is not properly connected. */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>disconnected<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* For INFO, PING, PUBLISH that are not critical commands to send we
+     * also have a limit of SENTINEL_MAX_PENDING_COMMANDS. We don't
+     * want to use a lot of memory just because a link is not working
+     * properly (note that anyway there is a redundant protection about this,
+     * that is, the link will be disconnected and reconnected if a long
+     * timeout condition is detected. */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>pending_commands <span class="token operator">&gt;=</span>
+        SENTINEL_MAX_PENDING_COMMANDS <span class="token operator">*</span> ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>refcount<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* If this is a slave of a master in O_DOWN condition we start sending
+     * it INFO every second, instead of the usual SENTINEL_INFO_PERIOD
+     * period. In this state we want to closely monitor slaves in case they
+     * are turned into masters by another Sentinel, or by the sysadmin.
+     *
+     * Similarly we monitor the INFO output more often if the slave reports
+     * to be disconnected from the master, so that we can have a fresh
+     * disconnection time figure. */</span>
+    <span class="token comment">//对于一个处于客观判断下线的slave,每秒发送info,避免被转换成了master</span>
+    <span class="token comment">//同时也检测其真实下线时间</span>
+    <span class="token comment">//todo:这里其实消耗的资源会比较多,有没有更好的解决办法</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>flags <span class="token operator">&amp;</span> SRI_SLAVE<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>master<span class="token operator">-&gt;</span>flags <span class="token operator">&amp;</span> <span class="token punctuation">(</span>SRI_O_DOWN<span class="token operator">|</span>SRI_FAILOVER_IN_PROGRESS<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span>
+         <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>master_link_down_time <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        info_period <span class="token operator">=</span> <span class="token number">1000</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        info_period <span class="token operator">=</span> sentinel_info_period<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* We ping instances every time the last received pong is older than
+     * the configured 'down-after-milliseconds' time, but every second
+     * anyway if 'down-after-milliseconds' is greater than 1 second. */</span>
+    ping_period <span class="token operator">=</span> ri<span class="token operator">-&gt;</span>down_after_period<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ping_period <span class="token operator">&gt;</span> sentinel_ping_period<span class="token punctuation">)</span> ping_period <span class="token operator">=</span> sentinel_ping_period<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Send INFO to masters and slaves, not sentinels. */</span>
+    <span class="token comment">//向master和slave发送info命令</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>flags <span class="token operator">&amp;</span> SRI_SENTINEL<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
+        <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>info_refresh <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span>
+        <span class="token punctuation">(</span>now <span class="token operator">-</span> ri<span class="token operator">-&gt;</span>info_refresh<span class="token punctuation">)</span> <span class="token operator">&gt;</span> info_period<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        retval <span class="token operator">=</span> <span class="token function">redisAsyncCommand</span><span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>cc<span class="token punctuation">,</span>
+            sentinelInfoReplyCallback<span class="token punctuation">,</span> ri<span class="token punctuation">,</span> <span class="token string">"%s"</span><span class="token punctuation">,</span>
+            <span class="token function">sentinelInstanceMapCommand</span><span class="token punctuation">(</span>ri<span class="token punctuation">,</span><span class="token string">"INFO"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>retval <span class="token operator">==</span> C_OK<span class="token punctuation">)</span> ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>pending_commands<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* Send PING to all the three kinds of instances. */</span>
+    <span class="token comment">//对所有的实例发送ping</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>now <span class="token operator">-</span> ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>last_pong_time<span class="token punctuation">)</span> <span class="token operator">&gt;</span> ping_period <span class="token operator">&amp;&amp;</span>
+               <span class="token punctuation">(</span>now <span class="token operator">-</span> ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>last_ping_time<span class="token punctuation">)</span> <span class="token operator">&gt;</span> ping_period<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">sentinelSendPing</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* PUBLISH hello messages to all the three kinds of instances. */</span>
+    <span class="token comment">//向订阅的频道发布信息</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>now <span class="token operator">-</span> ri<span class="token operator">-&gt;</span>last_pub_time<span class="token punctuation">)</span> <span class="token operator">&gt;</span> sentinel_publish_period<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">sentinelSendHello</span><span class="token punctuation">(</span>ri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121205944717.png" alt="image-20211121205944717"></p>
+<p>通过解析maser返回Info命令信息，获取master的当前信息；</p>
+<ul>
+<li>一方面获取master的信息，包括run_id、角色、地址等；</li>
+<li>另一方面获取master下所有slave服务器信息；</li>
+</ul>
+<p>根据这些返回信息，用户无需提供从服务器信息，就可以自动发现从服务器（便于与从服务器建立连接）</p>
+<p>这些信息用来更新slaves字典,出现了新的就要加入到字典中,键是从服务器的ip:port，值是从服务器的对应实例结构</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121223027407.png" alt="image-20211121223027407"></p>
+<p><strong>解析info返回结果入口</strong><br><strong>sentinel.c/sentinelSendPeriodicCommands</strong> -&gt; <strong>sentinel.c/sentinelInfoReplyCallback</strong> &gt; <strong>sentinel.c/sentinelInfoReplyCallback</strong> &gt; <strong>sentinel.c/sentinelRefreshInstanceInfo</strong></p>
+<h3 id="获取从服务器信息"><a href="#获取从服务器信息" class="headerlink" title="获取从服务器信息"></a>获取从服务器信息</h3><p>对于每个连接到主服务器的从服务器也要建立命令连接和订阅连接</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121223238004.png" alt="image-20211121223238004"></p>
+<p>通过解析slave返回的slave的信息，主要提取以下信息。然后根据这些信息，更新从服务的实例信息；</p>
+<ul>
+<li>从服务的run_id</li>
+<li>主服务器的ip地址以及端口号</li>
+<li>主从服务器的连接状态</li>
+<li>从服务器优先级</li>
+<li>从服务的偏移量</li>
+</ul>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211121223623465.png" alt="image-20211121223623465"></p>
+<h3 id="向被监视的主从服务器发送信息"><a href="#向被监视的主从服务器发送信息" class="headerlink" title="向被监视的主从服务器发送信息"></a>向被监视的主从服务器发送信息</h3><p>每两秒进行一次</p>
+<p>发送的内容：</p>
+<ul>
+<li>sentinel_ip :sentinel的ip；</li>
+<li>sentinel_port：sentinel的端口</li>
+<li>sentinel_runid：：sentinel的runid</li>
+<li>sentinel_current_epoch:sentinel当前配置的纪元</li>
+<li>master_name: master的名称</li>
+<li>·master_ip：master的ip</li>
+<li>master_port：master的端口</li>
+<li>master_config_epoch：master的当前配置的纪元</li>
+</ul>
+<p>函数实现：（sentinel.c/sentinelSendHello）</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">//通过Pub/Sub向指定的redis实例(即ri)发送hello消息,广播主机当前的配置,通知sentinel存活</span>
+<span class="token comment">//如果发布成功排队,返回C_OK,否则是C_ERR</span>
+<span class="token keyword">int</span> <span class="token function">sentinelSendHello</span><span class="token punctuation">(</span>sentinelRedisInstance <span class="token operator">*</span>ri<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">char</span> ip<span class="token punctuation">[</span>NET_IP_STR_LEN<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">char</span> payload<span class="token punctuation">[</span>NET_IP_STR_LEN<span class="token operator">+</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> retval<span class="token punctuation">;</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>announce_ip<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> announce_port<span class="token punctuation">;</span>
+    sentinelRedisInstance <span class="token operator">*</span>master <span class="token operator">=</span> <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>flags <span class="token operator">&amp;</span> SRI_MASTER<span class="token punctuation">)</span> <span class="token operator">?</span> ri <span class="token operator">:</span> ri<span class="token operator">-&gt;</span>master<span class="token punctuation">;</span>
+    sentinelAddr <span class="token operator">*</span>master_addr <span class="token operator">=</span> <span class="token function">sentinelGetCurrentMasterAddress</span><span class="token punctuation">(</span>master<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>disconnected<span class="token punctuation">)</span> <span class="token keyword">return</span> C_ERR<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Use the specified announce address if specified, otherwise try to
+     * obtain our own IP address. */</span>
+    <span class="token comment">//设置广播的ip和端口</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>sentinel<span class="token punctuation">.</span>announce_ip<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        announce_ip <span class="token operator">=</span> sentinel<span class="token punctuation">.</span>announce_ip<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">anetFdToString</span><span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>cc<span class="token operator">-&gt;</span>c<span class="token punctuation">.</span>fd<span class="token punctuation">,</span>ip<span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>ip<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">,</span>FD_TO_SOCK_NAME<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> C_ERR<span class="token punctuation">;</span>
+        announce_ip <span class="token operator">=</span> ip<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>sentinel<span class="token punctuation">.</span>announce_port<span class="token punctuation">)</span> announce_port <span class="token operator">=</span> sentinel<span class="token punctuation">.</span>announce_port<span class="token punctuation">;</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>server<span class="token punctuation">.</span>tls_replication <span class="token operator">&amp;&amp;</span> server<span class="token punctuation">.</span>tls_port<span class="token punctuation">)</span> announce_port <span class="token operator">=</span> server<span class="token punctuation">.</span>tls_port<span class="token punctuation">;</span>
+    <span class="token keyword">else</span> announce_port <span class="token operator">=</span> server<span class="token punctuation">.</span>port<span class="token punctuation">;</span>
+
+    <span class="token comment">/* Format and send the Hello message. */</span>
+    <span class="token comment">//格式化要发送的消息</span>
+    <span class="token function">snprintf</span><span class="token punctuation">(</span>payload<span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>payload<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"%s,%d,%s,%llu,"</span> <span class="token comment">/* Info about this sentinel. */</span>
+        <span class="token string">"%s,%s,%d,%llu"</span><span class="token punctuation">,</span> <span class="token comment">/* Info about current master. */</span>
+        announce_ip<span class="token punctuation">,</span> announce_port<span class="token punctuation">,</span> sentinel<span class="token punctuation">.</span>myid<span class="token punctuation">,</span>
+        <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span><span class="token punctuation">)</span> sentinel<span class="token punctuation">.</span>current_epoch<span class="token punctuation">,</span>
+        <span class="token comment">/* --- */</span>
+        master<span class="token operator">-&gt;</span>name<span class="token punctuation">,</span><span class="token function">announceSentinelAddr</span><span class="token punctuation">(</span>master_addr<span class="token punctuation">)</span><span class="token punctuation">,</span>master_addr<span class="token operator">-&gt;</span>port<span class="token punctuation">,</span>
+        <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span><span class="token punctuation">)</span> master<span class="token operator">-&gt;</span>config_epoch<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    retval <span class="token operator">=</span> <span class="token function">redisAsyncCommand</span><span class="token punctuation">(</span>ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>cc<span class="token punctuation">,</span>
+        sentinelPublishReplyCallback<span class="token punctuation">,</span> ri<span class="token punctuation">,</span> <span class="token string">"%s %s %s"</span><span class="token punctuation">,</span>
+        <span class="token function">sentinelInstanceMapCommand</span><span class="token punctuation">(</span>ri<span class="token punctuation">,</span><span class="token string">"PUBLISH"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        SENTINEL_HELLO_CHANNEL<span class="token punctuation">,</span>payload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>retval <span class="token operator">!=</span> C_OK<span class="token punctuation">)</span> <span class="token keyword">return</span> C_ERR<span class="token punctuation">;</span>
+    ri<span class="token operator">-&gt;</span>link<span class="token operator">-&gt;</span>pending_commands<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> C_OK<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+
+
+
+<h3 id="接受来自主从服务器的频道信息"><a href="#接受来自主从服务器的频道信息" class="headerlink" title="接受来自主从服务器的频道信息"></a>接受来自主从服务器的频道信息</h3><p>当sentinel与主服务或者从服务建立连接后，sentinel就订阅主服务或从服务器的<code>__sentinel__::hello</code>频道；</p>
+<p>订阅频道会一直持续到连接断开；</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122130447110.png" alt="image-20211122130447110"></p>
+<p>这样对于监听同一个服务器的多个sentinel，一个sentinel发送的信息会被其他sentinel接受到，这些信息会被其他sentinel用于更新信息；</p>
+<p><strong>举个例子：</strong><br>假设有三个sentinel ，s1、s2、s3监听同一个服务器，s1向服务器频道<code>__sentinel__:hello</code>发送了一条信息，s1、s2、s3都会受到这条消息 ；</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122145234776.png" alt="image-20211122145234776"></p>
+<p>sentinel接受到消息后，会对消息进行解析:</p>
+<ul>
+<li>如果是自己发送的信息，就会丢弃该信息</li>
+<li>如不是自己发送的，则是监视同一服务器的其他sentinel发送的，则会更新sentinel实例中相关信息</li>
+</ul>
+<h3 id="更新sentinels字典"><a href="#更新sentinels字典" class="headerlink" title="更新sentinels字典"></a>更新sentinels字典</h3><p>每个sentinel节点对于其他也监视这个主服务器的其他sentinel节点保存了一个instance结构</p>
+<ul>
+<li>键是其中一个 Sentinel 的名字， 格式为 ip:port</li>
+<li>值是对应的实例结构</li>
+</ul>
+<p>收到其他sentinel发送的消息时，对于信息中sentinel，主服务器相关的参数配置做相应的记录</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122151957038.png" alt="image-20211122151957038"></p>
+<p>sentinel节点保存的master实例中的sentinels字典不需要包含自身</p>
+<p>sentinels字典利于发现监视同一个主服务器的其他sentinel节点</p>
+<h3 id="创建连向其他sentinel节点的命令连接"><a href="#创建连向其他sentinel节点的命令连接" class="headerlink" title="创建连向其他sentinel节点的命令连接"></a>创建连向其他sentinel节点的命令连接</h3><p>使用命令连接相连的各个 Sentinel 可以通过向其他 Sentinel 发送命令请求来进行信息交换，但是不会创建订阅链接</p>
+<p>Sentinel需要通过接收主服务器或者从服务器发来的频道信息来发现未知的新 Sentinel, 所以需要建立订阅连接， 而相互已知的 Sentinel 只要使用命令连接来进行通信就足够了   </p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211122153845487.png" alt="image-20211122153845487"></p>
+<h3 id="检测主观下线状态"><a href="#检测主观下线状态" class="headerlink" title="检测主观下线状态"></a>检测主观下线状态</h3><p>默认情况下sentinel每秒发送ping，然后通过回复的pong确认监视的对象是否下线</p>
+<p>对于ping命令的回复分两种情况：</p>
+<ul>
+<li>有效回复：返回 +PONG、-LOADING、-MASTERDOWN</li>
+<li>无效回复：除了上述三种的回复外，都是无效回复</li>
+</ul>
+<p>如果down-after-millseconds毫秒内，连续返回无效回复，那么sentinel就会将master标记为主观下线，在实例结构的flag属性中标记主观下线</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211125223705911.png" alt="image-20211125223705911"></p>
+<blockquote>
+<p>down-after-millonseconds是sentinel配置文件指定的下线标准；<br>这个参数不仅会应用于master，还会应用到master下属的所有从服务器；</p>
+<p>多个sentinel设置的down-after-millseconds时间可能是不同的，所以可能部分的sentinel认为主观下线，而其他的认为没有主观下线</p>
+</blockquote>
+<h4 id="检测客观下线状态"><a href="#检测客观下线状态" class="headerlink" title="检测客观下线状态"></a>检测客观下线状态</h4><p>当sentinel将一个主服务器判断主观下线时，会向其他sentinel询问，看其他sentinel是否也人为他下线；</p>
+<p>当有足够多的sentinel认为服务已经下线时，就判定服务器是客观下线，并进行故障转移</p>
+<h4 id="发送SENTINEL-is-master-down-by-addr命令"><a href="#发送SENTINEL-is-master-down-by-addr命令" class="headerlink" title="发送SENTINEL is-master-down-by-addr命令"></a>发送SENTINEL is-master-down-by-addr命令</h4><p>询问其他sentinel的命令</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">SENTINEL is-master-down-by-addr <span class="token operator">&lt;</span>ip<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>port<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>current_epoch<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>runid<span class="token operator">&gt;</span></code></pre>
+
+<p>各参数意义如下</p>
+<ul>
+<li>ip：被sentinel判断为主观下线的服务ip</li>
+<li>port：被sentinel判断为主观下线的服务端口</li>
+<li>current_epoch：sentinel当前配置的纪元，用于选取领头sentinel</li>
+<li>runid:可以是*符号或者sentinel的运行id，* 代表用于检测主服务器的客观下线状态；sentinel的运行id 则代表用于选举领头的sentinel；</li>
+</ul>
+<h4 id="接受SENTINEL-is-master-down-by-addr命令"><a href="#接受SENTINEL-is-master-down-by-addr命令" class="headerlink" title="接受SENTINEL is-master-down-by-addr命令"></a>接受SENTINEL is-master-down-by-addr命令</h4><p>返回的信息是包含三个参数的multi bulk：</p>
+<ul>
+<li><down_state>：表示自己对于目标服务器在线状态的检测结果</down_state></li>
+<li><leader_runid>：可以是 * 符号或者目标 Sentinel 的局部领头 Sentinel 的运行 ID: * 符号代表命令用于检测主服务器的下线状态， 而局部领头 Sentinel 的运行 ID 则用于选举领头 Sentinel</leader_runid></li>
+<li><leader_epoch>  ：局部领头 Sentinel的运行纪元</leader_epoch></li>
+</ul>
+<h4 id="接受SENTINEL-is-master-down-by-addr命令-的回复"><a href="#接受SENTINEL-is-master-down-by-addr命令-的回复" class="headerlink" title="接受SENTINEL is-master-down-by-addr命令 的回复"></a>接受SENTINEL is-master-down-by-addr命令 的回复</h4><p>sentienl根据SENTINEL is-master-down-by-addr命令的返回，统计其他sentinel返回下线的数量；<br>当这一数量达到配置指定的客观下线数量（之前由quorum参数指定）时，sentinel会将服务器实例结构的flags属性的SIR_O_DOWN标记位打开，标识主服务进入客观下线状态；</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211125223723501.png" alt="image-20211125223723501"></p>
+<blockquote>
+<p>同样的，多个sentinel设置的quorum参数可能是不同的，所以可能部分的sentinel认为客观下线，而其他的认为没有客观下线</p>
+</blockquote>
+<h3 id="选举sentinel领头者"><a href="#选举sentinel领头者" class="headerlink" title="选举sentinel领头者"></a>选举sentinel领头者</h3><p>当一个主服务器被判断为下线时，监视这个服务器sentinel的会进行协商，选举出一个领头的sentinel，由这个领头的sentinel执行故障转移操作</p>
+<p><strong>选举领头sentinel的规则和方法</strong>：</p>
+<ul>
+<li>所有在线的sentinel都有被选为领头sentinel的资格</li>
+<li>每次进行领头sentinel选举的时候，不论选举是否成功，所有sentinel的配置纪元的值都会+1；（配置的纪元就是个计数器）</li>
+<li>每个配置的纪元里面，所有sentinel都有一票将某个sentinel设置为局部领头sentinel的机会，并且局部领头一旦设置，在这个配置纪元里面就不能更改了</li>
+<li>每个发现主服务器下线的sentinel，都会要求其他sentinel将自己设置为领头sentinel</li>
+<li>sentinel设置局部领头sentinel的选票规则是先到先得；最先向目标sentinel“索要投票” 将会得到该票，后续“索票”的sentinel将会被拒绝；</li>
+<li>源sentinel收到目标sentinel的回复后，会解析回复中的leader_epoch；如果leader_epoch和源sentinel的一致，那么源sentinel会继续解析leader_runid参数；<br>如果leader_runid和源sentinel的run_id一致，说明目标sentinel将源sentinel设为了领头sentinel；</li>
+<li>如果某sentinel被半数以上sentinel设置为了领头sentinel，那么这个sentinel将会成为领头sentinel；</li>
+<li>如果给定的时间限制内，没有选举出领头sentinel，那么将在一段时间后重新选举，直到选举出为止；</li>
+</ul>
+<p>在这里和区块链选举比较相似</p>
+<h3 id="故障转移"><a href="#故障转移" class="headerlink" title="故障转移"></a>故障转移</h3><p>选举出的领头sentinel将会已下线的主服务器进行下线操作，下线操作分为以下三个操作：</p>
+<ol>
+<li>在已下线的主服务的所有从服务器中，挑选出一个从服务器，将其转换为主服务器；</li>
+<li>将已下线的主服务的所有从服务器，复制新的主服务器；</li>
+<li>设置已经下线的主服务为从服务，并复制新的主服务，当下线的主服务重新上线后，就会复制新的主服务了；</li>
+</ol>
+<h4 id="选取新的主服务器步骤"><a href="#选取新的主服务器步骤" class="headerlink" title="选取新的主服务器步骤"></a>选取新的主服务器步骤</h4><ol>
+<li>领头的sentinel会将下线的主服务的所有从服务放到一个列表里，然后按照以下规则对列表中一个个的过滤：</li>
+<li>过滤掉已经断线的从服务器；</li>
+<li>过滤掉最近5s内没有回复过sentinel 的info命令的从服务；</li>
+<li>过滤掉与主服务器连接断开时间超过（down-after-millseconds * 10）毫秒的从服务器；这样可以保证剩余从服务器的数据比较新；</li>
+<li>然后从剩余从服务器中选举优先级高的从服务器；</li>
+<li>如果服务器优先级相同，则选取复制偏移量大的（复制偏移量大，说明数据新）；</li>
+<li>至此，如果还没有选举出，则对运行id进行排序，选举出运行id最小的从服务器；</li>
+</ol>
+<p>选举出新的主服务后，sentinel将向新的主服务器发送slave no one ，转换成新的主服务器<br>然后领头sentinel以每秒一次的频率向新的主服务发送info命令,用于判断“切换主服务操作”是否成功（当新的主服务器角色由salve变成master，说明已经切换成功了）</p>
+<h4 id="修改从服务器的复制目标"><a href="#修改从服务器的复制目标" class="headerlink" title="修改从服务器的复制目标"></a>修改从服务器的复制目标</h4><p>新的主服务出现后，sentinel就会让所有从服务器去复制新的主服务器（通过salveof 命令实现）</p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211126111618727.png" alt="image-20211126111618727"></p>
+<p><img src="/2022/01/27/redis-shao-bing-sentinels/image-20211126111640191.png" alt="image-20211126111640191"></p>
+<h4 id="修改旧的主服务器的为从服务器"><a href="#修改旧的主服务器的为从服务器" class="headerlink" title="修改旧的主服务器的为从服务器"></a>修改旧的主服务器的为从服务器</h4><p>最后，将已经下线的主服务设置为从服务器，并复制新的主服务；</p>
+<p>注意：因为这时旧的主服务已经下线，所以这时这个操作先保存到sentinel对应的实例结构中，等到旧的主服务重新上线后，sentinel就会向他发送slaveof命令，将他设置为从服务器；</p>
+<h3 id="tilt模式"><a href="#tilt模式" class="headerlink" title="tilt模式"></a>tilt模式</h3><p>Redis哨兵依赖于系统时间,为了了解某个实例是否是可用的,其会记住最后一次成功回复PING命令的时间,然后与现在时间进行比较判断生存时间.<br>但是如果计算机时间发生了意外的变化,或者计算机现在非常忙碌,或者进程因为某些原因阻塞,哨兵可能会有意料之外的行为</p>
+<p>TILT是一个特殊的保护模式,Sentinel的Tilt模式会在以下两种情况下开启：</p>
+<ol>
+<li>Sentinel进程被阻塞超过SENTINEL_TILT_TRIGGER时间（默认为2s），可能因为进程或系统I/O（内存，网络，存储）请求过多。</li>
+<li>系统时钟调整到之前某个时间值。</li>
+</ol>
+<p>进入tilt模式会降低系统的可靠性(因为此时故障转移无法进行).sentinel计时器中断一般一秒十次.我们希望两次定时器中断的时间内控制在大约100毫秒.</p>
+<p>当进入TILT模式时哨兵将会继续监视所有内容,但是</p>
+<ul>
+<li>停止所有的动作</li>
+<li>会开始否定<code>SENTINEL is-master-down-by-addr</code>命令因为其不信任故障检测的能力</li>
+</ul>
+<p>如果30秒以内一切正常则退出TILT模式.<br>注意可以使用很多内核提供的单调时钟API已替换TILT模式.但是尚不清楚这是否是一个好的解决方案,因为当前系统避免了如果进程只是被挂起或长时间未由调度程序执行这种问题.</p>
+<p>在计算机时间发生严重变化的时候进入<code>TILT模式</code>,并禁止除了监控以外的操作,因为此时sentinel依赖于时间,判断某个节点下线是根据PING的间隔来实现的,如果进入<code>TILT模式</code>证明时钟出现问题,此时这个sentinel已经不能被相信了.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://leehm00.github.io">homie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/">https://leehm00.github.io/2022/01/27/redis-shao-bing-sentinels/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://leehm00.github.io" target="_blank">homie's Home</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis/">redis</a></div><div class="post-share"><div class="social-share" data-image="/img/ibuki.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/" title="译Dynamo Amazon's Highly Available Key-value Store"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">译Dynamo Amazon's Highly Available Key-value Store</div></div><div class="info-2"><div class="info-item-1">转自arthurchiao.art /blog/amazon-dynamo-zh/ [译] [论文] Dynamo: Amazon’s Highly Available Key-value Store（SOSP 2007）39-49 minutes  Published at 2019-07-06 | Last Update 2019-07-06 译者序本文翻译自 2007 年 Amazon 的分布式存储经典论文：Dynamo: Amazon’s Highly Available Key-value Store (PDF)。 标题直译为：《Dynamo：Amazon 的高可用键值仓库（存储）》。 对排版做了一些调整，以更适合 web 阅读。 Dynamo 是 Amazon 的高可用分布式键值存储（key/value storage）系统。这篇论文发表 的时候（2007）它还只是一个内部服务，现在（改名为 DynamoDB）已经发展成 AWS 最核心 的存储产品（服务）之一，与 S3 等并列。据了解，国内某一线大厂的公有云键值 存储服务，也是参考这篇文章设计和实现的。 现在提到键值...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-ke-hu-duan/" title="redis客户端与服务器"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">redis客户端与服务器</div></div><div class="info-2"><div class="info-item-1">redis客户端与服务器客户端 cli命令行 typedef struct multiCmd {     //参数     robj **argv;     //参数数量     int argc;     //命令指针     struct redisCommand *cmd; } multiCmd;  client结构(直接对于所有的数据结构进行了解释) //I/O复用,所以需要为每个客户端维持一个状态,多个客户端在服务器用链表链接 typedef struct client {     //client的id     uint64_t id;            /* Client incremental unique ID. */     connection *conn;     //协议版本     int resp;               /* RESP protocol version. Can be 2 or 3. */     //当前正在使用的数据库     redisDb *db;            /* Pointer to currentl...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2022/03/04/redis-hotkey-solutions/" title="Redis hotkey solutions"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="info-item-2">Redis hotkey solutions</div></div><div class="info-2"><div class="info-item-1">一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？ 方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存， 然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.  设置redis最大占用内存：  　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！ 　　　　maxmemory 268435456  设置过期策略：  　　　　maxmemory-policy volatile-lru  当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下： noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略） allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key...</div></div></div></a><a class="pagination-related" href="/2022/03/16/build-cluster-with-bash-on-one-node/" title="build cluster with bash on one node"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-16</div><div class="info-item-2">build cluster with bash on one node</div></div><div class="info-2"><div class="info-item-1">在我自己的机器上进行实验，sh文件实现一条命令部署单个节点集群 下面是解析步骤 常量定义定义在另一个文件中 #!/bin/bash  # Redis_Cluster  # REDIS_SERVER_BIN="/home/k8s/homie/redis/src/redis-server" BASE_DIR=/home/k8s/homie REDIS_SERVER_BIN=$BASE_DIR/redis/src/redis-server REDIS_CLI_BIN=$BASE_DIR/redis/src/redis-cli REDIS_CLUSTER_BASE=$BASE_DIR/redis_cluster NODELIST="node2 node3 node4 node5" PORTS=`seq 7000 7005` BASEPORT=${ENTRY_PORT} HG_BASEPORT=${HG_PORT}  根据自己需要进行修改 安装redis# Check redis command if [ ! -f $REDIS_SERVER_BIN ]; then   echo "Red...</div></div></div></a><a class="pagination-related" href="/2022/03/09/redis-cluster-build/" title="redis cluster build"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-09</div><div class="info-item-2">redis cluster build</div></div><div class="info-2"><div class="info-item-1">下载redis6.2.2并安装wget http://download.redis.io/releases/redis-6.2.2.tar.gz tar -zxvf ./redis-6.2.2.tar.gz mv redis-6.2.2 redis cd redis make  准备配置文件1、新建目录，并拷贝出6个节点的配置文件cd  redis-6.2.2 mkdir -p config mkdir -p log mkdir -p data mkdir -p node cp redis.conf ./config/redis-7000.conf  2、修改每个节点的配置文件内容远程访问需要把bind注释掉         # bind 127.0.0.1 修改端口号         port 7000 默认启动时为后台启动，yes为后台启动         daemonize yes 指定进程信息存储文件         pidfile /var/run/redis_7000.pid 指定日志文件(改成自己的路径)         logfile "/home/k8s/hom...</div></div></div></a><a class="pagination-related" href="/2022/03/05/redis-cluster/" title="redis cluster"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-05</div><div class="info-item-2">redis cluster</div></div><div class="info-2"><div class="info-item-1">redis集群理论单机遇到内存、并发、流量等瓶颈时，可以采用Cluster架构方案来达到负载均衡 一 基础理论1.1分区规则数据集按照分区规则映射到各个节点  常见哈希分区：  节点取余分区 使用特定的数据，如Redis的键或用户ID，再根据节点数量N使用公式： hash（key）%N计算出哈希值，用来决定数据映射到哪一个节点上。 缺点：当节点数量变化时，如扩容或收缩节点，数据节点映射关系需要重新计算，会导致数据的重新迁移。 优点：这种方式的突出优点是简单，易理解； 这种方式常用于数据库的分库分表规则，一般采 用预分区的方式，提前根据数据量规划好分区数，比如划分为512或1024张 表，保证可支撑未来一段时间的数据量，再根据负载情况将表迁移到其他数 据库中。扩容时通常采用翻倍扩容，避免数据映射全部被打乱导致全量迁移 的情况  一致性哈希分区 一致性哈希分区（Distributed Hash Table）实现思路是为系统中每个节点分配一个token（范围一般在0~2^32），这些token构成一个哈希环。 数据读写 执行节点查找操作时，先根据key计算hash值，然后顺时针找到第一...</div></div></div></a><a class="pagination-related" href="/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/" title="redis cluster集群常用指令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-22</div><div class="info-item-2">redis cluster集群常用指令</div></div><div class="info-2"><div class="info-item-1">1.redis 常用管理命令  https://redis.io/topics/rediscli   1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 del foo  1.2 查看内存等信息#查看内存等信息$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info memory |grep human -i$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 dbsize  1.3 查看key及bigkey#key的情况$redis-cli -c -h 192.124.64.212 -p ...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-27</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%A8%E5%85%B5Sentinel"><span class="toc-number">1.</span> <span class="toc-text">哨兵Sentinel</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.1.</span> <span class="toc-text">网络连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.1.1.</span> <span class="toc-text">命令连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.1.2.</span> <span class="toc-text">发布&#x2F;订阅连接</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%BB%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">获取主服务器信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="toc-number">1.4.</span> <span class="toc-text">获取从服务器信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E8%A2%AB%E7%9B%91%E8%A7%86%E7%9A%84%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.</span> <span class="toc-text">向被监视的主从服务器发送信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E5%8F%97%E6%9D%A5%E8%87%AA%E4%B8%BB%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%A2%91%E9%81%93%E4%BF%A1%E6%81%AF"><span class="toc-number">1.6.</span> <span class="toc-text">接受来自主从服务器的频道信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0sentinels%E5%AD%97%E5%85%B8"><span class="toc-number">1.7.</span> <span class="toc-text">更新sentinels字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BF%9E%E5%90%91%E5%85%B6%E4%BB%96sentinel%E8%8A%82%E7%82%B9%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.8.</span> <span class="toc-text">创建连向其他sentinel节点的命令连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF%E7%8A%B6%E6%80%81"><span class="toc-number">1.9.</span> <span class="toc-text">检测主观下线状态</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF%E7%8A%B6%E6%80%81"><span class="toc-number">1.9.1.</span> <span class="toc-text">检测客观下线状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%91%E9%80%81SENTINEL-is-master-down-by-addr%E5%91%BD%E4%BB%A4"><span class="toc-number">1.9.2.</span> <span class="toc-text">发送SENTINEL is-master-down-by-addr命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A5%E5%8F%97SENTINEL-is-master-down-by-addr%E5%91%BD%E4%BB%A4"><span class="toc-number">1.9.3.</span> <span class="toc-text">接受SENTINEL is-master-down-by-addr命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A5%E5%8F%97SENTINEL-is-master-down-by-addr%E5%91%BD%E4%BB%A4-%E7%9A%84%E5%9B%9E%E5%A4%8D"><span class="toc-number">1.9.4.</span> <span class="toc-text">接受SENTINEL is-master-down-by-addr命令 的回复</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E4%B8%BEsentinel%E9%A2%86%E5%A4%B4%E8%80%85"><span class="toc-number">1.10.</span> <span class="toc-text">选举sentinel领头者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB"><span class="toc-number">1.11.</span> <span class="toc-text">故障转移</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%89%E5%8F%96%E6%96%B0%E7%9A%84%E4%B8%BB%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.11.1.</span> <span class="toc-text">选取新的主服务器步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%A4%8D%E5%88%B6%E7%9B%AE%E6%A0%87"><span class="toc-number">1.11.2.</span> <span class="toc-text">修改从服务器的复制目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%97%A7%E7%9A%84%E4%B8%BB%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%B8%BA%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.11.3.</span> <span class="toc-text">修改旧的主服务器的为从服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tilt%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.12.</span> <span class="toc-text">tilt模式</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/diary251110/" title="diary251110">diary251110</a><time datetime="2025-11-10T15:55:41.000Z" title="发表于 2025-11-10 15:55:41">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/hello-world/" title="Hello World">Hello World</a><time datetime="2025-11-10T14:00:07.549Z" title="发表于 2025-11-10 14:00:07">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/09/diary251109/" title="diary251109">diary251109</a><time datetime="2025-11-09T21:59:27.000Z" title="发表于 2025-11-09 21:59:27">2025-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/diary251107/" title="diary251107">diary251107</a><time datetime="2025-11-07T16:53:41.000Z" title="发表于 2025-11-07 16:53:41">2025-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/zsh-pei-zhi/" title="zsh配置">zsh配置</a><time datetime="2025-11-07T00:45:46.000Z" title="发表于 2025-11-07 00:45:46">2025-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2025 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liQESFXsU1YySKCu',
+      clientSecret: '8ffed0b5a974ee263dce9a1f772883682eeffa4a',
+      repo: 'https://github.com/leehm00/homepage_comment',
+      owner: 'leehm00',
+      admin: ['leehm00'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '4cb585f33d8c69bbe869424060f7072d'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>redis基础 | homie's Home</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="redis基础数据结构sds 字符串长度保存在本体中,获取需要常数时间复杂度 header包含的部分: len: 表示字符串的真正长度（不包含NULL结束符在内）。 alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。 flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。   缓冲区不会溢出 减少修改时的内存重分配次数 空间预分配 alloca记录分配的总空">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis基础">
+<meta property="og:url" content="https://leehm00.github.io/2022/01/27/redis-ji-chu/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="redis基础数据结构sds 字符串长度保存在本体中,获取需要常数时间复杂度 header包含的部分: len: 表示字符串的真正长度（不包含NULL结束符在内）。 alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。 flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。   缓冲区不会溢出 减少修改时的内存重分配次数 空间预分配 alloca记录分配的总空">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:published_time" content="2022-01-27T00:08:30.000Z">
+<meta property="article:modified_time" content="2025-11-10T14:00:07.593Z">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "redis基础",
+  "url": "https://leehm00.github.io/2022/01/27/redis-ji-chu/",
+  "image": "https://leehm00.github.io/img/ibuki.png",
+  "datePublished": "2022-01-27T00:08:30.000Z",
+  "dateModified": "2025-11-10T14:00:07.593Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "homie",
+      "url": "https://leehm00.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/2022/01/27/redis-ji-chu/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'redis基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a><a class="nav-page-title" href="/"><span class="site-name">redis基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">redis基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-01-27T00:08:30.000Z" title="发表于 2022-01-27 00:08:30">2022-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kv/">kv</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="redis基础"><a href="#redis基础" class="headerlink" title="redis基础"></a>redis基础</h1><h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="sds"><a href="#sds" class="headerlink" title="sds"></a>sds</h3><ul>
+<li>字符串长度保存在本体中,获取需要常数时间复杂度</li>
+<li>header包含的部分:<ul>
+<li>len: 表示字符串的真正长度（不包含NULL结束符在内）。</li>
+<li>alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。</li>
+<li>flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。</li>
+</ul>
+</li>
+<li>缓冲区不会溢出</li>
+<li>减少修改时的内存重分配次数<ul>
+<li>空间预分配</li>
+<li>alloca记录分配的总空间,惰性空间释放</li>
+</ul>
+</li>
+<li>除了自己加上的头部字段,其他和c函数一样,兼容相关函数</li>
+</ul>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><ul>
+<li>双向链表</li>
+<li>无环,头指针的prev,尾指针的next都指向null</li>
+<li>自带指向头指针和尾指针的指针</li>
+<li>链表具有链表长度计数器,标识长度</li>
+<li>void *可以保存不同类型的值</li>
+</ul>
+<h3 id="dict"><a href="#dict" class="headerlink" title="dict"></a>dict</h3><p>基于哈希表实现,采用某个哈希函数从key计算得到在哈希表中的位置，采用拉链法解决冲突，并在装载因子超过预定值时自动扩展内存，引发重哈希,并且在重哈希的过程中,每次增删改查推进一步重哈希,避免重哈希期间单个请求的响应时间剧烈增加.</p>
+<p>实现增量式重哈希，dict的数据结构里包含两个哈希表。在重哈希期间，数据从第一个哈希表向第二个哈希表迁移</p>
+<ul>
+<li><p>hash table结构:</p>
+<ul>
+<li>一个dictEntry指针数组（table）。key的哈希值最终映射到这个数组的某个位置上（对应一个bucket）。如果多个key映射到同一个位置，就发生了冲突，那么就拉出一个dictEntry链表。</li>
+<li>size：标识dictEntry指针数组的长度。它总是2的指数。</li>
+<li>sizemask：用于将哈希值映射到table的位置索引。它的值等于(size-1)，比如7, 15, 31, 63，等等，也就是用二进制表示的各个bit全1的数字。每个key先经过hashFunction计算得到一个哈希值，然后计算(哈希值 &amp; sizemask)得到在table上的位置。相当于计算取余(哈希值 % size)。</li>
+<li>used：记录dict中现有的数据个数。它与size的比值就是装载因子（load factor）。这个比值越大，哈希值冲突概率越高。</li>
+</ul>
+</li>
+<li><p>单个dictentry结构:</p>
+<ul>
+<li><pre><code class="c">typedef struct dictEntry {
+    void *key;//键
+    union {
+        void *val;
+        uint64_t u64;
+        int64_t s64;
+        double d;
+    } v;//值
+    struct dictEntry *next;     /* 具有相同的hash值,先通过链表链接起来Next entry in the same hash bucket. */
+    void *metadata[];           /* An arbitrary number of bytes (starting at a
+                                 * pointer-aligned address) of size as returned
+                                 * by dictType's dictEntryMetadataBytes(). */
+} dictEntry;
+<pre class="language-none"><code class="language-none">
+    
+
+- dict本身结构:
+
+  ```c
+  //字典本身
+  struct dict {
+      dictType *type;//类型函数
+      /*dictEntry指针数组（table）。
+      key的哈希值最终映射到这个数组的某个位置上（对应一个bucket）。
+      如果多个key映射到同一个位置，就发生了冲突，那么就拉出一个dictEntry链表。
+      只有在重哈希的过程中，ht_table[0]和ht_table[1]才都有效。
+      而在平常情况下，只有ht_table[0]有效，ht_table[1]里面没有任何数据。*/
+      dictEntry **ht_table[2];//hash表
+      /*记录dict中现有的数据个数。
+      它与size的比值就是装载因子（load factor）。
+      这个比值越大，哈希值冲突概率越高。*/
+      unsigned long ht_used[2];
+      // rehash 索引
+      // 当 rehash 不在进行时，值为 -1,它的值记录了当前重哈希进行到哪一步了
+      long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+  
+      /* Keep small vars at end for optimal (minimal) struct padding */
+      /* If &gt;0 rehashing is paused (&lt;0 indicates coding error) */
+      int16_t pauserehash; //大于0表示rehash计算停止,小于0编码错误
+      signed char ht_size_exp[2]; /* 记录大小的次方,exponent of size. (size = 1&lt;&lt;exp) */
+  };</code></pre>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>rehash过程:</p>
+<ul>
+<li>大小选择:<ul>
+<li>扩展时第二个hash表的大小是大于等于第一个的used*2的第一个$2^n$</li>
+<li>收缩时第二个hash表的大小是大于等于第一个的used的第一个$2^n$</li>
+</ul>
+</li>
+<li>rehash的时候重新计算键的哈希值和索引值</li>
+<li>所有键值对rehash结束之后就直接把新的hash表当作原来的hash表</li>
+<li>rehash进行时,每次增删改查都会顺带把第一个哈希表上面相应rehashidx索引上面的所有键值对rehash到第二个表上,rehash完成之后将rehashidx值增加一</li>
+<li>当rehash完成之后,rehashidx的值设置成-1</li>
+</ul>
+</li>
+</ul>
+<h3 id="skiplist"><a href="#skiplist" class="headerlink" title="skiplist"></a>skiplist</h3><ul>
+<li><p>基本结构:</p>
+<ul>
+<li><pre><code class="c">typedef struct zskiplistNode {
+    //zadd命令在将数据插入到skiplist里面之前先进行了解码，所以存储的一定是一个sds
+    //为了方便在查找的时候对数据进行字典序的比较，
+    //而且，skiplist里的value部分是数字的可能性也比较小,不是很方便压缩
+    sds ele;
+    double score;
+    //指向链表前一个节点的指针（前向指针）
+    //每个节点只有1个前向指针(没有依靠level分开)，所以只有第1层链表是一个双向链表
+    struct zskiplistNode *backward;
+    //存放指向各层链表后一个节点的指针（后向指针）
+    //是一个柔性数组,占用内存不在zskiplistNode结构里面，需要插入节点的时候单独为它分配
+    //所以skiplist的每个节点所包含的指针数目是不固定的
+    struct zskiplistLevel {
+        //每层对应1个后向指针，用forward字段表示
+        struct zskiplistNode *forward;
+        //表示当前的指针跨越了多少个节点,用于计算元素排名
+        unsigned long span;
+    } level[];
+} zskiplistNode;
+<pre class="language-none"><code class="language-none">
+- ```c
+  //真正的skiplist结构
+  typedef struct zskiplist {
+      struct zskiplistNode *header, *tail;
+      unsigned long length;//链表长度,头指针为空,不算在计数中
+      int level;//总层数
+  } zskiplist;</code></pre>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>层数随机决定(1-32,幂次随机算法)</p>
+</li>
+<li><p>分值可以相同,但是对应成员必须不一样</p>
+</li>
+</ul>
+<h3 id="intset"><a href="#intset" class="headerlink" title="intset"></a>intset</h3><ul>
+<li><p>不会出现重复元素</p>
+</li>
+<li><p>结构:</p>
+<ul>
+<li><pre><code class="c">//由整数组成的有序集合,便于在上面进行二分查找，用于快速地判断一个元素是否属于这个集合
+typedef struct intset {
+    //整个统一的数据编码，表示intset中的每个数据元素用几个字节来存储
+    //intset中存储的整数最多只能占用64bit
+    //随着数据添加,可能改变数据编码,比如一些比较大的整数
+    uint32_t encoding;
+    //inset中的元素个数
+    uint32_t length;
+    //一个柔性数组,长度等于encoding * length,用于表达偏移量
+    //contents需要单独为其分配空间，这部分内存不包含在intset结构当中
+    int8_t contents[];
+} intset;
+<pre class="language-none"><code class="language-none">
+- 当原来的encoding大小不够新的数据存储时,需要升级数据编码
+
+  - 先扩充整个集合底层数组大小,分配新元素空间
+  - 原来的数据类型转换
+  - 添加新元素(一般来说新元素都在开头或者末尾位置)
+
+- 有点像数组的排列,中间插入元素需要整个向后移动,修改代价比较高
+
+### ziplist
+
+- 列表键只包含少量列表键,值的储存是变长的
+
+- 将表中每一项存放在前后连续的地址空间内，一个ziplist整体占用一大块内存
+
+- 结构:
+
+  - 源代码：
+    
+    ```c
+    typedef struct {
+        /* When string is used, it is provided with the length (slen). */
+        unsigned char *sval;
+        unsigned int slen;
+        /* When integer is used, 'sval' is NULL, and lval holds the value. */
+        long long lval;
+    } ziplistEntry;
+    //ziplist的数据类型，没有用自定义的struct之类的来表达，
+    //而就是简单的unsigned char *。
+    //这是因为ziplist本质上就是一块连续内存，
+    //内部组成结构又是一个高度动态的设计（变长编码），也没法用一个固定的数据结构来表达。</code></pre>
+</code></pre>
+</li>
+<li><p>zlentry结构：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token comment">/* We use this function to receive information about a ziplist entry.
+ * Note that this is not how the data is actually encoded, is just what we
+ * get filled by a function in order to operate more easily. */</span>
+<span class="token comment">//每一个entry的格式</span>
+<span class="token comment">//记录长度是为了方便指针运算确定偏移量</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">zlentry</span> <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> prevrawlensize<span class="token punctuation">;</span> <span class="token comment">/* Bytes used to encode the previous entry len*/</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> prevrawlen<span class="token punctuation">;</span>     <span class="token comment">/* Previous entry len. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> lensize<span class="token punctuation">;</span>        <span class="token comment">/* Bytes used to encode this entry type/len.
+                                    For example strings have a 1, 2 or 5 bytes
+                                    header. Integers always use a single byte.*/</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> len<span class="token punctuation">;</span>            <span class="token comment">/* Bytes used to represent the actual entry.
+                                    For strings this is just the string length
+                                    while for integers it is 1, 2, 3, 4, 8 or
+                                    0 (for 4 bit immediate) depending on the
+                                    number range. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> headersize<span class="token punctuation">;</span>     <span class="token comment">/* prevrawlensize + lensize. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> encoding<span class="token punctuation">;</span>      <span class="token comment">/* Set to ZIP_STR_* or ZIP_INT_* depending on
+                                    the entry encoding. However for 4 bits
+                                    immediate integers this can assume a range
+                                    of values and must be range-checked. */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>            <span class="token comment">/* Pointer to the very start of the entry, that
+                                    is, this points to prev-entry-len field. */</span>
+<span class="token punctuation">}</span> zlentry<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>添加/删除节点的时候很可能出现连锁更新</p>
+</li>
+</ul>
+<h2 id="robj-server-h"><a href="#robj-server-h" class="headerlink" title="robj(server.h)"></a>robj(server.h)</h2><p>对象的类型一般是指value的类型,和key类型无关(key一般都是string)</p>
+<ul>
+<li><p>作用:</p>
+<ul>
+<li>为多种数据类型提供一种统一的表示方式。</li>
+<li>允许同一类型的数据采用不同的内部表示，从而在某些情况下尽量节省内存。</li>
+<li>支持对象共享和引用计数。当对象被共享的时候，只占用一份内存拷贝，进一步节省内存。</li>
+</ul>
+</li>
+<li><p>结构:</p>
+<ul>
+<li><p>源代码：</p>
+<pre class="language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisObject</span> <span class="token punctuation">{</span>
+    <span class="token comment">//对象的数据类型</span>
+    <span class="token comment">//可能的取值有5种：OBJ_STRING, OBJ_LIST, OBJ_SET, OBJ_ZSET, OBJ_HASH，</span>
+    <span class="token comment">//分别对应Redis对外暴露的5种数据结构</span>
+    <span class="token keyword">unsigned</span> type<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token comment">//对象的内部表示方式（也可以称为编码）</span>
+    <span class="token comment">//可能的取值有10种，即前面代码中的10个OBJ_ENCODING_XXX常量</span>
+    <span class="token keyword">unsigned</span> encoding<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token comment">//lru算法记录使用的数据</span>
+    <span class="token keyword">unsigned</span> lru<span class="token operator">:</span>LRU_BITS<span class="token punctuation">;</span> <span class="token comment">/* LRU time (relative to global lru_clock) or
+                            * LFU data (least significant 8 bits frequency
+                            * and most significant 16 bits access time). */</span>
+    <span class="token comment">//引用计数,允许robj在一定情况下被共享</span>
+    <span class="token keyword">int</span> refcount<span class="token punctuation">;</span>
+    <span class="token comment">//数据指针,指向真正的数据</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>ptr<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> robj<span class="token punctuation">;</span></code></pre></li>
+</ul>
+</li>
+<li><p>string对象:</p>
+<ul>
+<li>接收到的value值（string类型）表示成一个type = OBJ_STRING并且encoding = OBJ_ENCODING_RAW的robj对象</li>
+<li>然后在存入内部存储之前先执行一个编码过程，试图将它表示成另一种更节省内存的encoding方式</li>
+</ul>
+</li>
+<li><p>list对象</p>
+<ul>
+<li>一般使用ziplist</li>
+</ul>
+</li>
+<li><p>哈希对象</p>
+<ul>
+<li>使用ziplist或者hashtable</li>
+<li>ziplist:<ul>
+<li>键值对相邻,先压入键再压入值</li>
+<li>直接往尾部添加</li>
+</ul>
+</li>
+<li>hashtable:<ul>
+<li>使用dict实现</li>
+<li>dict的键保存键,值保存值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>集合</p>
+<ul>
+<li>使用intset或者hashtable</li>
+<li>使用hashtable实现时,字典每个键都是一个字符串对象,对应一个集合元素,字典值设为null</li>
+</ul>
+</li>
+<li><p>有序集合</p>
+<ul>
+<li>使用ziplist或者skiplist</li>
+</ul>
+</li>
+<li><p>多态指令:</p>
+<ul>
+<li>根据对象的类型编码决定指令的具体函数与实现方式决定要调用的函数</li>
+<li>执行指令前像检查对应键或者值能否正确执行相关函数指令</li>
+</ul>
+</li>
+<li><p>内存回收</p>
+<ul>
+<li>通过引用计数在适当时候释放对象并回收内存<ul>
+<li>创建时引用数加一</li>
+<li>被新程序使用时引用数加一</li>
+<li>程序不再使用,引用数减一</li>
+<li>引用数变成0,内存释放</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>对象共享</p>
+<ul>
+<li>共享就是利用refcount实现的,每多一个共享的就加一</li>
+<li>提前准备了0到9999的字符串对象共享</li>
+</ul>
+</li>
+<li><p>空转时长</p>
+<ul>
+<li>lru记录最后一次被程序访问的时间,当前时间减去lru时间就是空转时长</li>
+<li>(打印空转时长并不会更新lru值)</li>
+<li>当内存比较满时,最先被释放的是lru最早的那些键</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据类型实现"><a href="#数据类型实现" class="headerlink" title="数据类型实现"></a>数据类型实现</h2><h3 id="t-string-c"><a href="#t-string-c" class="headerlink" title="t_string.c"></a>t_string.c</h3><ul>
+<li>setGenericCommand()函数实现了SET,SETEX,PSETEX,SETNX指令<ul>
+<li>expire 定义了 Redis 对象的过期时间</li>
+<li><em>ok_reply 和 abort_reply 决定了命令回复的内容，NX 参数和 XX 参数也会改变回复。</em><ul>
+<li><em>如果 ok_reply 为 NULL ，那么 “+OK” 被返回。如果 abort_reply 为 NULL ，那么 “$-1” 被返回。</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>getExpireMillisecondsOrReply()实现了过期处理,从客户请求中处理过期的robj</li>
+<li>parseExtendedStringArgumentsOrReply()判断当前字符串操作指令的有效性</li>
+<li>*getexCommand()*对于GET的多余参数进行处理,和GET不同,这个指令不是仅可读的</li>
+<li>setrangeCommand()函数中感觉有个地方可以优化,sdslen只能为0或者正值,那么可以减少一个地方的判断,少用一个if语句</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://leehm00.github.io">homie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://leehm00.github.io/2022/01/27/redis-ji-chu/">https://leehm00.github.io/2022/01/27/redis-ji-chu/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://leehm00.github.io" target="_blank">homie's Home</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis/">redis</a></div><div class="post-share"><div class="social-share" data-image="/img/ibuki.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/01/27/redis-dan-ji-shu-ju-ku/" title="redis单机数据库以及持久化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">redis单机数据库以及持久化</div></div><div class="info-2"><div class="info-item-1">单机数据库实现和持久化数据库细节实现 数据库的数据结构  源代码： typedef struct redisDb {     // 数据库键空间，保存着数据库中的所有键值对     dict *dict;                 /* The keyspace for this DB */     // 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳     dict *expires;              /* Timeout of keys with a timeout set */     // 正处于阻塞状态的键     dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP)*/     // 可以解除阻塞的键     dict *ready_keys;           /* Blocked keys that received a PUSH */     // 正在被 WATCH 命令监视的键     dict *watched_keys;  ...</div></div></div></a><a class="pagination-related" href="/2022/01/26/guan-yu-xie-bo-ke-de-si-kao/" title="3W1H | 关于写博客的反思"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3W1H | 关于写博客的反思</div></div><div class="info-2"><div class="info-item-1">3W1H | 关于写博客的反思Why？为什么会想起来写博客？也就是之前只是做了一个比较粗糙的主页，现在想要丰富一下自己的页面 What？都写一些什么主题的博客？大概就是记录自己学习过程的东西吧，主要做的就是redis方面的 Who？写出来的博客都是给谁看的？更多只是自己学习方面的记录，我觉得有时间摸摸鱼写一下就是很给博客面子了 How much？要花多少时间和金钱来运营维护？不准备花多少时间哈哈哈哈哈哈我可能就是心血来潮搞一下而已 </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2022/03/04/redis-hotkey-solutions/" title="Redis hotkey solutions"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="info-item-2">Redis hotkey solutions</div></div><div class="info-2"><div class="info-item-1">一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？ 方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存， 然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.  设置redis最大占用内存：  　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！ 　　　　maxmemory 268435456  设置过期策略：  　　　　maxmemory-policy volatile-lru  当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下： noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略） allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key...</div></div></div></a><a class="pagination-related" href="/2022/03/16/build-cluster-with-bash-on-one-node/" title="build cluster with bash on one node"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-16</div><div class="info-item-2">build cluster with bash on one node</div></div><div class="info-2"><div class="info-item-1">在我自己的机器上进行实验，sh文件实现一条命令部署单个节点集群 下面是解析步骤 常量定义定义在另一个文件中 #!/bin/bash  # Redis_Cluster  # REDIS_SERVER_BIN="/home/k8s/homie/redis/src/redis-server" BASE_DIR=/home/k8s/homie REDIS_SERVER_BIN=$BASE_DIR/redis/src/redis-server REDIS_CLI_BIN=$BASE_DIR/redis/src/redis-cli REDIS_CLUSTER_BASE=$BASE_DIR/redis_cluster NODELIST="node2 node3 node4 node5" PORTS=`seq 7000 7005` BASEPORT=${ENTRY_PORT} HG_BASEPORT=${HG_PORT}  根据自己需要进行修改 安装redis# Check redis command if [ ! -f $REDIS_SERVER_BIN ]; then   echo "Red...</div></div></div></a><a class="pagination-related" href="/2022/03/09/redis-cluster-build/" title="redis cluster build"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-09</div><div class="info-item-2">redis cluster build</div></div><div class="info-2"><div class="info-item-1">下载redis6.2.2并安装wget http://download.redis.io/releases/redis-6.2.2.tar.gz tar -zxvf ./redis-6.2.2.tar.gz mv redis-6.2.2 redis cd redis make  准备配置文件1、新建目录，并拷贝出6个节点的配置文件cd  redis-6.2.2 mkdir -p config mkdir -p log mkdir -p data mkdir -p node cp redis.conf ./config/redis-7000.conf  2、修改每个节点的配置文件内容远程访问需要把bind注释掉         # bind 127.0.0.1 修改端口号         port 7000 默认启动时为后台启动，yes为后台启动         daemonize yes 指定进程信息存储文件         pidfile /var/run/redis_7000.pid 指定日志文件(改成自己的路径)         logfile "/home/k8s/hom...</div></div></div></a><a class="pagination-related" href="/2022/03/05/redis-cluster/" title="redis cluster"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-05</div><div class="info-item-2">redis cluster</div></div><div class="info-2"><div class="info-item-1">redis集群理论单机遇到内存、并发、流量等瓶颈时，可以采用Cluster架构方案来达到负载均衡 一 基础理论1.1分区规则数据集按照分区规则映射到各个节点  常见哈希分区：  节点取余分区 使用特定的数据，如Redis的键或用户ID，再根据节点数量N使用公式： hash（key）%N计算出哈希值，用来决定数据映射到哪一个节点上。 缺点：当节点数量变化时，如扩容或收缩节点，数据节点映射关系需要重新计算，会导致数据的重新迁移。 优点：这种方式的突出优点是简单，易理解； 这种方式常用于数据库的分库分表规则，一般采 用预分区的方式，提前根据数据量规划好分区数，比如划分为512或1024张 表，保证可支撑未来一段时间的数据量，再根据负载情况将表迁移到其他数 据库中。扩容时通常采用翻倍扩容，避免数据映射全部被打乱导致全量迁移 的情况  一致性哈希分区 一致性哈希分区（Distributed Hash Table）实现思路是为系统中每个节点分配一个token（范围一般在0~2^32），这些token构成一个哈希环。 数据读写 执行节点查找操作时，先根据key计算hash值，然后顺时针找到第一...</div></div></div></a><a class="pagination-related" href="/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/" title="redis cluster集群常用指令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-22</div><div class="info-item-2">redis cluster集群常用指令</div></div><div class="info-2"><div class="info-item-1">1.redis 常用管理命令  https://redis.io/topics/rediscli   1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 del foo  1.2 查看内存等信息#查看内存等信息$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info memory |grep human -i$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 dbsize  1.3 查看key及bigkey#key的情况$redis-cli -c -h 192.124.64.212 -p ...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-27</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#redis%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">redis基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sds"><span class="toc-number">1.1.1.</span> <span class="toc-text">sds</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8"><span class="toc-number">1.1.2.</span> <span class="toc-text">链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dict"><span class="toc-number">1.1.3.</span> <span class="toc-text">dict</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#skiplist"><span class="toc-number">1.1.4.</span> <span class="toc-text">skiplist</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#intset"><span class="toc-number">1.1.5.</span> <span class="toc-text">intset</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#robj-server-h"><span class="toc-number">1.2.</span> <span class="toc-text">robj(server.h)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">数据类型实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#t-string-c"><span class="toc-number">1.3.1.</span> <span class="toc-text">t_string.c</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/diary251110/" title="diary251110">diary251110</a><time datetime="2025-11-10T15:55:41.000Z" title="发表于 2025-11-10 15:55:41">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/hello-world/" title="Hello World">Hello World</a><time datetime="2025-11-10T14:00:07.549Z" title="发表于 2025-11-10 14:00:07">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/09/diary251109/" title="diary251109">diary251109</a><time datetime="2025-11-09T21:59:27.000Z" title="发表于 2025-11-09 21:59:27">2025-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/diary251107/" title="diary251107">diary251107</a><time datetime="2025-11-07T16:53:41.000Z" title="发表于 2025-11-07 16:53:41">2025-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/zsh-pei-zhi/" title="zsh配置">zsh配置</a><time datetime="2025-11-07T00:45:46.000Z" title="发表于 2025-11-07 00:45:46">2025-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2025 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liQESFXsU1YySKCu',
+      clientSecret: '8ffed0b5a974ee263dce9a1f772883682eeffa4a',
+      repo: 'https://github.com/leehm00/homepage_comment',
+      owner: 'leehm00',
+      admin: ['leehm00'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '329c2cf33d4b64b4ff65ed1b29a927c5'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>

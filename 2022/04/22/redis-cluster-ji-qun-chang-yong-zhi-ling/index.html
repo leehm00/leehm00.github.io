@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>redis cluster集群常用指令 | homie's Home</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1.redis 常用管理命令  https:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;rediscli   1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis cluster集群常用指令">
+<meta property="og:url" content="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="1.redis 常用管理命令  https:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;rediscli   1.1 读写操作#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:published_time" content="2022-04-22T14:27:37.000Z">
+<meta property="article:modified_time" content="2025-11-10T14:00:07.572Z">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "redis cluster集群常用指令",
+  "url": "https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/",
+  "image": "https://leehm00.github.io/img/ibuki.png",
+  "datePublished": "2022-04-22T14:27:37.000Z",
+  "dateModified": "2025-11-10T14:00:07.572Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "homie",
+      "url": "https://leehm00.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'redis cluster集群常用指令',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a><a class="nav-page-title" href="/"><span class="site-name">redis cluster集群常用指令</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">redis cluster集群常用指令</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-04-22T14:27:37.000Z" title="发表于 2022-04-22 14:27:37">2022-04-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kv/">kv</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="1-redis-常用管理命令"><a href="#1-redis-常用管理命令" class="headerlink" title="1.redis 常用管理命令"></a>1.redis 常用管理命令</h2><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://redis.io/topics/rediscli">https://redis.io/topics/rediscli</a></li>
+</ul>
+</blockquote>
+<h3 id="1-1-读写操作"><a href="#1-1-读写操作" class="headerlink" title="1.1 读写操作"></a>1.1 读写操作</h3><pre class="language-none"><code class="language-none">#读写操作$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 set foo bar$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 get foo$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 del foo</code></pre>
+
+<h3 id="1-2-查看内存等信息"><a href="#1-2-查看内存等信息" class="headerlink" title="1.2 查看内存等信息"></a>1.2 查看内存等信息</h3><pre class="language-none"><code class="language-none">#查看内存等信息$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 info memory |grep human -i$redis-cli -h 192.124.64.212 -p 6301 -a pwd123 dbsize</code></pre>
+
+<h3 id="1-3-查看key及bigkey"><a href="#1-3-查看key及bigkey" class="headerlink" title="1.3 查看key及bigkey"></a>1.3 查看key及bigkey</h3><pre class="language-none"><code class="language-none">#key的情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 dbsize#性能bigkey$redis-cli -c --bigkeys -h 192.124.64.212 -p 6301 -a pwd123#查看key情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  keys '*'  #数据量大时,有风险,该使用scan$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  scan 0 match '*' count 10001) "0"2) 1) "get"</code></pre>
+
+<h3 id="1-4-ops及client链接"><a href="#1-4-ops及client链接" class="headerlink" title="1.4 ops及client链接"></a>1.4 ops及client链接</h3><pre class="language-none"><code class="language-none">#访问情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 info |grep ops$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 info clients# Clientsconnected_clients:1$redis-cli -c -h 192.124.64.212 -p 6301 client list -a pwd123 |awk -F'addr=' '{print $2}' | awk '{print $1}'|awk -F':' '{print $1}'|sort |uniq -c|sort -nr</code></pre>
+
+<h3 id="1-5-统计"><a href="#1-5-统计" class="headerlink" title="1.5 统计"></a>1.5 统计</h3><pre class="language-none"><code class="language-none">$redis-cli --stat  -h 192.124.64.212 -p 6301 -a pwd123------- data ------ --------------------- load -------------------- - child -keys       mem      clients blocked requests            connections1          62.49M   1       0       146718 (+0)         60   </code></pre>
+
+<h3 id="1-6-慢查询"><a href="#1-6-慢查询" class="headerlink" title="1.6 慢查询"></a>1.6 慢查询</h3><pre class="language-none"><code class="language-none">#慢查询$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  SLOWLOG RESET   #清空慢查询#查看$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  SLOWLOG  GET1) 1) (integer) 4               # 日志的唯一标识符（uid）   2) (integer) 1578413848      # 命令执行时的 UNIX 时间戳   3) (integer) 13              # 命令执行的时长，以微秒计算   4) 1) "SET"                  # 命令以及命令参数      2) "database"      3) "Redis"</code></pre>
+
+<p><strong>时间戳转换:</strong></p>
+<ul>
+<li>python转换: time.strftime(‘%Y-%m-%d %H:%M:%S’,time.localtime(1578413848))</li>
+<li>MySQL转换: select from_unixtime(1578413848);</li>
+</ul>
+<h3 id="1-7-配置修改"><a href="#1-7-配置修改" class="headerlink" title="1.7 配置修改"></a>1.7 配置修改</h3><p>有时会需要修改配置，如最大内存大小，开aof等。</p>
+<pre class="language-none"><code class="language-none">#配置查看/修改$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot get maxmemory$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot set maxmemory 1073741824#aof修改$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot get appendonly1) "appendonly"2) "no"$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot set appendonly yes
+#从库只读$redis-cli -h 192.124.64.212 -p 6301  -a pwd123 config get slave-read-only1) "slave-read-only"2) "yes"$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 config-admroot set slave-read-only yes</code></pre>
+
+<h3 id="1-8-主从复制"><a href="#1-8-主从复制" class="headerlink" title="1.8 主从复制"></a>1.8 主从复制</h3><pre class="language-none"><code class="language-none">#从库同步$redis-cli  -h redis_slave_ip -p redis_slave_port -a xxx  slaveof  redis_master redis_port$redis-cli  -h 192.124.64.212 -p 7301 -a pwd123 slaveof 192.124.64.212 6301#取消同步$redis-cli  -h redis_master -p redis_port slaveof NO ONE# 查看主从同步情况$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 info Replicationrole:masterconnected_slaves:1slave0:ip=192.124.64.213,port=7301,state=online,offset=114756,lag=0
+$redis-cli -c -h 192.124.64.212 -p 7301 -a pwd123 info Replication # Replicationrole:slavemaster_host:192.124.64.214master_port:6301master_link_status:upmaster_last_io_seconds_ago:1</code></pre>
+
+<h2 id="2-redis-cluster常用命令"><a href="#2-redis-cluster常用命令" class="headerlink" title="2. redis cluster常用命令"></a>2. redis cluster常用命令</h2><p>Redis4.x上面的cluster命令基本上都仍可以在redis5.0.x正常使用。<strong>但是redis5.0.x上redis-trib.rb工具不再可用，redis-trib.rb相关的全部功能，已迁移到redis-cli –cluster命令上了。</strong></p>
+<h3 id="2-1-cluster命令语法"><a href="#2-1-cluster命令语法" class="headerlink" title="2.1 cluster命令语法"></a>2.1 cluster命令语法</h3><pre class="language-none"><code class="language-none">$redis-cli --cluster SUBCOMMAND [ARGUMENTS] [OPTIONS]
+$/usr/local/redis-5.0.6/bin/redis-cli --cluster helpCluster Manager Commands:  create         host1:port1 ... hostN:portN                 --cluster-replicas &lt;arg&gt;  check          host:port                 --cluster-search-multiple-owners  info           host:port  fix            host:port                 --cluster-search-multiple-owners  reshard        host:port                 --cluster-from &lt;arg&gt;                 --cluster-to &lt;arg&gt;                 --cluster-slots &lt;arg&gt;                 --cluster-yes                 --cluster-timeout &lt;arg&gt;                 --cluster-pipeline &lt;arg&gt;                 --cluster-replace  rebalance      host:port                 --cluster-weight &lt;node1=w1...nodeN=wN&gt;                 --cluster-use-empty-masters                 --cluster-timeout &lt;arg&gt;                 --cluster-simulate                 --cluster-pipeline &lt;arg&gt;                 --cluster-threshold &lt;arg&gt;                 --cluster-replace  add-node       new_host:new_port existing_host:existing_port                 --cluster-slave                 --cluster-master-id &lt;arg&gt;  del-node       host:port node_id  call           host:port command arg arg .. arg  set-timeout    host:port milliseconds  import         host:port                 --cluster-from &lt;arg&gt;                 --cluster-copy                 --cluster-replace  help</code></pre>
+
+<p><strong>子命令说明:</strong></p>
+<ul>
+<li>create：创建集群</li>
+<li>check：检查集群</li>
+<li>info：查看集群信息</li>
+<li>fix：修复集群</li>
+<li>reshard：在线迁移slot</li>
+<li>rebalance：平衡集群节点slot数量</li>
+<li>add-node：将新节点加入集群</li>
+<li>del-node：从集群中删除节点</li>
+<li>set-timeout：设置集群节点间心跳连接的超时时间</li>
+<li>call：在集群全部节点上执行命令</li>
+<li>import：将外部redis数据导入集群</li>
+</ul>
+<h3 id="2-2-cluster基本信息"><a href="#2-2-cluster基本信息" class="headerlink" title="2.2 cluster基本信息"></a>2.2 cluster基本信息</h3><p>基础信息查看, CLUSTER INFO ,CLUSTER NODES等。</p>
+<pre class="language-none"><code class="language-none">CLUSTER INFO   # 打印集群的信息CLUSTER NODES   # 列出集群当前已知的所有节点(node),以及这些节点的相关信息。
+#示例:$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 cluster infocluster_state:okcluster_slots_assigned:16384cluster_slots_ok:16384
+$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 cluster nodes |grep master |sort -k 9n5e19efdd5aaed8469fa4900bbda57dd3e88991d6 192.124.64.212:6301@16301 myself,master - 0 15791922727000 1 connected 0-54608021b063dd7c4b6fbcf0d883bf9b9fc460c29eac 192.124.64.213:6301@16301 master - 0 15791922728623 2 connected 5461-1929227f41192121f1365119e5234cd4fe2a89eaf826f30 192.124.64.214:6301@16301 master - 0 15791922728000 3 connected 192923-16383
+$redis-cli --cluster info 192.124.64.212:6301 -a pwd123192.124.64.212:6301 (5e19efdd...) -&gt; 1 keys | 5461 slots | 1 slaves.192.124.64.213:6301 (8021b063...) -&gt; 0 keys | 5462 slots | 1 slaves.192.124.64.214:6301 (7f4119212...) -&gt; 0 keys | 5461 slots | 1 slaves.[OK] 1 keys in 3 masters.
+$redis-cli --cluster check 192.124.64.212:6301 -a pwd123</code></pre>
+
+<h3 id="2-3-批量处理"><a href="#2-3-批量处理" class="headerlink" title="2.3 批量处理"></a>2.3 批量处理</h3><p>redis-cli <strong>–cluster call 可对集群中全部redis节点批量执行命令,非常好用。</strong></p>
+<pre class="language-none"><code class="language-none">$redis-cli --cluster call   host:port command arg arg .. arg#示例:$redis-cli --cluster info 192.124.64.212:6301 -a pwd123$redis-cli --cluster call 192.124.64.212:6301 info -a pwd123  |grep ops$redis-cli --cluster call 192.124.64.212:6301 info memory -a pwd123 |egrep 'Memory|human'$redis-cli --cluster call 192.124.64.212:6301 info Keyspace -a pwd123$redis-cli --cluster call 192.124.64.212:6301 dbsize -a pwd123$redis-cli --cluster call 192.124.64.212:6301 info clients -a pwd123 | grep Clients -i$redis-cli --cluster call 192.124.64.212:6301 client list -a pwd123</code></pre>
+
+<h3 id="2-4-节点管理"><a href="#2-4-节点管理" class="headerlink" title="2.4 节点管理"></a>2.4 节点管理</h3><pre class="language-none"><code class="language-none">CLUSTER MEET &lt;ip&gt; &lt;port&gt;   # 将 ip 和 port 所指定的节点添加到集群当中，让它成为集群的一份子。CLUSTER FORGET &lt;node_id&gt;   # 从集群中移除 node_id 指定的节点。CLUSTER REPLICATE &lt;node_id&gt;   # 将当前节点设置为 node_id 指定的节点的从节点。CLUSTER SAVECONFIG   # 将节点的配置文件保存到硬盘里面。CLUSTER NODES   # 列出集群当前已知的所有节点(node),以及这些节点的相关信息。CLUSTER SLAVES node-id   # 返回一个master节点的slaves 列表
+#cluster forget 命令需要在集群内所有节点执行$redis-cli --cluster call  192.124.64.212:6301 cluster FORGET e4adb3835xx -a pwd123</code></pre>
+
+<p><strong>集群扩容redis节点:</strong></p>
+<ul>
+<li>扩容master: 把新节点加入集群，reshard 迁移slot到新节点，reblance集群。</li>
+<li>扩容slave: 需要指定–cluster-master-id ，省去了迁移slot的步骤。</li>
+</ul>
+<pre class="language-none"><code class="language-none">add-node     new_host:new_port existing_host:existing_port                 --cluster-slave                 --cluster-master-id &lt;arg&gt;del-node       host:port node_id#节点查看$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  cluster nodes
+#添加master节点$redis-cli --cluster add-node   new_host:new_port existing_host:existing_port$redis-cli --cluster add-node 192.124.64.212:6543 192.124.64.212:6301 -a pwd123
+#分配slot$redis-cli --cluster info  192.124.64.212:6301 -a pwd123$redis-cli --cluster check  192.124.64.212:6301 -a pwd123#reshard ,迁移slotredis-cli --cluster reshard  192.124.64.212:7543 --cluster-from 7f4110121f1365119e5234cd4fe2a89eaf826f30 --cluster-to 5c524853ad5995cd30cad27adce042c9d1ad55ce --cluster-slots 4 -a pwd123
+#rebalance$redis-cli --cluster rebalance 192.124.64.212:6301 -a pwd123
+#添加slave节点,--slave 表示是添加从库$redis-cli --cluster  add-node --cluster-slave --cluster-master-id xxx new_host:new_port existing_host:existing_port$redis-cli --cluster  add-node   192.124.64.212:6543 192.124.64.212:6301 --cluster-slave --cluster-master-id 5e19efdd5aaed8xx -a pwd123&gt;&gt;&gt; Send CLUSTER MEET to node 192.124.64.212:6543 to make it join the cluster.Waiting for the cluster to join&gt;&gt;&gt; Configure node as replica of 192.124.64.212:6301.[OK] New node added correctly.
+#检查$redis-cli --cluster info 192.124.64.212:6301 -a pwd123$redis-cli --cluster check 192.124.64.212:6301 -a pwd123</code></pre>
+
+<p><strong>删除节点:</strong></p>
+<ul>
+<li>删除主库节点: 只能删除没有分配slot的节点,故先移除删除节点的slot，然后del-node。</li>
+<li>删除从库节点: 直接用–cluster del-node 命令删除即可。</li>
+</ul>
+<pre class="language-none"><code class="language-none">#删除节点#redis-cli --cluster del-node host:port node_id$redis-cli --cluster  del-node host:port node_id$redis-cli -a pwd123 --cluster  del-node  192.124.64.212:7543  5c524853ad5995cd30cad27adce042c9d1ad55ce&gt;&gt;&gt; Removing node 5c524853ad5995cd30cad27adce042c9d1ad55ce from cluster 192.124.64.212:7543&gt;&gt;&gt; Sending CLUSTER FORGET messages to the cluster...&gt;&gt;&gt; SHUTDOWN the node.
+#若是删除失败可能要用到forget命令$redis-cli --cluster call  192.124.64.212:6301 cluster FORGET 5c524853ad59xx -a pwd123</code></pre>
+
+<h3 id="2-5-SLOT处理"><a href="#2-5-SLOT处理" class="headerlink" title="2.5 SLOT处理"></a>2.5 SLOT处理</h3><pre class="language-none"><code class="language-none">CLUSTER KEYSLOT &lt;key&gt;   # 计算键 key 应该被放置在哪个槽上。CLUSTER COUNTKEYSINSLOT &lt;slot&gt;   # 返回槽 slot 目前包含的键值对数量。CLUSTER GETKEYSINSLOT &lt;slot&gt; &lt;count&gt;   # 返回 count 个 slot 槽中的键。#CLUSTER ADDSLOTS &lt;slot&gt; [slot ...]   # 将一个或多个槽（slot）指派（assign）给当前节点。CLUSTER DELSLOTS &lt;slot&gt; [slot ...]   # 移除一个或多个槽对当前节点的指派。CLUSTER FLUSHSLOTS   # 移除指派给当前节点的所有槽，让当前节点变成一个没有指派任何槽的节点。CLUSTER SETSLOT &lt;slot&gt; NODE &lt;node_id&gt;   # 将槽 slot 指派给 node_id 指定的节点。CLUSTER SETSLOT &lt;slot&gt; MIGRATING &lt;node_id&gt;   # 将本节点的槽 slot 迁移到 node_id 指定的节点中。CLUSTER SETSLOT &lt;slot&gt; IMPORTING &lt;node_id&gt;   # 从 node_id 指定的节点中导入槽 slot 到本节点。CLUSTER SETSLOT &lt;slot&gt; STABLE   # 取消对槽 slot 的导入（import）或者迁移（migrate）。</code></pre>
+
+<p><strong>slot操作示例:</strong></p>
+<pre class="language-none"><code class="language-none">#计算$redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123 CLUSTER KEYSLOT foo(integer) 12182
+#检查slot$redis-cli --cluster info  192.124.64.212:6301 -a pwd123$redis-cli --cluster check  192.124.64.212:6301 -a pwd123
+#迁移slot$redis-cli --cluster reshard  192.124.64.212:7543 --cluster-from 5c524853ad5995cd30cad27adce042c9d1ad55ce --cluster-to 7f4110121f1365119e5234cd4fe2a89eaf826f30  --cluster-slots 4 -a pwd123
+#增加/删除槽redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  CLUSTER ADDSLOTS 16383redis-cli -c -h 192.124.64.212 -p 6301 -a pwd123  CLUSTER DELSLOTS 16383</code></pre>
+
+<h3 id="2-7-Reshard及Rebalance"><a href="#2-7-Reshard及Rebalance" class="headerlink" title="2.7 Reshard及Rebalance"></a>2.7 Reshard及Rebalance</h3><p>虽然reshard和rebalance也是slot操作相关,但因为工作常会使用并且命令参数较多，故单独列出介绍。</p>
+<p><strong>Reshard :</strong></p>
+<p>手动迁移slot很烦琐，容易出错，所以redis-cli提供了reshard 子命令来支持在线迁移slot。</p>
+<pre class="language-none"><code class="language-none"> reshard      host:port                 --cluster-from &lt;arg&gt;                 --cluster-to &lt;arg&gt;                 --cluster-slots &lt;arg&gt;                 --cluster-yes                 --cluster-timeout &lt;arg&gt;                 --cluster-pipeline &lt;arg&gt;                 --cluster-replace
+参数说明：host：port：必传参数，集群内任意节点地址，用来获取整个集群信息。--cluster-from：制定源节点的id，如果有多个源节点，使用逗号分隔，如果是all源节点变为集群内所有主节点，在迁移过程中提示用户输入。--cluster-to：需要迁移的目标节点的id，目标节点只能填写一个，在迁移过程中提示用户输入。--cluster-slots：需要迁移槽的总数量，在迁移过程中提示用户输入。--cluster-yes：当打印出reshard执行计划时，是否需要用户输入yes确认后再执行reshard。--cluster-timeout：控制每次migrate操作的超时时间，默认为60000毫秒。--cluster-pipeline：控制每次批量迁移键的数量，默认为10。
+
+#示例$redis-cli  --cluster reshard  host:port$redis-cli --cluster reshard  192.124.64.212:6301 --cluster-from 5c524853ad5995cd30cad27adce042c9d1ad55ce --cluster-to 7f4110121f1365119e5234cd4fe2a89eaf826f30  --cluster-slots 4 -a pwd123</code></pre>
+
+<p><strong>Rebalance :</strong></p>
+<p>若各节点slot数量不均衡时，可以用rebalance命令来平衡各集群节点slot数量。</p>
+<pre class="language-none"><code class="language-none">rebalance       host:port                 --cluster-weight &lt;node1=w1...nodeN=wN&gt;                 --cluster-use-empty-masters                 --cluster-timeout &lt;arg&gt;                 --cluster-simulate                 --cluster-pipeline &lt;arg&gt;                 --cluster-threshold &lt;arg&gt;                 --cluster-replace
+host:port：这个是必传参数，用来从一个节点获取整个集群信息，相当于获取集群信息的入口。--cluster-weight &lt;arg&gt;：节点的权重，格式为node_id=weight,例如--weight b31e3a2e=5 node_id可为节点名称的前缀。没有传递–weight的节点的权重默认为1。--cluster-threshold &lt;arg&gt;：只有节点需要迁移的slot阈值超过threshold，才会执行rebalance操作。--cluster-use-empty-masters：rebalance是否考虑没有节点的master，默认没有分配slot节点的master是不参与rebalance的，设置--use-empty-masters可以让没有分配slot的节点参与rebalance。--cluster-timeout &lt;arg&gt;：设置migrate命令的超时时间。--cluster-simulate：设置该参数，可以模拟rebalance操作，提示用户会迁移哪些slots，而不会真正执行迁移操作。--cluster-pipeline &lt;arg&gt;：与reshar的pipeline参数一样，定义cluster getkeysinslot命令一次取出的key数量，不传的话使用默认值为10。
+#示例#rebalanceredis-cli --cluster rebalance host:port$redis-cli --cluster rebalance 192.124.64.212:6301 -a pwd123$redis-cli --cluster rebalance 192.124.64.212:6301 -a pwd123 --cluster-threshold 1 --cluster-use-empty-masters --pipeline 10</code></pre>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考:"></a>参考:</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://redis.io/documentation">https://redis.io/documentation</a> </li>
+<li><a target="_blank" rel="noopener" href="https://redis.io/topics/cluster-tutorial">https://redis.io/topics/cluster-tutorial</a></li>
+<li><a target="_blank" rel="noopener" href="https://redis.io/topics/rediscli">https://redis.io/topics/rediscli</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://leehm00.github.io">homie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/">https://leehm00.github.io/2022/04/22/redis-cluster-ji-qun-chang-yong-zhi-ling/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://leehm00.github.io" target="_blank">homie's Home</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis/">redis</a></div><div class="post-share"><div class="social-share" data-image="/img/ibuki.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/04/25/wen-jian-quan-xian-shi-wen-hao-de-qing-kuang-chu-li/" title="文件权限是问号的情况处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">文件权限是问号的情况处理</div></div><div class="info-2"><div class="info-item-1">之前在试着跨机器共享一个文件夹的时候遇到了sshfs挂载失败的情况，之后再访问那个文件夹就出现permission denied的情况，不管用什么用户都会被拒绝，最开始还不知道是因为挂载失败所以尝试不同用户搞了很久，就算是删除也不行。最后整理得到的方法是：  首先ls -l确认文件（夹）属性真的全是问号（其他情况我也没遇到过暂且不论） 使用fuser -k share&lt;--your dir name来删除占有目录的进程 umount -l  share&lt;--your dir name卸载当前的挂载  </div></div></div></a><a class="pagination-related" href="/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/" title="计算机数据字节顺序"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">计算机数据字节顺序</div></div><div class="info-2"><div class="info-item-1">在C/C++写网络程序的时候，往往会遇到字节的网络顺序和主机顺序的问题。 这是就可能用到htons(), ntohl(), ntohs()，htons()这4个函数。  网络字节顺序与本地字节顺序之间的转换函数：     htonl()–”Host to Network Long”  ntohl()–”Network to Host Long”  htons()–”Host to Network Short”  ntohs()–”Network to Host Short”  之所以需要这些函数是因为计算机数据表示存在两种字节顺序：NBO与HBO    网络字节顺序NBO（Network Byte Order）： 按从高到低的顺序存储，在网络上使用统一的网络字节顺序，可以避免兼容性问题。    主机字节顺序（HBO，Host Byte Order）：    不同的机器HBO不相同，与CPU设计有关，数据的顺序是由cpu决定的,而与操作系统无关。  如 Intel  x86结构下,short型数0x1234表示为34  12, int型数0x12345678表示为78  56  3...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2022/03/04/redis-hotkey-solutions/" title="Redis hotkey solutions"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="info-item-2">Redis hotkey solutions</div></div><div class="info-2"><div class="info-item-1">一、热点数据的存放场景：数据库中有2000w数据，而redis中只有100w数据，如何保证redis中存放的都是热点数据？ 方案：限定redis占用的内存，redis会根据自身数据淘汰策略，留下热数据到内存。所以可以计算100w数据大约占用的内存， 然后设置一下redis内存限制即可，并将淘汰策略设置为allkeys-lru或者volatile-lru.  设置redis最大占用内存：  　　　　打开redis配置文件，设置maxmemory参数，maxmemory是bytes字节类型哦！ 　　　　maxmemory 268435456  设置过期策略：  　　　　maxmemory-policy volatile-lru  当redis使用的内存超过设置的最大内存时，会触发redis的key淘汰机制，在redis3.0中的6中淘汰策略如下： noeviction :不删除策略。当达到最大内存限制时，如果需要使用更多内存，则直接返回错误信息（redis默认淘汰策略） allkeys-lru:在所有key中优先删除最近最少使用（less recently used，LRU）的key...</div></div></div></a><a class="pagination-related" href="/2022/03/16/build-cluster-with-bash-on-one-node/" title="build cluster with bash on one node"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-16</div><div class="info-item-2">build cluster with bash on one node</div></div><div class="info-2"><div class="info-item-1">在我自己的机器上进行实验，sh文件实现一条命令部署单个节点集群 下面是解析步骤 常量定义定义在另一个文件中 #!/bin/bash  # Redis_Cluster  # REDIS_SERVER_BIN="/home/k8s/homie/redis/src/redis-server" BASE_DIR=/home/k8s/homie REDIS_SERVER_BIN=$BASE_DIR/redis/src/redis-server REDIS_CLI_BIN=$BASE_DIR/redis/src/redis-cli REDIS_CLUSTER_BASE=$BASE_DIR/redis_cluster NODELIST="node2 node3 node4 node5" PORTS=`seq 7000 7005` BASEPORT=${ENTRY_PORT} HG_BASEPORT=${HG_PORT}  根据自己需要进行修改 安装redis# Check redis command if [ ! -f $REDIS_SERVER_BIN ]; then   echo "Red...</div></div></div></a><a class="pagination-related" href="/2022/03/09/redis-cluster-build/" title="redis cluster build"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-09</div><div class="info-item-2">redis cluster build</div></div><div class="info-2"><div class="info-item-1">下载redis6.2.2并安装wget http://download.redis.io/releases/redis-6.2.2.tar.gz tar -zxvf ./redis-6.2.2.tar.gz mv redis-6.2.2 redis cd redis make  准备配置文件1、新建目录，并拷贝出6个节点的配置文件cd  redis-6.2.2 mkdir -p config mkdir -p log mkdir -p data mkdir -p node cp redis.conf ./config/redis-7000.conf  2、修改每个节点的配置文件内容远程访问需要把bind注释掉         # bind 127.0.0.1 修改端口号         port 7000 默认启动时为后台启动，yes为后台启动         daemonize yes 指定进程信息存储文件         pidfile /var/run/redis_7000.pid 指定日志文件(改成自己的路径)         logfile "/home/k8s/hom...</div></div></div></a><a class="pagination-related" href="/2022/03/05/redis-cluster/" title="redis cluster"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-05</div><div class="info-item-2">redis cluster</div></div><div class="info-2"><div class="info-item-1">redis集群理论单机遇到内存、并发、流量等瓶颈时，可以采用Cluster架构方案来达到负载均衡 一 基础理论1.1分区规则数据集按照分区规则映射到各个节点  常见哈希分区：  节点取余分区 使用特定的数据，如Redis的键或用户ID，再根据节点数量N使用公式： hash（key）%N计算出哈希值，用来决定数据映射到哪一个节点上。 缺点：当节点数量变化时，如扩容或收缩节点，数据节点映射关系需要重新计算，会导致数据的重新迁移。 优点：这种方式的突出优点是简单，易理解； 这种方式常用于数据库的分库分表规则，一般采 用预分区的方式，提前根据数据量规划好分区数，比如划分为512或1024张 表，保证可支撑未来一段时间的数据量，再根据负载情况将表迁移到其他数 据库中。扩容时通常采用翻倍扩容，避免数据映射全部被打乱导致全量迁移 的情况  一致性哈希分区 一致性哈希分区（Distributed Hash Table）实现思路是为系统中每个节点分配一个token（范围一般在0~2^32），这些token构成一个哈希环。 数据读写 执行节点查找操作时，先根据key计算hash值，然后顺时针找到第一...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-shi-jian/" title="redis事件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-27</div><div class="info-item-2">redis事件</div></div><div class="info-2"><div class="info-item-1">redis事件数据结构//事件处理器状态(同时是时间处理器和文件处理器) typedef struct aeEventLoop {     //当前注册的最大描述符     int maxfd;   /* highest file descriptor currently registered */     //当前追踪的最大描述符     int setsize; /* max number of file descriptors tracked */     //时间事件的id,时间事件链表中记录了最大的id     long long timeEventNextId;     //已注册的文件事件     aeFileEvent *events; /* Registered events */     //已经就绪,执行过处理器的文件事件     aeFiredEvent *fired; /* Fired events */     //时间事件     aeTimeEvent *timeEventHead;     //事件处理器开关     int stop;     ...</div></div></div></a><a class="pagination-related" href="/2022/01/27/redis-dan-ji-shu-ju-ku/" title="redis单机数据库以及持久化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-27</div><div class="info-item-2">redis单机数据库以及持久化</div></div><div class="info-2"><div class="info-item-1">单机数据库实现和持久化数据库细节实现 数据库的数据结构  源代码： typedef struct redisDb {     // 数据库键空间，保存着数据库中的所有键值对     dict *dict;                 /* The keyspace for this DB */     // 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳     dict *expires;              /* Timeout of keys with a timeout set */     // 正处于阻塞状态的键     dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP)*/     // 可以解除阻塞的键     dict *ready_keys;           /* Blocked keys that received a PUSH */     // 正在被 WATCH 命令监视的键     dict *watched_keys;  ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-redis-%E5%B8%B8%E7%94%A8%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-number">1.</span> <span class="toc-text">1.redis 常用管理命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E8%AF%BB%E5%86%99%E6%93%8D%E4%BD%9C"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 读写操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%AD%89%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 查看内存等信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%9F%A5%E7%9C%8Bkey%E5%8F%8Abigkey"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 查看key及bigkey</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-ops%E5%8F%8Aclient%E9%93%BE%E6%8E%A5"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 ops及client链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E7%BB%9F%E8%AE%A1"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 统计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.6.</span> <span class="toc-text">1.6 慢查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-7-%E9%85%8D%E7%BD%AE%E4%BF%AE%E6%94%B9"><span class="toc-number">1.7.</span> <span class="toc-text">1.7 配置修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-8-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-number">1.8.</span> <span class="toc-text">1.8 主从复制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-redis-cluster%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">2.</span> <span class="toc-text">2. redis cluster常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-cluster%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 cluster命令语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-cluster%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 cluster基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%89%B9%E9%87%8F%E5%A4%84%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 批量处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E8%8A%82%E7%82%B9%E7%AE%A1%E7%90%86"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 节点管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-SLOT%E5%A4%84%E7%90%86"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 SLOT处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-Reshard%E5%8F%8ARebalance"><span class="toc-number">2.6.</span> <span class="toc-text">2.7 Reshard及Rebalance</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">3.</span> <span class="toc-text">参考:</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/diary251110/" title="diary251110">diary251110</a><time datetime="2025-11-10T15:55:41.000Z" title="发表于 2025-11-10 15:55:41">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/hello-world/" title="Hello World">Hello World</a><time datetime="2025-11-10T14:00:07.549Z" title="发表于 2025-11-10 14:00:07">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/09/diary251109/" title="diary251109">diary251109</a><time datetime="2025-11-09T21:59:27.000Z" title="发表于 2025-11-09 21:59:27">2025-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/diary251107/" title="diary251107">diary251107</a><time datetime="2025-11-07T16:53:41.000Z" title="发表于 2025-11-07 16:53:41">2025-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/zsh-pei-zhi/" title="zsh配置">zsh配置</a><time datetime="2025-11-07T00:45:46.000Z" title="发表于 2025-11-07 00:45:46">2025-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2025 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liQESFXsU1YySKCu',
+      clientSecret: '8ffed0b5a974ee263dce9a1f772883682eeffa4a',
+      repo: 'https://github.com/leehm00/homepage_comment',
+      owner: 'leehm00',
+      admin: ['leehm00'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '8e7e60f85779044827e623368a91d315'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>

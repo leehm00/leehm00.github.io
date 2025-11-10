@@ -1,0 +1,1467 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MIT 6.824 2022 notes 2 chinese version | homie's Home</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Lecture 2:RPC and threads为什么用 Go 语法先进。在语言层面支持线程（goroutine）和管道（channel）。对线程间的加锁、同步支持良好。 类型安全（type safe）。内存访问安全（memory safe），很难写出像 C++ 一样内存越界访问等 bug。 支持垃圾回收（GC）。不需要用户手动管理内存（特别是shared memory），这一点在多线程编程中尤">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT 6.824 2022 notes 2 chinese version">
+<meta property="og:url" content="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="Lecture 2:RPC and threads为什么用 Go 语法先进。在语言层面支持线程（goroutine）和管道（channel）。对线程间的加锁、同步支持良好。 类型安全（type safe）。内存访问安全（memory safe），很难写出像 C++ 一样内存越界访问等 bug。 支持垃圾回收（GC）。不需要用户手动管理内存（特别是shared memory），这一点在多线程编程中尤">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:published_time" content="2022-02-16T19:05:48.000Z">
+<meta property="article:modified_time" content="2025-11-10T14:00:07.544Z">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="course">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MIT 6.824 2022 notes 2 chinese version",
+  "url": "https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/",
+  "image": "https://leehm00.github.io/img/ibuki.png",
+  "datePublished": "2022-02-16T19:05:48.000Z",
+  "dateModified": "2025-11-10T14:00:07.544Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "homie",
+      "url": "https://leehm00.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MIT 6.824 2022 notes 2 chinese version',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a><a class="nav-page-title" href="/"><span class="site-name">MIT 6.824 2022 notes 2 chinese version</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MIT 6.824 2022 notes 2 chinese version</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-02-16T19:05:48.000Z" title="发表于 2022-02-16 19:05:48">2022-02-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">12.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>45分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Lecture-2-RPC-and-threads"><a href="#Lecture-2-RPC-and-threads" class="headerlink" title="Lecture 2:RPC and threads"></a>Lecture 2:RPC and threads</h1><h2 id="为什么用-Go"><a href="#为什么用-Go" class="headerlink" title="为什么用 Go"></a>为什么用 Go</h2><ol>
+<li><strong>语法先进</strong>。在语言层面支持线程（goroutine）和管道（channel）。对线程间的加锁、同步支持良好。</li>
+<li><strong>类型安全（type safe）</strong>。内存访问安全（memory safe），很难写出像 C++ 一样内存越界访问等 bug。</li>
+<li><strong>支持垃圾回收（GC）</strong>。不需要用户手动管理内存（特别是shared memory），这一点在多线程编程中尤为重要，因为在多线程中你很容易引用某块内存，然后忘记了在哪引用过。</li>
+<li><strong>简洁直观</strong>。没 C++ 那么多复杂的语言特性，并且在报错上很友好。</li>
+</ol>
+<h2 id="线程（Threads）"><a href="#线程（Threads）" class="headerlink" title="线程（Threads）"></a>线程（Threads）</h2><p>线程为什么这么重要？因为他是我们控制并发的主要手段，而并发是构成分布式系统的基础。在 Go 中，你可以将 goroutine 认为是线程，以下这两者混用。 每个线程可以有自己的内存栈、寄存器，但是他们可以共享一个地址空间。</p>
+<h3 id="使用原因"><a href="#使用原因" class="headerlink" title="使用原因"></a>使用原因</h3><p><strong>IO concurrency（IO 并发）</strong>：一个历史说法，以前单核时，IO 是主要瓶颈，为了充分利用 CPU，一个线程在进行 IO 时，可以让出 CPU，让另一个线程进行计算、读取或发送网络消息等。在这里可以理解为：你可以通过多个线程并行的发送多个网络请求（比如 RPC、HTTP 等），然后分别等待其回复。</p>
+<p><strong>Parallelism（并行）</strong>：充分利用多核 CPU。</p>
+<p>关于并发（concurrency）和并行（parallelism）的区别和联系，可以看<a target="_blank" rel="noopener" href="https://laike9m.com/blog/huan-zai-yi-huo-bing-fa-he-bing-xing,61/">这篇文章</a>。记住两个关键词即可：逻辑并发设计 vs 物理并行执行。</p>
+<p><strong>Convenience（方便）</strong>：比如可以在后台启动一个线程，定时执行某件事、周期性的检测什么东西（比如心跳）。</p>
+<p><strong>Q&amp;A：</strong></p>
+<ol>
+<li><em>不使用线程还能如何处理并发</em>？基于事件驱动的异步编程。但是多线程模型更容易理解一些，毕竟每个线程内执行顺序和你的代码顺序是大体一致的。</li>
+<li><em>进程和线程的区别</em>？进程是操作系统提供的一种包含有<strong>独立地址空间</strong>的一种抽象，一个 Go 程序启动时作为一个进程，可以启动很多线程，<strong>共享地址空间</strong>（不过我记得 Goroutine 是用户态的执行流）。</li>
+</ol>
+<h3 id="使用难点（challenges）"><a href="#使用难点（challenges）" class="headerlink" title="使用难点（challenges）"></a>使用难点（challenges）</h3><p>共享内存易出错。一个经典的问题是，多个线程并行执行语句：<code>n = n + 1</code> 时，由于该操作不是原子操作，在不加锁时，很容易出现 n 为非期望值。</p>
+<p>我们称这种情况为<strong>竞态</strong> （race）：即两个以上的线程同时试图改变某个共享变量。</p>
+<p>解决的方法是加锁，但如何科学的加锁以<strong>兼顾性能</strong>并<strong>避免死锁</strong>又是一门学问。</p>
+<p><strong>Q&amp;A：</strong></p>
+<ol>
+<li><em>Go 是否知道锁和资源（一些共享的变量）间的映射</em>？Go 并不知道，它仅仅就是等待锁、获取锁、释放锁。需要程序员在脑中、逻辑上来自己维护。</li>
+<li><em>Go 会锁上一个 Object 的所有变量还是部分</em>？和上个问题一样，Go 不知道任何锁与变量之间的关系。Lock 本身的源语很简单，goroutine0 调用 mu.Lock 时，没有其他 goroutine 持有锁，则 goroutine0 获取锁；如果其他 goroutine 持有锁，则一直等待直到其释放锁；当然，在某些语言，如 Java 里，会将对象或者实例等与锁绑定，以指明锁的作用域。</li>
+<li><em>Lock 应该是某个对象的私有变量</em>？如果可以的话，最好这样做。但如果有跨对象的加锁需求，就需要拿出来了，但要注意避免死锁。</li>
+</ol>
+<h3 id="线程协调（Coordination）"><a href="#线程协调（Coordination）" class="headerlink" title="线程协调（Coordination）"></a>线程协调（Coordination）</h3><ol>
+<li><p>channels：go 中比较推荐的方式，分阻塞和带缓冲。</p>
+<p>信道可用于在其他协程结束执行之前，阻塞 Go 主协程。</p>
+<p>sending data from one thread to another and breeding that they did to be sent  </p>
+</li>
+<li><p>sync.Cond：信号机制。</p>
+<p>condition variables: 当前线程占用了锁，告诉其他等 待的线程继续等待，因为自己的确正在使用</p>
+</li>
+<li><p>waitGroup：阻塞知道一组 goroutine 执行完毕，后面还会提到。</p>
+</li>
+</ol>
+<h3 id="死锁（DeadLock）"><a href="#死锁（DeadLock）" class="headerlink" title="死锁（DeadLock）"></a>死锁（DeadLock）</h3><p>产生条件：多个锁，循环依赖，占有并等待。</p>
+<p>if your program is just doing nothing but not crashed, the you have to check if there is a deadlock. </p>
+<h2 id="GO协程"><a href="#GO协程" class="headerlink" title="GO协程"></a>GO协程</h2><h3 id="GO协程是什么"><a href="#GO协程是什么" class="headerlink" title="GO协程是什么"></a>GO协程是什么</h3><p>Go 协程是与其他函数或方法一起并发运行的函数或方法。Go 协程可以看作是轻量级线程。与线程相比，创建一个 Go 协程的成本很小。因此在 Go 应用中，常常会看到有数以千计的 Go 协程并发地运行</p>
+<h3 id="协程相比于线程的优势"><a href="#协程相比于线程的优势" class="headerlink" title="协程相比于线程的优势"></a>协程相比于线程的优势</h3><ul>
+<li>相比线程而言，Go 协程的成本极低。堆栈大小只有若干 kb，并且可以根据应用的需求进行增减。而线程必须指定堆栈的大小，其堆栈是固定不变的。</li>
+<li>Go 协程会复用（Multiplex）数量更少的 OS 线程。即使程序有数以千计的 Go 协程，也可能只有一个线程。如果该线程中的某一 Go 协程发生了阻塞（比如说等待用户输入），那么系统会再创建一个 OS 线程，并把其余 Go 协程都移动到这个新的 OS 线程。所有这一切都在运行时进行，作为程序员，我们没有直接面临这些复杂的细节，而是有一个简洁的 API 来处理并发。</li>
+<li>Go 协程使用信道（Channel）来进行通信。信道用于防止多个协程访问共享内存时发生竞态条件（Race Condition）。信道可以看作是 Go 协程之间通信的管道。</li>
+</ul>
+<h3 id="协程使用"><a href="#协程使用" class="headerlink" title="协程使用"></a>协程使用</h3><p>调用函数或者方法时，在前面加上关键字 <code>go</code>，可以让一个新的 Go 协程并发地运行。</p>
+<ul>
+<li><strong>启动一个新的协程时，协程的调用会立即返回。与函数不同，程序控制不会去等待 Go 协程执行完毕。在调用 Go 协程之后，程序控制会立即返回到代码的下一行，忽略该协程的任何返回值。</strong></li>
+<li><strong>如果希望运行其他 Go 协程，Go 主协程必须继续运行着。如果 Go 主协程终止，则程序终止，于是其他 Go 协程也不会继续运行。</strong></li>
+</ul>
+<p>例如：</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Hello world goroutine"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">go</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"main function"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>在第 11 行调用了 <code>go hello()</code> 之后，程序控制没有等待 <code>hello</code> 协程结束，立即返回到了代码下一行，打印 <code>main function</code>。接着由于没有其他可执行的代码，Go 主协程终止，于是 <code>hello</code> 协程就没有机会运行了。</p>
+<p>改成</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Hello world goroutine"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">go</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"main function"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>在 Go 主协程中使用休眠，以便等待其他协程执行完毕。第 13 行，我们调用了 time 包里的函数 <a target="_blank" rel="noopener" href="https://golang.org/pkg/time/#Sleep"><code>Sleep</code></a>，该函数会休眠执行它的 Go 协程。在这里，我们使 Go 主协程休眠了 1 秒。因此在主协程终止之前，调用 <code>go hello()</code> 就有足够的时间来执行了。该程序首先打印 <code>Hello world goroutine</code>，等待 1 秒钟之后，接着打印 <code>main function</code>。</p>
+<h3 id="启动多个-Go-协程"><a href="#启动多个-Go-协程" class="headerlink" title="启动多个 Go 协程"></a>启动多个 Go 协程</h3><pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">numbers</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">250</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Millisecond<span class="token punctuation">)</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%d "</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">alphabets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token char">'a'</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> <span class="token char">'e'</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">400</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Millisecond<span class="token punctuation">)</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"%c "</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">go</span> <span class="token function">numbers</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">alphabets</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3000</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Millisecond<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"main terminated"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>在上面程序中的第 21 行和第 22 行，启动了两个 Go 协程。现在，这两个协程并发地运行。<code>numbers</code> 协程首先休眠 250 微秒，接着打印 <code>1</code>，然后再次休眠，打印 <code>2</code>，依此类推，一直到打印 <code>5</code> 结束。<code>alphabete</code> 协程同样打印从 <code>a</code> 到 <code>e</code> 的字母，并且每次有 400 微秒的休眠时间。 Go 主协程启动了 <code>numbers</code> 和 <code>alphabete</code> 两个 Go 协程，休眠了 3000 微秒后终止程序。</p>
+<p>输出为</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span> a <span class="token number">2</span> <span class="token number">3</span> b <span class="token number">4</span> c <span class="token number">5</span> d e main terminate</code></pre>
+
+<p><img src="/2022/02/16/mit-6-824-2022-notes-2-chinese-version/Goroutines-explained.png" alt="image"></p>
+<p>第一张蓝色的图表示 <code>numbers</code> 协程，第二张褐红色的图表示 <code>alphabets</code> 协程，第三张绿色的图表示 Go 主协程，而最后一张黑色的图把以上三种协程合并了，表明程序是如何运行的。在每个方框顶部，诸如 <code>0 ms</code> 和 <code>250 ms</code> 这样的字符串表示时间（以微秒为单位）。在每个方框的底部，<code>1</code>、<code>2</code>、<code>3</code> 等表示输出。蓝色方框表示：<code>250 ms</code> 打印出 <code>1</code>，<code>500 ms</code> 打印出 <code>2</code>，依此类推。最后黑色方框的底部的值会是 <code>1 a 2 3 b 4 c 5 d e main terminated</code>，这同样也是整个程序的输出。</p>
+<h2 id="信道"><a href="#信道" class="headerlink" title="信道"></a>信道</h2><h3 id="什么是信道？"><a href="#什么是信道？" class="headerlink" title="什么是信道？"></a>什么是信道？</h3><p>信道可以想像成 Go 协程之间通信的管道。如同管道中的水会从一端流到另一端，通过使用信道，数据也可以从一端发送，在另一端接收。</p>
+<h3 id="信道的声明"><a href="#信道的声明" class="headerlink" title="信道的声明"></a>信道的声明</h3><p>所有信道都关联了一个类型。信道只能运输这种类型的数据，而运输其他类型的数据都是非法的。</p>
+<p><code>chan T</code> 表示 <code>T</code> 类型的信道。</p>
+<p>信道的零值为 <code>nil</code>。信道的零值没有什么用，应该像对 map 和切片所做的那样，用 <code>make</code> 来定义信道。</p>
+<p>下面编写代码，声明一个信道。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">var</span> a <span class="token keyword">chan</span> <span class="token builtin">int</span>
+    <span class="token keyword">if</span> a <span class="token operator">==</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"channel a is nil, going to define it"</span><span class="token punctuation">)</span>
+        a <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Type of a is %T"</span><span class="token punctuation">,</span> a<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>由于信道的零值为 <code>nil</code>，在第 6 行，信道 <code>a</code> 的值就是 <code>nil</code>。于是，程序执行了 if 语句内的语句，定义了信道 <code>a</code>。程序中 <code>a</code> 是一个 int 类型的信道。该程序会输出：</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">channel a is nil, going to define it  
+Type of a is chan int</code></pre>
+
+<p>简短声明通常也是一种定义信道的简洁有效的方法。</p>
+<pre class="language-go" data-language="go"><code class="language-go">a <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span></code></pre>
+
+<p>这一行代码同样定义了一个 int 类型的信道 <code>a</code>。</p>
+<h3 id="通过信道进行发送和接收"><a href="#通过信道进行发送和接收" class="headerlink" title="通过信道进行发送和接收"></a>通过信道进行发送和接收</h3><p>如下所示，该语法通过信道发送和接收数据。</p>
+<pre class="language-go" data-language="go"><code class="language-go">data <span class="token operator">:=</span> <span class="token operator">&lt;-</span> a <span class="token comment">// 读取信道 a  </span>
+a <span class="token operator">&lt;-</span> data <span class="token comment">// 写入信道 a</span></code></pre>
+
+<p>信道旁的箭头方向指定了是发送数据还是接收数据。</p>
+<p>在第一行，箭头对于 <code>a</code> 来说是向外指的，因此我们读取了信道 <code>a</code> 的值，并把该值存储到变量 <code>data</code>。</p>
+<p>在第二行，箭头指向了 <code>a</code>，因此我们在把数据写入信道 <code>a</code>。</p>
+<h4 id="发送与接收默认是阻塞的"><a href="#发送与接收默认是阻塞的" class="headerlink" title="发送与接收默认是阻塞的"></a>发送与接收默认是阻塞的</h4><p>发送与接收默认是阻塞的。这是什么意思？当把数据发送到信道时，程序控制会在发送数据的语句处发生阻塞，直到有其它 Go 协程从信道读取到数据，才会解除阻塞。与此类似，当读取信道的数据时，如果没有其它的协程把数据写入到这个信道，那么读取过程就会一直阻塞着。</p>
+<p>信道的这种特性能够帮助 Go 协程之间进行高效的通信，不需要用到其他编程语言常见的显式锁或条件变量。</p>
+<h4 id="信道的代码示例"><a href="#信道的代码示例" class="headerlink" title="信道的代码示例"></a>信道的代码示例</h4><p>理论已经够了:)。接下来写点代码，看看协程之间通过信道是怎么通信的。</p>
+<p>首先引用前面教程里的程序。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Hello world goroutine"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">go</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"main function"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>这是上一篇的代码。我们使用到了休眠，使 Go 主协程等待 hello 协程结束。</p>
+<p>我们接下来使用信道来重写上面代码。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">hello</span><span class="token punctuation">(</span>done <span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Hello world goroutine"</span><span class="token punctuation">)</span>
+    done <span class="token operator">&lt;-</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    done <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">hello</span><span class="token punctuation">(</span>done<span class="token punctuation">)</span>
+    <span class="token operator">&lt;-</span>done
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"main function"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>在上述程序里，我们在第 12 行创建了一个 bool 类型的信道 <code>done</code>，并把 <code>done</code> 作为参数传递给了 <code>hello</code> 协程。在第 14 行，我们通过信道 <code>done</code> 接收数据。这一行代码发生了阻塞，除非有协程向 <code>done</code> 写入数据，否则程序不会跳到下一行代码。于是，这就不需要用以前的 <code>time.Sleep</code> 来阻止 Go 主协程退出了。</p>
+<p><code>&lt;-done</code> 这行代码通过信道使用<code>done</code> 接收数据，但并没有使用数据或者把数据存储到变量中。这完全是合法的。</p>
+<p>现在我们的 Go 主协程发生了阻塞，等待信道 <code>done</code> 发送的数据。该信道作为参数传递给了协程 <code>hello</code>，<code>hello</code> 打印出 <code>Hello world goroutine</code>，接下来向 <code>done</code> 写入数据。当完成写入时，Go 主协程会通过信道 <code>done</code> 接收数据，于是它解除阻塞状态，打印出文本 <code>main function</code>。</p>
+<p>该程序输出如下：</p>
+<pre class="language-none"><code class="language-none">Hello world goroutine  
+main function</code></pre>
+
+<p>我们稍微修改一下程序，在 <code>hello</code> 协程里加入休眠函数，以便更好地理解阻塞的概念。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">hello</span><span class="token punctuation">(</span>done <span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"hello go routine is going to sleep"</span><span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">4</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"hello go routine awake and going to write to done"</span><span class="token punctuation">)</span>
+    done <span class="token operator">&lt;-</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    done <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Main going to call hello go goroutine"</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">hello</span><span class="token punctuation">(</span>done<span class="token punctuation">)</span>
+    <span class="token operator">&lt;-</span>done
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Main received data"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>在上面程序里，我们向 <code>hello</code> 函数里添加了 4 秒的休眠（第 10 行）。</p>
+<p>程序首先会打印 <code>Main going to call hello go goroutine</code>。接着会开启 <code>hello</code> 协程，打印 <code>hello go routine is going to sleep</code>。打印完之后，<code>hello</code> 协程会休眠 4 秒钟，而在这期间，主协程会在 <code>&lt;-done</code> 这一行发生阻塞，等待来自信道 <code>done</code> 的数据。4 秒钟之后，打印 <code>hello go routine awake and going to write to done</code>，接着再打印 <code>Main received data</code>。</p>
+<h4 id="信道的另一个示例"><a href="#信道的另一个示例" class="headerlink" title="信道的另一个示例"></a>信道的另一个示例</h4><p>我们再编写一个程序来更好地理解信道。该程序会计算一个数中每一位的平方和与立方和，然后把平方和与立方和相加并打印出来。</p>
+<p>例如，如果输出是 123，该程序会如下计算输出：</p>
+<pre class="language-none"><code class="language-none">squares = (1 * 1) + (2 * 2) + (3 * 3) 
+cubes = (1 * 1 * 1) + (2 * 2 * 2) + (3 * 3 * 3) 
+output = squares + cubes = 50</code></pre>
+
+<p>我们会这样去构建程序：在一个单独的 Go 协程计算平方和，而在另一个协程计算立方和，最后在 Go 主协程把平方和与立方和相加。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">calcSquares</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">,</span> squareop <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sum <span class="token operator">:=</span> <span class="token number">0</span>
+    <span class="token keyword">for</span> number <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        digit <span class="token operator">:=</span> number <span class="token operator">%</span> <span class="token number">10</span>
+        sum <span class="token operator">+=</span> digit <span class="token operator">*</span> digit
+        number <span class="token operator">/=</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span>
+    squareop <span class="token operator">&lt;-</span> sum
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">calcCubes</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">,</span> cubeop <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sum <span class="token operator">:=</span> <span class="token number">0</span> 
+    <span class="token keyword">for</span> number <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        digit <span class="token operator">:=</span> number <span class="token operator">%</span> <span class="token number">10</span>
+        sum <span class="token operator">+=</span> digit <span class="token operator">*</span> digit <span class="token operator">*</span> digit
+        number <span class="token operator">/=</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span>
+    cubeop <span class="token operator">&lt;-</span> sum
+<span class="token punctuation">}</span> 
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    number <span class="token operator">:=</span> <span class="token number">589</span>
+    sqrch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    cubech <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">calcSquares</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> sqrch<span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">calcCubes</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> cubech<span class="token punctuation">)</span>
+    squares<span class="token punctuation">,</span> cubes <span class="token operator">:=</span> <span class="token operator">&lt;-</span>sqrch<span class="token punctuation">,</span> <span class="token operator">&lt;-</span>cubech
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Final output"</span><span class="token punctuation">,</span> squares <span class="token operator">+</span> cubes<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/4RKr7_YO_B">在线运行程序</a></p>
+<p>在第 7 行，函数 <code>calcSquares</code> 计算一个数每位的平方和，并把结果发送给信道 <code>squareop</code>。与此类似，在第 17 行函数 <code>calcCubes</code> 计算一个数每位的立方和，并把结果发送给信道 <code>cubop</code>。</p>
+<p>这两个函数分别在单独的协程里运行（第 31 行和第 32 行），每个函数都有传递信道的参数，以便写入数据。Go 主协程会在第 33 行等待两个信道传来的数据。一旦从两个信道接收完数据，数据就会存储在变量 <code>squares</code> 和 <code>cubes</code> 里，然后计算并打印出最后结果。该程序会输出：</p>
+<pre class="language-none"><code class="language-none">Final output 1536</code></pre>
+
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>使用信道需要考虑的一个重点是死锁。当 Go 协程给一个信道发送数据时，照理说会有其他 Go 协程来接收数据。如果没有的话，程序就会在运行时触发 panic，形成死锁。</p>
+<p>同理，当有 Go 协程等着从一个信道接收数据时，我们期望其他的 Go 协程会向该信道写入数据，要不然程序就会触发 panic。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    ch <span class="token operator">&lt;-</span> <span class="token number">5</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/q1O5sNx4aW">在线运行程序</a></p>
+<p>在上述程序中，我们创建了一个信道 <code>ch</code>，接着在下一行 <code>ch &lt;- 5</code>，我们把 <code>5</code> 发送到这个信道。对于本程序，没有其他的协程从 <code>ch</code> 接收数据。于是程序触发 panic，出现如下运行时错误。</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">fatal error: all goroutines are asleep - deadlock<span class="token operator">!</span>
+
+goroutine <span class="token number">1</span> <span class="token punctuation">[</span>chan send<span class="token punctuation">]</span>:  
+main.main<span class="token punctuation">(</span><span class="token punctuation">)</span>  
+    /tmp/sandbox249677995/main.go:6 +0x80</code></pre>
+
+<h3 id="单向信道"><a href="#单向信道" class="headerlink" title="单向信道"></a>单向信道</h3><p>我们目前讨论的信道都是双向信道，即通过信道既能发送数据，又能接收数据。其实也可以创建单向信道，这种信道只能发送或者接收数据。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">sendData</span><span class="token punctuation">(</span>sendch <span class="token keyword">chan</span><span class="token operator">&lt;-</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sendch <span class="token operator">&lt;-</span> <span class="token number">10</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sendch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span><span class="token operator">&lt;-</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">sendData</span><span class="token punctuation">(</span>sendch<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span>sendch<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/PRKHxM-iRK">在线运行程序</a></p>
+<p>上面程序的第 10 行，我们创建了唯送（Send Only）信道 <code>sendch</code>。<code>chan&lt;- int</code> 定义了唯送信道，因为箭头指向了 <code>chan</code>。在第 12 行，我们试图通过唯送信道接收数据，于是编译器报错：</p>
+<pre class="language-none"><code class="language-none">main.go:11: invalid operation: &lt;-sendch (receive from send-only type chan&lt;- int)</code></pre>
+
+<p><strong>一切都很顺利，只不过一个不能读取数据的唯送信道究竟有什么意义呢？</strong></p>
+<p><strong>这就需要用到信道转换（Channel Conversion）了。把一个双向信道转换成唯送信道或者唯收（Receive Only）信道都是行得通的，但是反过来就不行。</strong></p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token keyword">func</span> <span class="token function">sendData</span><span class="token punctuation">(</span>sendch <span class="token keyword">chan</span><span class="token operator">&lt;-</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sendch <span class="token operator">&lt;-</span> <span class="token number">10</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    cha1 <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">sendData</span><span class="token punctuation">(</span>cha1<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span>cha1<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/aqi_rJ1U8j">在线运行程序</a></p>
+<p>在上述程序的第 10 行，我们创建了一个双向信道 <code>cha1</code>。在第 11 行 <code>cha1</code> 作为参数传递给了 <code>sendData</code> 协程。<strong>在第 5 行，函数 <code>sendData</code> 里的参数 <code>sendch chan&lt;- int</code> 把 <code>cha1</code> 转换为一个唯送信道</strong>。于是该信道在 <code>sendData</code> 协程里是一个唯送信道，而在 Go 主协程里是一个双向信道。该程序最终打印输出 <code>10</code>。</p>
+<h3 id="关闭信道和使用-for-range-遍历信道"><a href="#关闭信道和使用-for-range-遍历信道" class="headerlink" title="关闭信道和使用 for range 遍历信道"></a>关闭信道和使用 for range 遍历信道</h3><p>数据发送方可以关闭信道，通知接收方这个信道不再有数据发送过来。</p>
+<p>当从信道接收数据时，接收方可以多用一个变量来检查信道是否已经关闭。</p>
+<pre class="language-none"><code class="language-none">v, ok := &lt;- ch</code></pre>
+
+<p>上面的语句里，如果成功接收信道所发送的数据，那么 <code>ok</code> 等于 true。而如果 <code>ok</code> 等于 false，说明我们试图读取一个关闭的通道。从关闭的信道读取到的值会是该信道类型的零值。例如，当信道是一个 <code>int</code> 类型的信道时，那么从关闭的信道读取的值将会是 <code>0</code>。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">producer</span><span class="token punctuation">(</span>chnl <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        chnl <span class="token operator">&lt;-</span> i
+    <span class="token punctuation">}</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>chnl<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">producer</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">{</span>
+        v<span class="token punctuation">,</span> ok <span class="token operator">:=</span> <span class="token operator">&lt;-</span>ch
+        <span class="token keyword">if</span> ok <span class="token operator">==</span> <span class="token boolean">false</span> <span class="token punctuation">{</span>
+            <span class="token keyword">break</span>
+        <span class="token punctuation">}</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Received "</span><span class="token punctuation">,</span> v<span class="token punctuation">,</span> ok<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/XWmUKDA2Ri">在线运行程序</a></p>
+<p>在上述的程序中，<code>producer</code> 协程会从 0 到 9 写入信道 <code>chn1</code>，然后关闭该信道。主函数有一个无限的 for 循环（第 16 行），使用变量 <code>ok</code>（第 18 行）检查信道是否已经关闭。如果 <code>ok</code> 等于 false，说明信道已经关闭，于是退出 for 循环。如果 <code>ok</code> 等于 true，会打印出接收到的值和 <code>ok</code> 的值。</p>
+<pre class="language-none"><code class="language-none">Received  0 true  
+Received  1 true  
+Received  2 true  
+Received  3 true  
+Received  4 true  
+Received  5 true  
+Received  6 true  
+Received  7 true  
+Received  8 true  
+Received  9 true</code></pre>
+
+<p>for range 循环用于在一个信道关闭之前，从信道接收数据。</p>
+<p>接下来我们使用 for range 循环重写上面的代码。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">producer</span><span class="token punctuation">(</span>chnl <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        chnl <span class="token operator">&lt;-</span> i
+    <span class="token punctuation">}</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>chnl<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">producer</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> v <span class="token operator">:=</span> <span class="token keyword">range</span> ch <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Received "</span><span class="token punctuation">,</span>v<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/JJ3Ida1r_6">在线运行程序</a></p>
+<p>在第 16 行，for range 循环从信道 <code>ch</code> 接收数据，直到该信道关闭。一旦关闭了 <code>ch</code>，循环会自动结束。该程序会输出：</p>
+<pre class="language-none"><code class="language-none">Received  0  
+Received  1  
+Received  2  
+Received  3  
+Received  4  
+Received  5  
+Received  6  
+Received  7  
+Received  8  
+Received  9</code></pre>
+
+<p>我们可以使用 for range 循环，重写<a target="_blank" rel="noopener" href="https://studygolang.com/articles/12402#">信道的另一个示例</a>这一节里面的代码，提高代码的可重用性。</p>
+<p>如果你仔细观察这段代码，会发现获得一个数里的每位数的代码在 <code>calcSquares</code> 和 <code>calcCubes</code> 两个函数内重复了。我们将把这段代码抽离出来，放在一个单独的函数里，然后并发地调用它。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">digits</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">,</span> dchnl <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> number <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        digit <span class="token operator">:=</span> number <span class="token operator">%</span> <span class="token number">10</span>
+        dchnl <span class="token operator">&lt;-</span> digit
+        number <span class="token operator">/=</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>dchnl<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">calcSquares</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">,</span> squareop <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sum <span class="token operator">:=</span> <span class="token number">0</span>
+    dch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">digits</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> dch<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> digit <span class="token operator">:=</span> <span class="token keyword">range</span> dch <span class="token punctuation">{</span>
+        sum <span class="token operator">+=</span> digit <span class="token operator">*</span> digit
+    <span class="token punctuation">}</span>
+    squareop <span class="token operator">&lt;-</span> sum
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">calcCubes</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">,</span> cubeop <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    sum <span class="token operator">:=</span> <span class="token number">0</span>
+    dch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">digits</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> dch<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> digit <span class="token operator">:=</span> <span class="token keyword">range</span> dch <span class="token punctuation">{</span>
+        sum <span class="token operator">+=</span> digit <span class="token operator">*</span> digit <span class="token operator">*</span> digit
+    <span class="token punctuation">}</span>
+    cubeop <span class="token operator">&lt;-</span> sum
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    number <span class="token operator">:=</span> <span class="token number">589</span>
+    sqrch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    cubech <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">calcSquares</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> sqrch<span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">calcCubes</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> cubech<span class="token punctuation">)</span>
+    squares<span class="token punctuation">,</span> cubes <span class="token operator">:=</span> <span class="token operator">&lt;-</span>sqrch<span class="token punctuation">,</span> <span class="token operator">&lt;-</span>cubech
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Final output"</span><span class="token punctuation">,</span> squares<span class="token operator">+</span>cubes<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/oL86W9Ui03">在线运行程序</a></p>
+<p>上述程序里的 <code>digits</code> 函数，包含了获取一个数的每位数的逻辑，并且 <code>calcSquares</code> 和 <code>calcCubes</code> 两个函数并发地调用了 <code>digits</code>。当计算完数字里面的每一位数时，第 13 行就会关闭信道。<code>calcSquares</code> 和 <code>calcCubes</code> 两个协程使用 for range 循环分别监听了它们的信道，直到该信道关闭。程序的其他地方不变，该程序同样会输出：</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">Final output <span class="token number">1536</span></code></pre>
+
+<h2 id="缓冲信道"><a href="#缓冲信道" class="headerlink" title="缓冲信道"></a>缓冲信道</h2><h3 id="什么是缓冲信道？"><a href="#什么是缓冲信道？" class="headerlink" title="什么是缓冲信道？"></a>什么是缓冲信道？</h3><p>无缓冲信道的发送和接收过程是阻塞的，我们还可以创建一个有缓冲（Buffer）的信道。只在缓冲已满的情况，才会阻塞向缓冲信道（Buffered Channel）发送数据。同样，只有在缓冲为空的时候，才会阻塞从缓冲信道接收数据。</p>
+<p>通过向 <code>make</code> 函数再传递一个表示容量的参数（指定缓冲的大小），可以创建缓冲信道。</p>
+<pre class="language-go" data-language="go"><code class="language-go">ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token keyword">type</span><span class="token punctuation">,</span> capacity<span class="token punctuation">)</span></code></pre>
+
+<p>要让一个信道有缓冲，上面语法中的 <code>capacity</code> 应该大于 0。无缓冲信道的容量默认为 0，创建无缓冲信道时，可以省略容量参数。</p>
+<p>我们开始编写代码，创建一个缓冲信道。</p>
+<h3 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h3><pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"naveen"</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"paul"</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span> ch<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span> ch<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/It-em11etK">在线运行程序</a></p>
+<p>在上面程序里的第 9 行，我们创建了一个缓冲信道，其容量为 2。由于该信道的容量为 2，因此可向它写入两个字符串，而且不会发生阻塞。在第 10 行和第 11 行，我们向信道写入两个字符串，该信道并没有发生阻塞。我们又在第 12 行和第 13 行分别读取了这两个字符串。该程序输出：</p>
+<pre class="language-none"><code class="language-none">naveen  
+paul</code></pre>
+
+<h3 id="示例二"><a href="#示例二" class="headerlink" title="示例二"></a>示例二</h3><p>我们再看一个缓冲信道的示例，其中有一个并发的 Go 协程来向信道写入数据，而 Go 主协程负责读取数据。该示例帮助我们进一步理解，在向缓冲信道写入数据时，什么时候会发生阻塞。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">write</span><span class="token punctuation">(</span>ch <span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        ch <span class="token operator">&lt;-</span> i
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"successfully wrote"</span><span class="token punctuation">,</span> i<span class="token punctuation">,</span> <span class="token string">"to ch"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token comment">//立即会向 `ch` 写入 0 和 1，接下来发生阻塞，直到 `ch` 内的值被读取</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">write</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span><span class="token comment">//休眠，等待协程运行</span>
+    <span class="token keyword">for</span> v <span class="token operator">:=</span> <span class="token keyword">range</span> ch <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"read value"</span><span class="token punctuation">,</span> v<span class="token punctuation">,</span><span class="token string">"from ch"</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/bKe5GdgMK9">在线运行程序</a></p>
+<p>在上面的程序中，第 16 行在 Go 主协程中创建了容量为 2 的缓冲信道 <code>ch</code>，而第 17 行把 <code>ch</code> 传递给了 <code>write</code> 协程。接下来 Go 主协程休眠了两秒。在这期间，<code>write</code> 协程在并发地运行。<code>write</code> 协程有一个 for 循环，依次向信道 <code>ch</code> 写入 0～4。而缓冲信道的容量为 2，因此 <code>write</code> 协程里立即会向 <code>ch</code> 写入 0 和 1，接下来发生阻塞，直到 <code>ch</code> 内的值被读取。因此，该程序立即打印出下面两行：</p>
+<pre class="language-none"><code class="language-none">successfully wrote 0 to ch  
+successfully wrote 1 to ch</code></pre>
+
+<p>打印上面两行之后，<code>write</code> 协程中向 <code>ch</code> 的写入发生了阻塞，直到 <code>ch</code> 有值被读取到。而 Go 主协程休眠了两秒后，才开始读取该信道，因此在休眠期间程序不会打印任何结果。主协程结束休眠后，在第 19 行使用 for range 循环，开始读取信道 <code>ch</code>，打印出了读取到的值后又休眠两秒，这个循环一直到 <code>ch</code> 关闭才结束。所以该程序在两秒后会打印下面两行：</p>
+<pre class="language-none"><code class="language-none">read value 0 from ch  
+successfully wrote 2 to ch</code></pre>
+
+<p>该过程会一直进行，直到信道读取完所有的值，并在 <code>write</code> 协程中关闭信道。最终输出如下：</p>
+<pre class="language-none"><code class="language-none">successfully wrote 0 to ch  
+successfully wrote 1 to ch  
+read value 0 from ch  
+successfully wrote 2 to ch  
+read value 1 from ch  
+successfully wrote 3 to ch  
+read value 2 from ch  
+successfully wrote 4 to ch  
+read value 3 from ch  
+read value 4 from ch</code></pre>
+
+<h3 id="死锁-1"><a href="#死锁-1" class="headerlink" title="死锁"></a>死锁</h3><pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"naveen"</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"paul"</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"steve"</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span>ch<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token operator">&lt;-</span>ch<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/FW-LHeH7oD">在线运行程序</a></p>
+<p>在上面程序里，我们向容量为 2 的缓冲信道写入 3 个字符串。当在程序控制到达第 3 次写入时（第 11 行），由于它超出了信道的容量，因此这次写入发生了阻塞。现在想要这次写操作能够进行下去，必须要有其它协程来读取这个信道的数据。但在本例中，并没有并发协程来读取这个信道，因此这里会发生<strong>死锁</strong>（deadlock）。程序会在运行时触发 panic，信息如下：</p>
+<pre class="language-none"><code class="language-none">fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan send]:  
+main.main()  
+    /tmp/sandbox274756028/main.go:11 +0x100</code></pre>
+
+<h3 id="长度-vs-容量"><a href="#长度-vs-容量" class="headerlink" title="长度 vs 容量"></a>长度 vs 容量</h3><p>缓冲信道的容量是指信道可以存储的值的数量。我们在使用 <code>make</code> 函数创建缓冲信道的时候会指定容量大小。</p>
+<p>缓冲信道的长度是指信道中当前排队的元素个数。</p>
+<p>代码可以把一切解释得很清楚。:)</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"naveen"</span>
+    ch <span class="token operator">&lt;-</span> <span class="token string">"paul"</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"capacity is"</span><span class="token punctuation">,</span> <span class="token function">cap</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"length is"</span><span class="token punctuation">,</span> <span class="token function">len</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"read value"</span><span class="token punctuation">,</span> <span class="token operator">&lt;-</span>ch<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"new length is"</span><span class="token punctuation">,</span> <span class="token function">len</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/2ggC64yyvr">在线运行程序</a></p>
+<p>在上面的程序里，我们创建了一个容量为 3 的信道，于是它可以保存 3 个字符串。接下来，我们分别在第 9 行和第 10 行向信道写入了两个字符串。于是信道有两个字符串排队，因此其长度为 2。在第 13 行，我们又从信道读取了一个字符串。现在该信道内只有一个字符串，因此其长度变为 1。该程序会输出：</p>
+<pre class="language-none"><code class="language-none">capacity is 3  
+length is 2  
+read value naveen  
+new length is 1</code></pre>
+
+<h3 id="WaitGroup"><a href="#WaitGroup" class="headerlink" title="WaitGroup"></a>WaitGroup</h3><p>在本教程的下一节里，我们会讲到<strong>工作池</strong>（Worker Pools）。而 <code>WaitGroup</code> 用于实现工作池，因此要理解工作池，我们首先需要学习 <code>WaitGroup</code>。</p>
+<p><code>WaitGroup</code> 用于等待一批 Go 协程执行结束。程序控制会一直阻塞，直到这些协程全部执行完毕。假设我们有 3 个并发执行的 Go 协程（由 Go 主协程生成）。Go 主协程需要等待这 3 个协程执行结束后，才会终止。这就可以用 <code>WaitGroup</code> 来实现。</p>
+<p>理论说完了，我们编写点儿代码吧。:)</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"sync"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">process</span><span class="token punctuation">(</span>i <span class="token builtin">int</span><span class="token punctuation">,</span> wg <span class="token operator">*</span>sync<span class="token punctuation">.</span>WaitGroup<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">//注意一定是传递的地址，使用同一个waitgroup变量 </span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"started Goroutine "</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Goroutine %d ended\n"</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+    wg<span class="token punctuation">.</span><span class="token function">Done</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    no <span class="token operator">:=</span> <span class="token number">3</span>
+    <span class="token keyword">var</span> wg sync<span class="token punctuation">.</span>WaitGroup
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> no<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        wg<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">go</span> <span class="token function">process</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> <span class="token operator">&amp;</span>wg<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    wg<span class="token punctuation">.</span><span class="token function">Wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"All go routines finished executing"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/CZNtu8ktQh">在线运行程序</a></p>
+<p><a target="_blank" rel="noopener" href="https://golang.org/pkg/sync/#WaitGroup">WaitGroup</a> 是一个结构体类型，我们在第 18 行创建了 <code>WaitGroup</code> 类型的变量，其初始值为零值。<code>WaitGroup</code> 使用计数器来工作。当我们调用 <code>WaitGroup</code> 的 <code>Add</code> 并传递一个 <code>int</code> 时，**<code>WaitGroup</code> 的计数器会加上 <code>Add</code> 的传参**。要减少计数器，可以调用 <code>WaitGroup</code> 的 <code>Done()</code> 方法。<code>Wait()</code> 方法会阻塞调用它的 Go 协程，直到计数器变为 0 后才会停止阻塞。</p>
+<p>上述程序里，for 循环迭代了 3 次，我们在循环内调用了 <code>wg.Add(1)</code>（第 20 行）。因此计数器变为 3。for 循环同样创建了 3 个 <code>process</code> 协程，然后在第 23 行调用了 <code>wg.Wait()</code>，确保 Go 主协程等待计数器变为 0。在第 13 行，<code>process</code> 协程内调用了 <code>wg.Done</code>，可以让计数器递减。一旦 3 个子协程都执行完毕（即 <code>wg.Done()</code> 调用了 3 次），那么计数器就变为 0，于是主协程会解除阻塞。</p>
+<p><strong>在第 21 行里，传递 <code>wg</code> 的地址是很重要的。如果没有传递 <code>wg</code> 的地址，那么每个 Go 协程将会得到一个 <code>WaitGroup</code> 值的拷贝，因而当它们执行结束时，<code>main</code> 函数并不会知道</strong>。</p>
+<p>该程序输出：</p>
+<pre class="language-none"><code class="language-none">started Goroutine  2  
+started Goroutine  0  
+started Goroutine  1  
+Goroutine 0 ended  
+Goroutine 2 ended  
+Goroutine 1 ended  
+All go routines finished executing</code></pre>
+
+<p>由于 Go 协程的执行顺序不一定，因此你的输出可能和我不一样。:)</p>
+<h3 id="工作池的实现"><a href="#工作池的实现" class="headerlink" title="工作池的实现"></a>工作池的实现</h3><p>缓冲信道的重要应用之一就是实现<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Thread_pool">工作池</a>。</p>
+<p>一般而言，工作池就是一组等待任务分配的线程。一旦完成了所分配的任务，这些线程可继续等待任务的分配。</p>
+<p>我们会使用缓冲信道来实现工作池。我们工作池的任务是计算所输入数字的每一位的和。例如，如果输入 234，结果会是 9（即 2 + 3 + 4）。向工作池输入的是一列伪随机数。</p>
+<p>我们工作池的核心功能如下：</p>
+<ul>
+<li>创建一个 Go 协程池，监听一个等待作业分配的输入型缓冲信道。</li>
+<li>将作业添加到该输入型缓冲信道中。</li>
+<li>作业完成后，再将结果写入一个输出型缓冲信道。</li>
+<li>从输出型缓冲信道读取并打印结果。</li>
+</ul>
+<p>我们会逐步编写这个程序，让代码易于理解。</p>
+<p>第一步就是创建一个结构体，表示作业和结果。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">type</span> Job <span class="token keyword">struct</span> <span class="token punctuation">{</span>  
+    id       <span class="token builtin">int</span>
+    randomno <span class="token builtin">int</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">type</span> Result <span class="token keyword">struct</span> <span class="token punctuation">{</span>  
+    job         Job
+    sumofdigits <span class="token builtin">int</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>所有 <code>Job</code> 结构体变量都会有 <code>id</code> 和 <code>randomno</code> 两个字段，<code>randomno</code> 用于计算其每位数之和。</p>
+<p>而 <code>Result</code> 结构体有一个 <code>job</code> 字段，表示所对应的作业，还有一个 <code>sumofdigits</code> 字段，表示计算的结果（每位数字之和）。</p>
+<p>第二步是分别创建用于接收作业和写入结果的缓冲信道。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">var</span> jobs <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> Job<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>  
+<span class="token keyword">var</span> results <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> Result<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span></code></pre>
+
+<p>工作协程（Worker Goroutine）会监听缓冲信道 <code>jobs</code> 里更新的作业。一旦工作协程完成了作业，其结果会写入缓冲信道 <code>results</code>。</p>
+<p>如下所示，<code>digits</code> 函数的任务实际上就是计算整数的每一位之和，最后返回该结果。为了模拟出 <code>digits</code> 在计算过程中花费了一段时间，我们在函数内添加了两秒的休眠时间。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">digits</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">{</span>  
+    sum <span class="token operator">:=</span> <span class="token number">0</span>
+    no <span class="token operator">:=</span> number
+    <span class="token keyword">for</span> no <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        digit <span class="token operator">:=</span> no <span class="token operator">%</span> <span class="token number">10</span>
+        sum <span class="token operator">+=</span> digit
+        no <span class="token operator">/=</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> sum
+<span class="token punctuation">}</span></code></pre>
+
+<p>然后，我们写一个创建工作协程的函数。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">worker</span><span class="token punctuation">(</span>wg <span class="token operator">*</span>sync<span class="token punctuation">.</span>WaitGroup<span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> job <span class="token operator">:=</span> <span class="token keyword">range</span> jobs <span class="token punctuation">{</span>
+        output <span class="token operator">:=</span> Result<span class="token punctuation">{</span>job<span class="token punctuation">,</span> <span class="token function">digits</span><span class="token punctuation">(</span>job<span class="token punctuation">.</span>randomno<span class="token punctuation">)</span><span class="token punctuation">}</span>
+        results <span class="token operator">&lt;-</span> output
+    <span class="token punctuation">}</span>
+    wg<span class="token punctuation">.</span><span class="token function">Done</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>上面的函数创建了一个工作者（Worker），读取 <code>jobs</code> 信道的数据，根据当前的 <code>job</code> 和 <code>digits</code> 函数的返回值，创建了一个 <code>Result</code> 结构体变量，然后将结果写入 <code>results</code> 缓冲信道。<code>worker</code> 函数接收了一个 <code>WaitGroup</code> 类型的 <code>wg</code> 作为参数，当所有的 <code>jobs</code> 完成的时候，调用了 <code>Done()</code> 方法。</p>
+<p><code>createWorkerPool</code> 函数创建了一个 Go 协程的工作池。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">createWorkerPool</span><span class="token punctuation">(</span>noOfWorkers <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">var</span> wg sync<span class="token punctuation">.</span>WaitGroup
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> noOfWorkers<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        wg<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">go</span> <span class="token function">worker</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>wg<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    wg<span class="token punctuation">.</span><span class="token function">Wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>results<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>上面函数的参数是需要创建的工作协程的数量。在创建 Go 协程之前，它调用了 <code>wg.Add(1)</code> 方法，于是 <code>WaitGroup</code> 计数器递增。接下来，我们创建工作协程，并向 <code>worker</code> 函数传递 <code>wg</code> 的地址。创建了需要的工作协程后，函数调用 <code>wg.Wait()</code>，等待所有的 Go 协程执行完毕。所有协程完成执行之后，函数会关闭 <code>results</code> 信道。因为所有协程都已经执行完毕，于是不再需要向 <code>results</code> 信道写入数据了。</p>
+<p>现在我们已经有了工作池，我们继续编写一个函数，把作业分配给工作者。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">allocate</span><span class="token punctuation">(</span>noOfJobs <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> noOfJobs<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        randomno <span class="token operator">:=</span> rand<span class="token punctuation">.</span><span class="token function">Intn</span><span class="token punctuation">(</span><span class="token number">999</span><span class="token punctuation">)</span>
+        job <span class="token operator">:=</span> Job<span class="token punctuation">{</span>i<span class="token punctuation">,</span> randomno<span class="token punctuation">}</span>
+        jobs <span class="token operator">&lt;-</span> job
+    <span class="token punctuation">}</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>jobs<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>上面的 <code>allocate</code> 函数接收所需创建的作业数量作为输入参数，生成了最大值为 998 的伪随机数，并使用该随机数创建了 <code>Job</code> 结构体变量。这个函数把 for 循环的计数器 <code>i</code> 作为 id，最后把创建的结构体变量写入 <code>jobs</code> 信道。当写入所有的 <code>job</code> 时，它关闭了 <code>jobs</code> 信道。</p>
+<p>下一步是创建一个读取 <code>results</code> 信道和打印输出的函数。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">result</span><span class="token punctuation">(</span>done <span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> result <span class="token operator">:=</span> <span class="token keyword">range</span> results <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Job id %d, input random no %d , sum of digits %d\n"</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>job<span class="token punctuation">.</span>id<span class="token punctuation">,</span> result<span class="token punctuation">.</span>job<span class="token punctuation">.</span>randomno<span class="token punctuation">,</span> result<span class="token punctuation">.</span>sumofdigits<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    done <span class="token operator">&lt;-</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><code>result</code> 函数读取 <code>results</code> 信道，并打印出 <code>job</code> 的 <code>id</code>、输入的随机数、该随机数的每位数之和。<code>result</code> 函数也接受 <code>done</code> 信道作为参数，当打印所有结果时，<code>done</code> 会被写入 true。</p>
+<p>现在一切准备充分了。我们继续完成最后一步，在 <code>main()</code> 函数中调用上面所有的函数。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    startTime <span class="token operator">:=</span> time<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    noOfJobs <span class="token operator">:=</span> <span class="token number">100</span>
+    <span class="token keyword">go</span> <span class="token function">allocate</span><span class="token punctuation">(</span>noOfJobs<span class="token punctuation">)</span>
+    done <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">result</span><span class="token punctuation">(</span>done<span class="token punctuation">)</span>
+    noOfWorkers <span class="token operator">:=</span> <span class="token number">10</span>
+    <span class="token function">createWorkerPool</span><span class="token punctuation">(</span>noOfWorkers<span class="token punctuation">)</span>
+    <span class="token operator">&lt;-</span>done
+    endTime <span class="token operator">:=</span> time<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    diff <span class="token operator">:=</span> endTime<span class="token punctuation">.</span><span class="token function">Sub</span><span class="token punctuation">(</span>startTime<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"total time taken "</span><span class="token punctuation">,</span> diff<span class="token punctuation">.</span><span class="token function">Seconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"seconds"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>我们首先在 <code>main</code> 函数的第 2 行，保存了程序的起始时间，并在最后一行（第 12 行）计算了 <code>endTime</code> 和 <code>startTime</code> 的差值，显示出程序运行的总时间。由于我们想要通过改变协程数量，来做一点基准指标（Benchmark），所以需要这么做。</p>
+<p>我们把 <code>noOfJobs</code> 设置为 100，接下来调用了 <code>allocate</code>，向 <code>jobs</code> 信道添加作业。</p>
+<p>我们创建了 <code>done</code> 信道，并将其传递给 <code>result</code> 协程。于是该协程会开始打印结果，并在完成打印时发出通知。</p>
+<p>通过调用 <code>createWorkerPool</code> 函数，我们最终创建了一个有 10 个协程的工作池。<code>main</code> 函数会监听 <code>done</code> 信道的通知，等待所有结果打印结束。</p>
+<p>为了便于参考，下面是整个程序。我还引用了必要的包。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>  
+    <span class="token string">"fmt"</span>
+    <span class="token string">"math/rand"</span>
+    <span class="token string">"sync"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">type</span> Job <span class="token keyword">struct</span> <span class="token punctuation">{</span>  
+    id       <span class="token builtin">int</span>
+    randomno <span class="token builtin">int</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">type</span> Result <span class="token keyword">struct</span> <span class="token punctuation">{</span>  
+    job         Job
+    sumofdigits <span class="token builtin">int</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> jobs <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> Job<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>  
+<span class="token keyword">var</span> results <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> Result<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">digits</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">{</span>  
+    sum <span class="token operator">:=</span> <span class="token number">0</span>
+    no <span class="token operator">:=</span> number
+    <span class="token keyword">for</span> no <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        digit <span class="token operator">:=</span> no <span class="token operator">%</span> <span class="token number">10</span>
+        sum <span class="token operator">+=</span> digit
+        no <span class="token operator">/=</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> sum
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">worker</span><span class="token punctuation">(</span>wg <span class="token operator">*</span>sync<span class="token punctuation">.</span>WaitGroup<span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> job <span class="token operator">:=</span> <span class="token keyword">range</span> jobs <span class="token punctuation">{</span>
+        output <span class="token operator">:=</span> Result<span class="token punctuation">{</span>job<span class="token punctuation">,</span> <span class="token function">digits</span><span class="token punctuation">(</span>job<span class="token punctuation">.</span>randomno<span class="token punctuation">)</span><span class="token punctuation">}</span>
+        results <span class="token operator">&lt;-</span> output
+    <span class="token punctuation">}</span>
+    wg<span class="token punctuation">.</span><span class="token function">Done</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">createWorkerPool</span><span class="token punctuation">(</span>noOfWorkers <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">var</span> wg sync<span class="token punctuation">.</span>WaitGroup
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> noOfWorkers<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        wg<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">go</span> <span class="token function">worker</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>wg<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    wg<span class="token punctuation">.</span><span class="token function">Wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>results<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">allocate</span><span class="token punctuation">(</span>noOfJobs <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> noOfJobs<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        randomno <span class="token operator">:=</span> rand<span class="token punctuation">.</span><span class="token function">Intn</span><span class="token punctuation">(</span><span class="token number">999</span><span class="token punctuation">)</span>
+        job <span class="token operator">:=</span> Job<span class="token punctuation">{</span>i<span class="token punctuation">,</span> randomno<span class="token punctuation">}</span>
+        jobs <span class="token operator">&lt;-</span> job
+    <span class="token punctuation">}</span>
+    <span class="token function">close</span><span class="token punctuation">(</span>jobs<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">result</span><span class="token punctuation">(</span>done <span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">for</span> result <span class="token operator">:=</span> <span class="token keyword">range</span> results <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Job id %d, input random no %d , sum of digits %d\n"</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>job<span class="token punctuation">.</span>id<span class="token punctuation">,</span> result<span class="token punctuation">.</span>job<span class="token punctuation">.</span>randomno<span class="token punctuation">,</span> result<span class="token punctuation">.</span>sumofdigits<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    done <span class="token operator">&lt;-</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+    startTime <span class="token operator">:=</span> time<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    noOfJobs <span class="token operator">:=</span> <span class="token number">100</span>
+    <span class="token keyword">go</span> <span class="token function">allocate</span><span class="token punctuation">(</span>noOfJobs<span class="token punctuation">)</span>
+    done <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token function">result</span><span class="token punctuation">(</span>done<span class="token punctuation">)</span>
+    noOfWorkers <span class="token operator">:=</span> <span class="token number">10</span>
+    <span class="token function">createWorkerPool</span><span class="token punctuation">(</span>noOfWorkers<span class="token punctuation">)</span>
+    <span class="token operator">&lt;-</span>done
+    endTime <span class="token operator">:=</span> time<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    diff <span class="token operator">:=</span> endTime<span class="token punctuation">.</span><span class="token function">Sub</span><span class="token punctuation">(</span>startTime<span class="token punctuation">)</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"total time taken "</span><span class="token punctuation">,</span> diff<span class="token punctuation">.</span><span class="token function">Seconds</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"seconds"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://play.golang.org/p/au5islUIbx">在线运行程序</a></p>
+<p>为了更精确地计算总时间，请在你的本地机器上运行该程序。</p>
+<p>该程序输出：</p>
+<pre class="language-none"><code class="language-none">Job id 1, input random no 636, sum of digits 15  
+Job id 0, input random no 878, sum of digits 23  
+Job id 9, input random no 150, sum of digits 6  
+...
+total time taken  20.01081009 seconds</code></pre>
+
+<p>程序总共会打印 100 行，对应着 100 项作业，然后最后会打印一行程序消耗的总时间。你的输出会和我的不同，因为 Go 协程的运行顺序不一定，同样总时间也会因为硬件而不同。在我的例子中，运行程序大约花费了 20 秒。</p>
+<p>现在我们把 <code>main</code> 函数里的 <code>noOfWorkers</code> 增加到 20。我们把工作者的数量加倍了。由于工作协程增加了（准确说来是两倍），因此程序花费的总时间会减少（准确说来是一半）。在我的例子里，程序会打印出 10.004364685 秒。</p>
+<pre class="language-none"><code class="language-none">...
+total time taken  10.004364685 seconds</code></pre>
+
+<p>现在我们可以理解了，随着工作协程数量增加，完成作业的总时间会减少。你们可以练习一下：在 <code>main</code> 函数里修改 <code>noOfJobs</code> 和 <code>noOfWorkers</code> 的值，并试着去分析一下结果。</p>
+<h3 id="questions"><a href="#questions" class="headerlink" title="questions"></a>questions</h3><pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">allocate</span><span class="token punctuation">(</span>noOfJobs <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> noOfJobs<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span> randomno <span class="token operator">:=</span> rand<span class="token punctuation">.</span><span class="token function">Intn</span><span class="token punctuation">(</span><span class="token number">999</span><span class="token punctuation">)</span> job <span class="token operator">:=</span> Job<span class="token punctuation">{</span>i<span class="token punctuation">,</span> randomno<span class="token punctuation">}</span> jobs <span class="token operator">&lt;-</span> job <span class="token punctuation">}</span> <span class="token function">close</span><span class="token punctuation">(</span>jobs<span class="token punctuation">)</span> <span class="token punctuation">}</span> </code></pre>
+
+<p>如果for循环结束后，jobs里面的数据worker还来不及取走，这时执行到close，会不会导致works取数据失败？或者取不到足额的任务？ </p>
+<p>这里 <code>close</code> 和关闭文件的概念不同。<br>golang 里的 <code>close</code> 只是用于通知信道的接收方，所有数据都已经发送完毕，信道<strong>没有真正关闭</strong>。<br>若用 <code>for range</code> 接收数据时，对于关闭了的信道，会接收完剩下的有效数据，并退出循环。如果没有 <code>close</code> 提示数据发送完毕的话，<code>for range</code> 会接收完剩下所有有效数据后发生阻塞。<br>所以接收方 <code>worker</code> 是可以把 <code>jobs</code> 剩下的数据取走的。后面垃圾收集器会自动回收掉该信道的内存。</p>
+<h2 id="爬虫（Web-crawler）"><a href="#爬虫（Web-crawler）" class="headerlink" title="爬虫（Web crawler）"></a>爬虫（Web crawler）</h2><ol>
+<li><p>从一个种子网页 URL 开始</p>
+</li>
+<li><p>通过 HTTP 请求，获取其内容文本</p>
+</li>
+<li><p>解析其内容包含的所有 URL，针对所有 URL 重复过程 2，3</p>
+<p>为了避免重复抓取，需要记下所有抓取过的 URL。</p>
+</li>
+</ol>
+<p>由于：</p>
+<ol>
+<li>网页数量巨大</li>
+<li>网络请求较慢<br>一个接一个的抓取用时太长，因此需要并行抓取。这里面有个难点，就是如何判断已经抓取完所有网页，并需要结束抓取。</li>
+</ol>
+<h3 id="抓取代码"><a href="#抓取代码" class="headerlink" title="抓取代码"></a>抓取代码</h3><p>代码在<a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.824/notes/crawler.go">阅读材料</a>中有。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+	<span class="token string">"fmt"</span>
+	<span class="token string">"sync"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">//</span>
+<span class="token comment">// Several solutions to the crawler exercise from the Go tutorial</span>
+<span class="token comment">// https://tour.golang.org/concurrency/10</span>
+<span class="token comment">//</span>
+
+<span class="token comment">//</span>
+<span class="token comment">// Serial crawler</span>
+<span class="token comment">//</span>
+
+<span class="token keyword">func</span> <span class="token function">Serial</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">,</span> fetched <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+	urls<span class="token punctuation">,</span> err <span class="token operator">:=</span> fetcher<span class="token punctuation">.</span><span class="token function">Fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+		<span class="token function">Serial</span><span class="token punctuation">(</span>u<span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> fetched<span class="token punctuation">)</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//</span>
+<span class="token comment">// Concurrent crawler with shared state and Mutex</span>
+<span class="token comment">//</span>
+
+<span class="token keyword">type</span> fetchState <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+	mu      sync<span class="token punctuation">.</span>Mutex<span class="token comment">//除了bool数组之外还多了一个互斥锁mu。它的原理就是用来给共享变量fetched加锁，保证在多线程爬虫时，每次只有一个线程能访问fetched变量。</span>
+	fetched <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">ConcurrentMutex</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">,</span> f <span class="token operator">*</span>fetchState<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">//之所以使用*就是为了所有的线程都使用shared memory</span>
+	f<span class="token punctuation">.</span>mu<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	already <span class="token operator">:=</span> f<span class="token punctuation">.</span>fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span><span class="token comment">//这里两个线程可能对于同一个网页提取（不同的url中的引用，然后都得到了false</span>
+	f<span class="token punctuation">.</span>fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token comment">//所以放在一起执行，line43，44是原子操作</span>
+	f<span class="token punctuation">.</span>mu<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//当mu已经被锁上时，任何试图访问它的线程都会阻塞在mu.Lock()处，直到mu被释放掉才能往下进行（可以理解为二元信号量的wait操作）</span>
+
+	<span class="token keyword">if</span> already <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+
+	urls<span class="token punctuation">,</span> err <span class="token operator">:=</span> fetcher<span class="token punctuation">.</span><span class="token function">Fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">var</span> done sync<span class="token punctuation">.</span>WaitGroup<span class="token comment">//用来确定何时结束爬虫的，WaitGroup 对象内部有一个计数器，最初从0开始，它有三个方法：Add(), Done(), Wait() 用来控制计数器的数量。Add(n) 把计数器设置为n ，Done() 每次把计数器-1 ，wait() 会阻塞代码的运行，直到计数器地值减为0 （可以理解为counting semaphore）</span>
+	<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+		done<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+        u2 <span class="token operator">:=</span> u<span class="token comment">//因为在一次循环之中用了u之后，传入的如果是地址，第二次循环的u会变化，但是其实我们并不期望这样的变化</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">//调用函数或者方法时，在前面加上关键字 go，可以让一个新的 Go 协程并发地运行。对于每个域名下面的链接，会再启动一个ConcurrentMutex线程来抓取，而不是单纯的递归，这样就实现了多线程,类似于c中的fork()函数</span>
+			<span class="token keyword">defer</span> done<span class="token punctuation">.</span><span class="token function">Done</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//避免有的函数调用失败，无论如何都要调用done</span>
+			<span class="token function">ConcurrentMutex</span><span class="token punctuation">(</span>u2<span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> f<span class="token punctuation">)</span>
+		<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token comment">//go func(u string) {//go中默认传输的不是地址，是一份u的copy，注释掉的代码实现了一样的效果</span>
+		<span class="token comment">//	defer done.Done()</span>
+		<span class="token comment">//	ConcurrentMutex(u, fetcher, f)</span>
+		<span class="token comment">//}(u)</span>
+	<span class="token punctuation">}</span>
+	done<span class="token punctuation">.</span><span class="token function">Wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">makeState</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span>fetchState <span class="token punctuation">{</span>
+	f <span class="token operator">:=</span> <span class="token operator">&amp;</span>fetchState<span class="token punctuation">{</span><span class="token punctuation">}</span>
+	f<span class="token punctuation">.</span>fetched <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+	<span class="token keyword">return</span> f
+<span class="token punctuation">}</span>
+
+<span class="token comment">//</span>
+<span class="token comment">// Concurrent crawler with channels</span>
+<span class="token comment">//</span>
+
+<span class="token keyword">func</span> <span class="token function">worker</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> ch <span class="token keyword">chan</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	urls<span class="token punctuation">,</span> err <span class="token operator">:=</span> fetcher<span class="token punctuation">.</span><span class="token function">Fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		ch <span class="token operator">&lt;-</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+		ch <span class="token operator">&lt;-</span> urls
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">master</span><span class="token punctuation">(</span>ch <span class="token keyword">chan</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	n <span class="token operator">:=</span> <span class="token number">1</span>
+	fetched <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+	<span class="token keyword">for</span> urls <span class="token operator">:=</span> <span class="token keyword">range</span> ch <span class="token punctuation">{</span>
+		<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+			<span class="token keyword">if</span> fetched<span class="token punctuation">[</span>u<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token boolean">false</span> <span class="token punctuation">{</span>
+				fetched<span class="token punctuation">[</span>u<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+				n <span class="token operator">+=</span> <span class="token number">1</span>
+				<span class="token keyword">go</span> <span class="token function">worker</span><span class="token punctuation">(</span>u<span class="token punctuation">,</span> ch<span class="token punctuation">,</span> fetcher<span class="token punctuation">)</span>
+			<span class="token punctuation">}</span>
+		<span class="token punctuation">}</span>
+		n <span class="token operator">-=</span> <span class="token number">1</span>
+		<span class="token keyword">if</span> n <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+			<span class="token keyword">break</span>
+		<span class="token punctuation">}</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">ConcurrentChannel</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+	<span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		ch <span class="token operator">&lt;-</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>url<span class="token punctuation">}</span>
+	<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token function">master</span><span class="token punctuation">(</span>ch<span class="token punctuation">,</span> fetcher<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//</span>
+<span class="token comment">// main</span>
+<span class="token comment">//</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"=== Serial===\n"</span><span class="token punctuation">)</span>
+	<span class="token function">Serial</span><span class="token punctuation">(</span><span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"=== ConcurrentMutex ===\n"</span><span class="token punctuation">)</span>
+	<span class="token function">ConcurrentMutex</span><span class="token punctuation">(</span><span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> <span class="token function">makeState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"=== ConcurrentChannel ===\n"</span><span class="token punctuation">)</span>
+	<span class="token function">ConcurrentChannel</span><span class="token punctuation">(</span><span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span> fetcher<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//</span>
+<span class="token comment">// Fetcher</span>
+<span class="token comment">//</span>
+
+<span class="token keyword">type</span> Fetcher <span class="token keyword">interface</span> <span class="token punctuation">{</span>
+	<span class="token comment">// Fetch returns a slice of URLs found on the page.</span>
+	<span class="token function">Fetch</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>urls <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// fakeFetcher is Fetcher that returns canned results.</span>
+<span class="token keyword">type</span> fakeFetcher <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">*</span>fakeResult
+
+<span class="token keyword">type</span> fakeResult <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+	body <span class="token builtin">string</span>
+	urls <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token punctuation">(</span>f fakeFetcher<span class="token punctuation">)</span> <span class="token function">Fetch</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> res<span class="token punctuation">,</span> ok <span class="token operator">:=</span> f<span class="token punctuation">[</span>url<span class="token punctuation">]</span><span class="token punctuation">;</span> ok <span class="token punctuation">{</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"found:   %s\n"</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span>
+		<span class="token keyword">return</span> res<span class="token punctuation">.</span>urls<span class="token punctuation">,</span> <span class="token boolean">nil</span>
+	<span class="token punctuation">}</span>
+	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"missing: %s\n"</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span>
+	<span class="token keyword">return</span> <span class="token boolean">nil</span><span class="token punctuation">,</span> fmt<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"not found: %s"</span><span class="token punctuation">,</span> url<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// fetcher is a populated fakeFetcher.</span>
+<span class="token keyword">var</span> fetcher <span class="token operator">=</span> fakeFetcher<span class="token punctuation">{</span>
+	<span class="token string">"http://golang.org/"</span><span class="token punctuation">:</span> <span class="token operator">&amp;</span>fakeResult<span class="token punctuation">{</span>
+		<span class="token string">"The Go Programming Language"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+			<span class="token string">"http://golang.org/pkg/"</span><span class="token punctuation">,</span>
+			<span class="token string">"http://golang.org/cmd/"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token string">"http://golang.org/pkg/"</span><span class="token punctuation">:</span> <span class="token operator">&amp;</span>fakeResult<span class="token punctuation">{</span>
+		<span class="token string">"Packages"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+			<span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span>
+			<span class="token string">"http://golang.org/cmd/"</span><span class="token punctuation">,</span>
+			<span class="token string">"http://golang.org/pkg/fmt/"</span><span class="token punctuation">,</span>
+			<span class="token string">"http://golang.org/pkg/os/"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token string">"http://golang.org/pkg/fmt/"</span><span class="token punctuation">:</span> <span class="token operator">&amp;</span>fakeResult<span class="token punctuation">{</span>
+		<span class="token string">"Package fmt"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+			<span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span>
+			<span class="token string">"http://golang.org/pkg/"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token string">"http://golang.org/pkg/os/"</span><span class="token punctuation">:</span> <span class="token operator">&amp;</span>fakeResult<span class="token punctuation">{</span>
+		<span class="token string">"Package os"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+			<span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span>
+			<span class="token string">"http://golang.org/pkg/"</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>为了简便起见，这其实只是一个假的爬虫……并没有涉及网络访问，它的作用就是在fetcher中建立一个string-&gt;fakeResult类型的hash table，表示每个网页上的链接列表，并通过爬虫函数读取它们。为了演示go语言的并发，代码中实现了三种函数：Serial，ConcurrentMutex，ConcurrentChannel</p>
+<p><strong>串行爬取</strong>。深度优先遍历（DFS ）全部网页构成的图结构，利用一个名为 fetched 的 set 来保存所有已经抓取过的 URL。</p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">Serial</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">,</span> fetched <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+  urls<span class="token punctuation">,</span> err <span class="token operator">:=</span> fetcher<span class="token punctuation">.</span><span class="token function">Fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+    <span class="token function">Serial</span><span class="token punctuation">(</span>u<span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> fetched<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//。。。</span>
+<span class="token function">Serial</span><span class="token punctuation">(</span><span class="token string">"http://golang.org/"</span><span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">//。。。</span></code></pre>
+
+<p>它的输入参数包括根域名url，fetcher（前面提到过的hash table），和一个bool数组fetched（用来记录哪些网站被访问过了）。注意163行这里有个神奇的用法make()，参考<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f01841004810">Go内建函数make及切片slice、映射map详解</a>。serial函数本身比较简单，基本思路就是对fetcher中的每个域名，递归抓取它下面的链接（在fakeResult里面）。</p>
+<p><strong>并行爬取</strong></p>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">type</span> fetchState <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+	mu      sync<span class="token punctuation">.</span>Mutex
+	fetched <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">ConcurrentMutex</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">,</span> f <span class="token operator">*</span>fetchState<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">//之所以使用*就是为了所有的线程都使用shared memory</span>
+	f<span class="token punctuation">.</span>mu<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	already <span class="token operator">:=</span> f<span class="token punctuation">.</span>fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span><span class="token comment">//这里两个线程可能对于同一个网页提取（不同的url中的引用，然后都得到了false</span>
+	f<span class="token punctuation">.</span>fetched<span class="token punctuation">[</span>url<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token comment">//所以放在一起执行，希望line43，44是原子操作</span>
+	f<span class="token punctuation">.</span>mu<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token keyword">if</span> already <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+
+	urls<span class="token punctuation">,</span> err <span class="token operator">:=</span> fetcher<span class="token punctuation">.</span><span class="token function">Fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">var</span> done sync<span class="token punctuation">.</span>WaitGroup
+	<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+		done<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+        u2 <span class="token operator">:=</span> u<span class="token comment">//因为在一次循环之中用了u之后，传入的如果是地址，第二次循环的u会变化，但是其实我们并不期望这样的变化</span>
+		<span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			<span class="token keyword">defer</span> done<span class="token punctuation">.</span><span class="token function">Done</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//避免有的函数调用失败，无论如何都要调用done</span>
+			<span class="token function">ConcurrentMutex</span><span class="token punctuation">(</span>u2<span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> f<span class="token punctuation">)</span>
+		<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token comment">//go func(u string) {//go中默认传输的不是地址，是一份u的copy，注释掉的代码实现了一样的效果</span>
+		<span class="token comment">//	defer done.Done()</span>
+		<span class="token comment">//	ConcurrentMutex(u, fetcher, f)</span>
+		<span class="token comment">//}(u)</span>
+	<span class="token punctuation">}</span>
+	done<span class="token punctuation">.</span><span class="token function">Wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span></code></pre>
+
+
+
+<ol>
+<li>将抓取部分使用 go 关键字变为并行。但如果仅这么改造，不利用某些手段（sync.WaitGroup）等待子 goroutine，而直接返回，那么可能只会抓取到种子 URL，同时造成子 goroutine 的泄露。</li>
+<li>如果访问已经抓取的 URL 集合 fetched 不加锁，很可能造成多次拉取同一个网页。</li>
+</ol>
+<h3 id="WaitGroup-1"><a href="#WaitGroup-1" class="headerlink" title="WaitGroup"></a>WaitGroup</h3><pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">var</span> done sync<span class="token punctuation">.</span>WaitGroup
+<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+  done<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span>u <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">defer</span> done<span class="token punctuation">.</span><span class="token function">Done</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">ConcurrentMutex</span><span class="token punctuation">(</span>u<span class="token punctuation">,</span> fetcher<span class="token punctuation">,</span> f<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">(</span>u<span class="token punctuation">)</span> <span class="token comment">// u 被拷贝</span>
+<span class="token punctuation">}</span>
+done<span class="token punctuation">.</span><span class="token function">Wait</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+
+<p>WaitGroup 内部维护了一个计数器：调用 <code>wg.Add(n)</code> 时候会增加 n；调用 <code>wait.Done()</code> 时候会减少 1。这时候调用 <code>wg.Wait()</code> 会一直阻塞直到当计数器变为 0 。所以 WaitGroup 很适合等待一组 goroutine 都结束的场景。</p>
+<p><strong>Q&amp;A</strong></p>
+<ol>
+<li><p><em>如果 goroutine 异常退出没有调用 wg.Done () 怎么办</em>？可以使用 defer 将其写在 goroutine 开始：<code>defer wg.Done()</code></p>
+</li>
+<li><p><em>两个 goroutine 同时调用 wg.Done () 会有竞争（race），以至于内部计数器不能正确减少两次吗</em>？WaitGroup 应该有相应机制（锁什么的）来保证 Done () 的原子性。</p>
+</li>
+<li><p><em>定义匿名函数时，匿名函数中变量和外层函数同名变量间的关系</em>？这是个闭包（closure）问题。如果匿名函数中变量没有被参数覆盖（如上述代码中 <code>fetcher</code>），就会和外层同名变量<strong>引用</strong>同一个地址。如果通过传参传递（如上述代码中 <code>u</code>），哪怕参数和外层变量看起来一样，但匿名函数使用的也是传进来的参数，而非外层变量；尤其针对 for 循环变量，我们通常通过参数来将其在调用时拷贝一次，否则 for 循环启动的所有 goroutine 都会指向这个不断被 for 循环赋值改变的变量。</p>
+<p><strong>对于闭包，go 中有个” 变量逃逸 “（Variable Escape）的说法，如果某个变量在函数声明周期结束时仍被引用，则将其分被到堆而非函数栈上。对闭包来说，某个变量同时被内层和外层函数引用，则其会被分配到堆上</strong>。</p>
+</li>
+<li><p><em>既然字符串 <code>u</code> 是不可变（immutable）的，为什么所有 goroutine 还会引用到不断变化的值</em>？string 的确是不可变的，但是 <code>u</code> 的值一直在变，而 goroutine 和外层 goroutine 共享 u 的引用。</p>
+</li>
+</ol>
+<h3 id="去掉锁"><a href="#去掉锁" class="headerlink" title="去掉锁"></a>去掉锁</h3><p>如果在更新 map 的时候去掉锁，运行几次发现并没有什么异常，因为 race 其实很难检测。好在 go 提供了竞态分析工具帮你来找到潜在含有竞态的地方：<code>go run -race crawler.go</code></p>
+<p>注意该工具没有做静态分析，而是在动态执行过程中观察、记录各个 goroutine 的执行轨迹，进行分析。</p>
+<h3 id="线程数量"><a href="#线程数量" class="headerlink" title="线程数量"></a>线程数量</h3><p>Q&amp;A</p>
+<p>\1. 该代码在整个运行中会同时多少线程在运行（goroutine）？<br>该代码并没有做明显的限制，但是其明显和 URL 数量、抓取时间正相关。例子中输入只有五个 URL，因此没有什么问题。但在现实中，这么做可能会同时启动上百万个 goroutine。因此一个改进是，实现启动一个固定数量的 worker 池子，每个 worker 干完后就去要 / 被分配下一个任务。</p>
+<h3 id="使用-channel-通信"><a href="#使用-channel-通信" class="headerlink" title="使用 channel 通信"></a>使用 channel 通信</h3><p>我们可以实现一个新的爬虫版本，不用锁 + 共享变量，而用 go 中内置的语法：channel 来通信。具体做法类似实现一个生产者消费者模型，使用 channel 做消息队列。</p>
+<ol>
+<li>初始将种子 url 塞进 channel。</li>
+<li>消费者：master 不断从 channel 中取出 urls，判断是否抓取过，然后启动新的 worker goroutine 去抓取。</li>
+<li>生产者：worker goroutine 抓取到给定的<em>任务</em> url，并将解析出的<em>结果</em> urls 塞回 channel。</li>
+<li>master 使用一个变量 n 来追踪发出的<em>任务</em>数；往发出一份<em>任务</em>增加一；从 channel 中获取并处理完一份<em>结果</em>（即将其再安排给 worker）减掉一；当所有任务都处理完时，退出程序。</li>
+</ol>
+<pre class="language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">worker</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> ch <span class="token keyword">chan</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  urls<span class="token punctuation">,</span> err <span class="token operator">:=</span> fetcher<span class="token punctuation">.</span><span class="token function">Fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+    ch <span class="token operator">&lt;-</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    ch <span class="token operator">&lt;-</span> urls
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">master</span><span class="token punctuation">(</span>ch <span class="token keyword">chan</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  n <span class="token operator">:=</span> <span class="token number">1</span>
+  fetched <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> urls <span class="token operator">:=</span> <span class="token keyword">range</span> ch <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> u <span class="token operator">:=</span> <span class="token keyword">range</span> urls <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> fetched<span class="token punctuation">[</span>u<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token boolean">false</span> <span class="token punctuation">{</span>
+        fetched<span class="token punctuation">[</span>u<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+        n <span class="token operator">+=</span> <span class="token number">1</span>
+        <span class="token keyword">go</span> <span class="token function">worker</span><span class="token punctuation">(</span>u<span class="token punctuation">,</span> ch<span class="token punctuation">,</span> fetcher<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    n <span class="token operator">-=</span> <span class="token number">1</span>
+    <span class="token keyword">if</span> n <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+      <span class="token keyword">break</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">ConcurrentChannel</span><span class="token punctuation">(</span>url <span class="token builtin">string</span><span class="token punctuation">,</span> fetcher Fetcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  ch <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+  <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ch <span class="token operator">&lt;-</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>url<span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token function">master</span><span class="token punctuation">(</span>ch<span class="token punctuation">,</span> fetcher<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p><strong>Q&amp;A:</strong></p>
+<ol>
+<li><em>master 读 channel，多 worker 写 channel，不会有竞争问题吗</em>？channel 是线程安全的。</li>
+<li><em>channel 不需要最后 close 吗</em>？我们用 n 追踪了所有执行中的任务数，因此当 n 为 0 退出时，channel 中不存在任何任务 / 结果，因此 master/worker 都不会对 channel 存在引用，稍后 gc collector 会将其回收。</li>
+<li><em>为什么在 ConcurrentChannel 需要用 goroutine 往 channel 中写一个 url</em>？否则 master 在读取的时候会一直阻塞。并且 channel 是一个非缓冲 channel，如果不用 goroutine，将会永远阻塞在写的时候。</li>
+</ol>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://studygolang.com/">https://studygolang.com/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.qtmuniao.com/2020/02/29/6-824-video-notes-2/">https://www.qtmuniao.com/2020/02/29/6-824-video-notes-2/</a></p>
+<p><a target="_blank" rel="noopener" href="https://golangbot.com/buffered-channels-worker-pools/">https://golangbot.com/buffered-channels-worker-pools/</a></p>
+<p>作者：<a target="_blank" rel="noopener" href="https://golangbot.com/about/">Nick Coghlan</a> 译者：<a target="_blank" rel="noopener" href="https://github.com/Noluye">Noluye</a> 校对：<a target="_blank" rel="noopener" href="https://github.com/polaris1119">polaris1119</a></p>
+<p>本文由 <a target="_blank" rel="noopener" href="https://github.com/studygolang/GCTT">GCTT</a> 原创编译，<a target="_blank" rel="noopener" href="https://studygolang.com/articles/12512">Go语言中文网</a> 荣誉推出</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://leehm00.github.io">homie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/">https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://leehm00.github.io" target="_blank">homie's Home</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/course/">course</a></div><div class="post-share"><div class="social-share" data-image="/img/ibuki.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/02/21/gomake-han-shu-he-slice-map-jie-xi/" title="GOmake函数和slice，map解析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">GOmake函数和slice，map解析</div></div><div class="info-2"><div class="info-item-1">make函数 首先看个例子  package main import (  "fmt" ) func main() {  var i *int  *i=10  fmt.Println(*i) }   这个例子会打印出什么？0还是10?。以上全错，运行的时候会painc，原因如下：  panic: runtime error: invalid memory address or nil pointer dereference   从这个提示中可以看出，对于引用类型的变量，我们不光要声明它，还要为它分配内容空间，否则我们的值放在哪里去呢？这就是上面错误提示的原因 对于值类型的声明不需要，是因为已经默认帮我们分配好了 分配内存，Go提供了两种方式，分别是new和make  newGo提供内建函数new func new(Type) *Type   它只接受一个参数，这个参数是一个类型，分配好内存后，返回一个指向该类型内存地址的指针。同时请注意它同时把分配的内存置为零，也就是类型的零值。那么上面的函数可以改写成  func main() {  var i *int  i=new(int)...</div></div></div></a><a class="pagination-related" href="/2022/02/16/mit-6-824-2022-notes-1-chinese-version/" title="MIT 6.824 2022 notes 1 chinese version"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">MIT 6.824 2022 notes 1 chinese version</div></div><div class="info-2"><div class="info-item-1">chinese version课程背景构建分布式系统的原因：  Parallelism，资源并行（提高效率）。 Fault tolerance，容错。 Physical，系统内在的物理分散。 Security，不可信对端（区块链）。  分布式系统面临的挑战：  Concurrency，系统构件很多，并行繁杂，交互复杂。 Partial failure，存在部分失败，而不是像单机一样要么正常运行，要么完全宕机。 Performance，精巧设计才能获取与机器数量线性相关的性能。  课程组成 Lectures，授课，一些案例学习。 Papers，论文。 包括一些经典的和前沿的、学术的和工业界的。 看其观点，学其实现，断其性能。 抓重要部分，略次要部分。 课程主页有所有论文链接。   Exams，期中期末两次考试。 Labs：四个实验 lab1： MapReduce lab2： Raft 容错 lab3： K/V server use Raft lab4： Shared K/V based on lab3分布式系统巨难调试，做好心理准备，早点开做。   Project，可以自选相关题目...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2022/02/16/mit-6-824-2022-notes-1-chinese-version/" title="MIT 6.824 2022 notes 1 chinese version"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-16</div><div class="info-item-2">MIT 6.824 2022 notes 1 chinese version</div></div><div class="info-2"><div class="info-item-1">chinese version课程背景构建分布式系统的原因：  Parallelism，资源并行（提高效率）。 Fault tolerance，容错。 Physical，系统内在的物理分散。 Security，不可信对端（区块链）。  分布式系统面临的挑战：  Concurrency，系统构件很多，并行繁杂，交互复杂。 Partial failure，存在部分失败，而不是像单机一样要么正常运行，要么完全宕机。 Performance，精巧设计才能获取与机器数量线性相关的性能。  课程组成 Lectures，授课，一些案例学习。 Papers，论文。 包括一些经典的和前沿的、学术的和工业界的。 看其观点，学其实现，断其性能。 抓重要部分，略次要部分。 课程主页有所有论文链接。   Exams，期中期末两次考试。 Labs：四个实验 lab1： MapReduce lab2： Raft 容错 lab3： K/V server use Raft lab4： Shared K/V based on lab3分布式系统巨难调试，做好心理准备，早点开做。   Project，可以自选相关题目...</div></div></div></a><a class="pagination-related" href="/2022/02/14/mit-6-824-2022-notes-1/" title="MIT 6.824 2022 notes 1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-14</div><div class="info-item-2">MIT 6.824 2022 notes 1</div></div><div class="info-2"><div class="info-item-1">Lecture 1: Introductionwhy do we use distributed systems? connect physically seperated machines Usually shared   increase capacity through parallelism tolerate faults achieve security/via isolate  What are the challenges? Concurrency Partial failure High performance  Infrastructure Abstractions storage  communication Computation  ImplementationRPC, threads, concurrency lock. performaceScalability  Fault Tolerance Availability  Recoverbility  Solutions：  NV storage(non-volatile storage)非易失性存储 ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Lecture-2-RPC-and-threads"><span class="toc-number">1.</span> <span class="toc-text">Lecture 2:RPC and threads</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-Go"><span class="toc-number">1.1.</span> <span class="toc-text">为什么用 Go</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%EF%BC%88Threads%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">线程（Threads）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%8E%9F%E5%9B%A0"><span class="toc-number">1.2.1.</span> <span class="toc-text">使用原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%9A%BE%E7%82%B9%EF%BC%88challenges%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">使用难点（challenges）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%8D%8F%E8%B0%83%EF%BC%88Coordination%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">线程协调（Coordination）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%EF%BC%88DeadLock%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">死锁（DeadLock）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GO%E5%8D%8F%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">GO协程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GO%E5%8D%8F%E7%A8%8B%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.3.1.</span> <span class="toc-text">GO协程是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E7%A8%8B%E7%9B%B8%E6%AF%94%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.3.2.</span> <span class="toc-text">协程相比于线程的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E7%A8%8B%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">协程使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%A4%9A%E4%B8%AA-Go-%E5%8D%8F%E7%A8%8B"><span class="toc-number">1.3.4.</span> <span class="toc-text">启动多个 Go 协程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E9%81%93"><span class="toc-number">1.4.</span> <span class="toc-text">信道</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BF%A1%E9%81%93%EF%BC%9F"><span class="toc-number">1.4.1.</span> <span class="toc-text">什么是信道？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E9%81%93%E7%9A%84%E5%A3%B0%E6%98%8E"><span class="toc-number">1.4.2.</span> <span class="toc-text">信道的声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E4%BF%A1%E9%81%93%E8%BF%9B%E8%A1%8C%E5%8F%91%E9%80%81%E5%92%8C%E6%8E%A5%E6%94%B6"><span class="toc-number">1.4.3.</span> <span class="toc-text">通过信道进行发送和接收</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E4%B8%8E%E6%8E%A5%E6%94%B6%E9%BB%98%E8%AE%A4%E6%98%AF%E9%98%BB%E5%A1%9E%E7%9A%84"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">发送与接收默认是阻塞的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E9%81%93%E7%9A%84%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">信道的代码示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E9%81%93%E7%9A%84%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">信道的另一个示例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%BB%E9%94%81"><span class="toc-number">1.4.4.</span> <span class="toc-text">死锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E5%90%91%E4%BF%A1%E9%81%93"><span class="toc-number">1.4.5.</span> <span class="toc-text">单向信道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E4%BF%A1%E9%81%93%E5%92%8C%E4%BD%BF%E7%94%A8-for-range-%E9%81%8D%E5%8E%86%E4%BF%A1%E9%81%93"><span class="toc-number">1.4.6.</span> <span class="toc-text">关闭信道和使用 for range 遍历信道</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%86%B2%E4%BF%A1%E9%81%93"><span class="toc-number">1.5.</span> <span class="toc-text">缓冲信道</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BC%93%E5%86%B2%E4%BF%A1%E9%81%93%EF%BC%9F"><span class="toc-number">1.5.1.</span> <span class="toc-text">什么是缓冲信道？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80"><span class="toc-number">1.5.2.</span> <span class="toc-text">示例一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C"><span class="toc-number">1.5.3.</span> <span class="toc-text">示例二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%BB%E9%94%81-1"><span class="toc-number">1.5.4.</span> <span class="toc-text">死锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%BF%E5%BA%A6-vs-%E5%AE%B9%E9%87%8F"><span class="toc-number">1.5.5.</span> <span class="toc-text">长度 vs 容量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitGroup"><span class="toc-number">1.5.6.</span> <span class="toc-text">WaitGroup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.7.</span> <span class="toc-text">工作池的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#questions"><span class="toc-number">1.5.8.</span> <span class="toc-text">questions</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%88%AC%E8%99%AB%EF%BC%88Web-crawler%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">爬虫（Web crawler）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%93%E5%8F%96%E4%BB%A3%E7%A0%81"><span class="toc-number">1.6.1.</span> <span class="toc-text">抓取代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WaitGroup-1"><span class="toc-number">1.6.2.</span> <span class="toc-text">WaitGroup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%BB%E6%8E%89%E9%94%81"><span class="toc-number">1.6.3.</span> <span class="toc-text">去掉锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%95%B0%E9%87%8F"><span class="toc-number">1.6.4.</span> <span class="toc-text">线程数量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-channel-%E9%80%9A%E4%BF%A1"><span class="toc-number">1.6.5.</span> <span class="toc-text">使用 channel 通信</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/diary251110/" title="diary251110">diary251110</a><time datetime="2025-11-10T15:55:41.000Z" title="发表于 2025-11-10 15:55:41">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/10/hello-world/" title="Hello World">Hello World</a><time datetime="2025-11-10T14:00:07.549Z" title="发表于 2025-11-10 14:00:07">2025-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/09/diary251109/" title="diary251109">diary251109</a><time datetime="2025-11-09T21:59:27.000Z" title="发表于 2025-11-09 21:59:27">2025-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/diary251107/" title="diary251107">diary251107</a><time datetime="2025-11-07T16:53:41.000Z" title="发表于 2025-11-07 16:53:41">2025-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/07/zsh-pei-zhi/" title="zsh配置">zsh配置</a><time datetime="2025-11-07T00:45:46.000Z" title="发表于 2025-11-07 00:45:46">2025-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2025 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23liQESFXsU1YySKCu',
+      clientSecret: '8ffed0b5a974ee263dce9a1f772883682eeffa4a',
+      repo: 'https://github.com/leehm00/homepage_comment',
+      owner: 'leehm00',
+      admin: ['leehm00'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '1169115100736f3cc4b0b93fc04c3ca4'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>
