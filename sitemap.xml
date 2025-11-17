@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://leehm00.github.io/tags/index.html</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/about/index.html</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://leehm00.github.io/archives/index.html</loc>
     
     <lastmod>2025-11-17</lastmod>
@@ -56,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/tags/index.html</loc>
+    <loc>https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -65,7 +83,25 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/about/index.html</loc>
+    <loc>https://leehm00.github.io/2022/04/08/lun-wen-xie-zuo-fen-xiang-1/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -119,34 +155,7 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/2022/04/15/ji-suan-ji-shu-ju-zi-jie-shun-xu/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/04/08/lun-wen-xie-zuo-fen-xiang-1/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/01/30/yi-dynamo-amazon-s-highly-available-key-value-store/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/08/05/shi-yong-maven-idea-huan-jing/</loc>
+    <loc>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -156,15 +165,6 @@
   
   <url>
     <loc>https://leehm00.github.io/2022/01/31/ti-zhi-nei-huan-shi-ti-zhi-wai-gong-zuo/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -299,7 +299,7 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
+    <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -308,7 +308,7 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/2022/03/05/redis-cluster/</loc>
+    <loc>https://leehm00.github.io/2022/03/09/redis-cluster-build/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -398,60 +398,6 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/2022/03/22/apple-script-shi-yong/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2022/03/16/build-cluster-with-bash-on-one-node/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2025/11/03/dairy251103/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2025/11/04/diary251104/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2025/11/05/diary251105/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://leehm00.github.io/2025/11/06/diary251106/</loc>
-    
-    <lastmod>2025-11-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://leehm00.github.io/2025/11/07/diary251107/</loc>
     
     <lastmod>2025-11-17</lastmod>
@@ -524,7 +470,52 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/</loc>
+    <loc>https://leehm00.github.io/2022/03/22/apple-script-shi-yong/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/03/16/build-cluster-with-bash-on-one-node/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2025/11/03/dairy251103/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2025/11/04/diary251104/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2025/11/05/diary251105/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2025/11/06/diary251106/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -560,7 +551,7 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/</loc>
+    <loc>https://leehm00.github.io/2022/02/10/anna-lun-wen-bi-ji/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -597,6 +588,15 @@
   
   <url>
     <loc>https://leehm00.github.io/2022/02/14/mit-6-824-2022-notes-1/</loc>
+    
+    <lastmod>2025-11-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://leehm00.github.io/2022/02/16/mit-6-824-2022-notes-2-chinese-version/</loc>
     
     <lastmod>2025-11-17</lastmod>
     
@@ -673,14 +673,14 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/tags/make%E5%87%BD%E6%95%B0/</loc>
+    <loc>https://leehm00.github.io/tags/GFS/</loc>
     <lastmod>2025-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/tags/GFS/</loc>
+    <loc>https://leehm00.github.io/tags/make%E5%87%BD%E6%95%B0/</loc>
     <lastmod>2025-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -892,14 +892,14 @@
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/categories/go/</loc>
+    <loc>https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2025-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://leehm00.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://leehm00.github.io/categories/go/</loc>
     <lastmod>2025-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
