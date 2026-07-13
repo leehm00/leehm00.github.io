@@ -1,1500 +1,333 @@
-<!DOCTYPE HTML>
-<html lang="zh-CN">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>homie's Home - homie lee</title><meta name="author" content="homie"><meta name="copyright" content="homie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="USTC | CS | Distributed System | In-memory Key-Value Store">
+<meta property="og:type" content="website">
+<meta property="og:title" content="homie&#39;s Home">
+<meta property="og:url" content="https://leehm00.github.io/index.html">
+<meta property="og:site_name" content="homie&#39;s Home">
+<meta property="og:description" content="USTC | CS | Distributed System | In-memory Key-Value Store">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leehm00.github.io/img/ibuki.png">
+<meta property="article:author" content="homie">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leehm00.github.io/img/ibuki.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "homie's Home",
+  "alternateName": [
+    "homie lee",
+    "leehm00.github.io"
+  ],
+  "url": "https://leehm00.github.io/"
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://leehm00.github.io/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
-<head>
-    <meta charset="utf-8">
-    <meta name="keywords" content="KV store">
-    <meta name="description" content="USTC | CS | Distributed System | In-memory Key-Value Store">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="renderer" content="webkit|ie-stand|ie-comp">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-    <title>homie&#39;s Home</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-
-    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
-    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="/css/my.css">
-
-    <script src="/libs/jquery/jquery.min.js"></script>
-
-<meta name="generator" content="Hexo 6.3.0">
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: homie","link":"链接: ","source":"来源: homie's Home","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'homie\'s Home',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="homie's Home" type="application/atom+xml">
-</head>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
 
+  preloader.initLoading()
 
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
 
-
-<body>
-    <header class="navbar-fixed">
-    <nav id="headNav" class="bg-color nav-transparent">
-        <div id="navContainer" class="nav-wrapper container">
-            <div class="brand-logo">
-                <a href="/" class="waves-effect waves-light">
-                    
-                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
-                    
-                    <span class="logo-span">homie&#39;s Home</span>
-                </a>
-            </div>
-            
-
-<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
-<ul class="right nav-menu">
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/" class="waves-effect waves-light">
-      
-      <i class="fas fa-home" style="zoom: 0.6;"></i>
-      
-      <span>首页</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/tags" class="waves-effect waves-light">
-      
-      <i class="fas fa-tags" style="zoom: 0.6;"></i>
-      
-      <span>标签</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/categories" class="waves-effect waves-light">
-      
-      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
-      
-      <span>分类</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/archives" class="waves-effect waves-light">
-      
-      <i class="fas fa-archive" style="zoom: 0.6;"></i>
-      
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">105</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">37</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">homie's Home</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">homie's Home</h1><div id="site_social_icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/13/2026-07-13-wan-jian-sui-bi-xiang-guan-xing-yu-bu-ke-shuo/" title="2026-07-13 晚间随笔：相关性、数据稀缺性与不可说">2026-07-13 晚间随笔：相关性、数据稀缺性与不可说</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-13T14:06:39.000Z" title="发表于 2026-07-13 22:06:39">2026-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-13 晚间随笔：相关性、数据稀缺性与不可说一、数据和数据的相关性：不是所有行业都有「大数据」我一直觉得，现在很多做机器学习的人，做事情的方式就是把所有东西都还原为数据和数据之间的相关性。不考虑逻辑联系，就看两个量之间有没有统计上的关系。 但这里有一个很现实的问题：高质量的数据并不够多。 在一些场景下，我们可能只能靠人工去分析其中的可行性和逻辑性。因为不是所有行业都像计算机科学里的某些领域一样，数据可以批量生产、批量处理，你多收集一点就有更多的东西可以用。 有些行业，可收集的数据是非常有限的。或者说，生产这些数据的成本非常高。 比如你生产一件衣服，你要真的把它卖出去、实际投放市场、去做市场调研，才知道有哪些人会买、哪些人会喜欢。而不是说在你没有付出成本之前就能得到「这个消费者会买这件衣服」的数据标签和相关性结论。在真正上架之前，你事先并不知道那个可能性到底是多少。 股票市场：A 股的天然限制另一个更经典的例子就是股票市场。我最近在做量化。 美股开盘时间久，时间维度上数据充裕，可以训练出一个很好的模型，可以用大量的历史数据去轮动。但在 A 股，一共也就开盘十多年，所有...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/13/2026-07-13-sui-bi-xuan-yao-xia-ai-yu-zi-man/" title="2026-07-13 随笔：炫耀欲、狭隘与自满">2026-07-13 随笔：炫耀欲、狭隘与自满</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-12T16:12:11.000Z" title="发表于 2026-07-13 00:12:11">2026-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-13 炫耀欲、狭隘与自满一、炫耀欲：我付出了努力，我想要被看到我突然发现，其实大家都会在自己感兴趣、或者说花过很多时间研究的领域，在别人稍微提到的时候就突然开始「显摆」——说自己会这个、研究过很长时间、然后长篇大论地说起来。 举两个例子。 第一个：日语我花了大概一年多的样子去学日语。然后我姐说她办了日本签证、约我什么时候去日本玩的时候，我突然就特别本能地跟她说：「我会日语。」她回了我一句：「我也会，那怎么呢？」 当时我就有点尴尬。 其实我完全没必要主动去提我会日语这件事，好像她去日本就非得带上我不可，带上我之后能给她带来多大便利似的。或者，以后可以换个方式说。反正就没必要直接蹦出来，显得好像会日语是一件多么了不起的事情一样。 第二个：群里的搭子另一个例子是和上次一起出去旅游的一个搭子。她在群里会有一点宣扬自己思想的感觉。比如因为她是女生，她会说「为什么女生有大姨妈而男生没有，能不能让男人也体验一下大姨妈？」然后就在群里不断贴自己的读书笔记，关于波伏瓦、关于《第二性》之类的东西。 我没有读过波伏瓦的书，我也不评判。但她就好像自己起了一个话题，然后自己又特别特别有兴趣...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/09/2026-07-09-shen-ye-bu-ji-ying-yu-jing-que-xing-yu-yu-yin-ri-ji/" title="2026-07-09 深夜补记：回答问题、英语的精确性与语音日记">2026-07-09 深夜补记：回答问题、英语的精确性与语音日记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-09T15:09:15.000Z" title="发表于 2026-07-09 23:09:15">2026-07-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-09 深夜补记：回答问题、英语的精确性与语音日记这是对今天讨论的一些补充和回应。  一、学会提问，以及那些绕过去的回答最近在看一些播客，听那些大佬是怎么提出有价值的问题的。 有意思的是，观察对方如何根据问题去分析：一个比较复杂的问题，怎么给它一点一点剖析开来？一个比较难回答的问题，可能他也没想清楚，但他可以往自己的舒适区去引导。有些时候明显是一个牛头不对马嘴的回答，但你听他讲下去，又好像就自然而然地被他绕过去了，问题本身没有被回答，但听众跟着他跑了。 这是一种能力。我得学着培养提出好问题的能力，也得学着识别那些没有被真正回答的问题。  二、为什么知识投入会拉大差距，「消化能力」的解释之前说到社会投放知识，存量越多的人受益越多、差距会拉大。当时只讲了”是什么”，没展开”为什么”。现在补上。 我觉得核心在于消化能力。 一个人已有的知识越多，他的信息获取能力、联想思维能力就越强。就像跨领域的联想和变通，你了解了一个领域的框架，再接触新领域的时候，可以把已有框架复用过去。这相当于是给新知识打了个架子，放上去就有结构了。 而对于本来认知可能不太高的人来说，就算有新知识来了，...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/09/2026-07-09-wan-jian-sui-bi-zhi-shi-tou-ru-yu-xi-guan-de-jue-cha/" title="2026-07-09 晚间随笔：知识投入、习惯与好奇心">2026-07-09 晚间随笔：知识投入、习惯与好奇心</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-09T14:17:41.000Z" title="发表于 2026-07-09 22:17:41">2026-07-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-09 晚间随笔：知识投入、习惯与好奇心一、知识投入的悖论有一个结论我觉得挺有意思的：关于向整个社会投入知识量或者信息量之后，对现有存量不同阶层的人会产生什么影响。 这个社会上有一些人已有的知识量更多，有一些人更少。如果政府或者社会向这个系统再投入一部分知识资源，会发生什么？答案大概是：已有知识量越多的人，他提升的认知会更多。 每个人的绝对值当然都上升了，大家的知识水平都增加了。但问题在于，底层的、原先知识不够的人，和上层的、知识存量本来就多的人之间的差距，会越来越大。 这和经济发展是一个道理。越来越多的钱流向了那些已经更有钱的人。普通人的基本生活在经济发展中当然也得到了改善，生活水平的提高不可否认。但同样的，科技进步带来了更加严重的财富差距，贫富分化越来越严重。 知识投入的效应，和资本投入的效应，在结构上惊人地相似。  二、习惯的回路关于习惯的形成，有一个经典的三段式：Trigger → Behavior → Reward。 我们看到了抽烟有点帅（trigger），于是自己去抽了烟（behavior），然后觉得自己很帅（reward）。一个比较舒服的、耍酷的那种感...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/09/2026-07-09-sui-bi-di-er-yu-yan-yu-xin-xi-chong-fang/" title="2026-07-09 随笔：异语言、信息茧房与生活的归处">2026-07-09 随笔：异语言、信息茧房与生活的归处</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-08T16:08:25.000Z" title="发表于 2026-07-09 00:08:25">2026-07-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-09 异语言、信息茧房与生活的归处一、第二语言是一种抽离有一个说法我觉得很好：不论在什么时候，你都要留存一点理智，以一种第三者的视角去观察你的行为、你的生活、你的情绪和你的语言。 我觉得你的第二语言天然就带有这样一种能力。 你的母语大概率包含了从你成长以来所有的东西。你的童年、你的经历、这些年来全部的记忆、思维和情绪。正因为此，你在使用母语的时候很难做到完全理性，它和你的情感绑得太深。 而如果你用英语来沟通或表达，你可能就更关注那些更加实体的东西。 有一些研究结果也指出了这一点：英语中更多使用的是名词，而中文中更多表达的是动词和情绪。 大家更关注的是一句话里的名词，而中文互联网一直是比较 emotional 的，大家更容易在上面表达自己的感情。用英语的时候，你会更关注事情本身是什么样子。 比如说 “I had a feeling of sadness”，当你说到 “sad” 这个词的时候，你可能并不会表现得那么悲伤了。语言本身给了你一个抽离出来的距离。  二、信息茧房的两个层次上次聊信息茧房没聊透，今天再补充一下。 多样性其实有两个层面： 第一个层面：类别的多样性...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/07/2026-07-07-wan-jian-sui-bi-yi-yi-pao-mo-yu-xin-xi-chong-fang/" title="2026-07-07 晚间随笔：意义、泡沫与信息茧房">2026-07-07 晚间随笔：意义、泡沫与信息茧房</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-07T13:00:32.000Z" title="发表于 2026-07-07 21:00:32">2026-07-07</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-07 晚间随笔：意义、泡沫与信息茧房一、消防员和意义今天看到一个很有意思的故事，和之前聊死亡的那篇有一点相通：人是为了某一个意义而活的。 故事说的是消防员。消防员本来是一个非常受尊敬的职业，但在很多情况下，他们会经历一些相当惨烈的场景：人被压在下面，肢体不全，血肉模糊。这些画面，其实和战场很像。长期下来，消防员可能会厌恶自己的工作，对自己的工作失去热情，甚至产生 PTSD 或者抑郁。 然后有一个消防局长做了一个很有意思的决定，他开始追踪那些被救出来的人后来过得怎么样。收集他们的生活状况，收集他们对消防员的感谢。结果，这个做法真的改变了局面。 它相当于给消防员的工作找到了一个锚点、一个意义：我是为了这些人的感激而做这件事的。他们可能遭了罪、受了损失，但至少把命保下来了、保住了最重要的东西。 你看，同样是血肉模糊的现场，有了这个意义之后，它就从一个创伤源变成了一个信念锚点。 放回网上的那些现象：为什么大家会在网上互相攻击、做键盘侠、表达愤怒、互相讨伐？其实这些都是在表达我的存在是有意义的。在现实生活中找不到意义的地方，所以转而在网络上寻找自己的意义感。但网络的虚拟性让...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/07/2026-07-07-sui-bi-ping-jun-xian-zhi-shang-gong-ju-zhi-xia/" title="2026-07-07 随笔：平均线之上，工具之下">2026-07-07 随笔：平均线之上，工具之下</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-06T16:35:18.000Z" title="发表于 2026-07-07 00:35:18">2026-07-07</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-07 平均线之上，工具之下好的思维，从日常观察中来我越来越认可一个观点：很多好的思维、好的洞察，其实都是从日常生活的观察中来的。哪怕是一个很抽象的想法，你最开始为什么要这么想、它的来源是什么，很有可能都来源于现实中的一个具体观察。 而且，一个抽象的概念如果想要讲清楚，往往也需要找一个现实中容易理解的例子来做类比，才好解释。没有那个类比，再好的想法也很难让人真正理解。 大家的灵感、想法，本质上差不多，来源都是生活中的观察。AI 如果能够帮我看一些群聊的消息，而这些群聊里面刚好又是一群很牛的人在对话，那确实能引起一些思考。 但说到 AI，我还是坚持以前的观念：AI 是对输入和训练数据取一个平均值。你输入的质量越高，它产出的质量可能也会越高。而不是说，你随便对所有下沉市场的数据取一个平均值，它产出的质量就会贴近下沉市场的需求，那个方向不对。 这个世界很多草台班子，大家都在一个参差不齐的状态。  AI 把所有人拉到了一条平均线上最近特别喜欢看那些采访视频，里面也讲到类似的想法：AI 把所有人的水平都拉到了一个平均线上。 用来训练 AI 的那些数据，毕竟公司做的时候都是挑选...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/05/2026-07-05-sui-bi-you-mo-gan-xiao-shou-yu-zi-xin/" title="2026-07-05 随笔：幽默感、销售与自信">2026-07-05 随笔：幽默感、销售与自信</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-05T13:09:43.000Z" title="发表于 2026-07-05 21:09:43">2026-07-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-05 幽默感、销售与自信和有趣的人在一起，是一种放松今天和霞姐待了一下。我确实觉得，和一个比较有幽默感的人在一起，你可以很放松，完全沉浸在自己的视角里，想到什么就说什么，不用去思考太多东西。 这种感觉，可能就是和朋友在一起的时候才会有。我们经常说哪个地方不好玩，但更多的时候，可能不是那个地方本身好不好玩，而是你在那个地方没有那么多能这样交心的朋友。在你待得久的地方，那些可以一起玩的朋友自然就多一些。毕竟不管你到哪里，只要你不是那种独行侠，更多情况下你都是跟朋友一起在玩。 地方是壳，人是核。  所有的工作，都是一种销售最近看了不少做销售的采访视频。那些做销售的人，口才是真的好，说话有条理，感染力也强。 里面讲到做销售最重要的东西，我觉得说得确实对：真诚和自信。 真诚真诚，就是你对你要推荐的东西是真的相信的，是真心想把它的优点告诉客户，而不是想隐瞒什么东西。你不是在用话术哄别人掏钱，而是在帮别人发现他们可能需要的价值。 自信自信这一点，我觉得不管是不是做销售，都很关键。我们在介绍自己工作的时候、在做汇报的时候，同样要保持一种自信：我知道我做的东西它的好处在哪里、优势在...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/03/2026-07-03-sui-bi-zong-jiao-ya-pian-yu-bu-ke-shuo/" title="2026-07-03 随笔：宗教是鸦片，以及那些不可说的东西">2026-07-03 随笔：宗教是鸦片，以及那些不可说的东西</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-03T14:15:05.000Z" title="发表于 2026-07-03 22:15:05">2026-07-03</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-03 宗教是鸦片，以及那些不可说的东西一、”宗教是人民的鸦片”，最被误读的一句话今天聊到马克思讲宗教的那一段，我越来越觉得他说得挺有道理的。而这一段恰恰是他最容易被人断章取义的。 很多断章取义的人，只抓那一句”宗教就是人民的鸦片”。然后顺着这句话的理解就是：宗教是骗人的，宗教就是为了骗人民的钱、骗人民的时间、骗人民的精力的，所以宗教是个坏东西。听起来好像就是这么个批判。 但马克思在前面也说了，是因为现实中的苦难没有被解决、现实中的问题还在那里，人们才转而向宗教寻求一种慰藉。 而且，在马克思 19 世纪的语境里，鸦片首先是作为止痛药存在的。它在那个时候并不是一个”毒品”和”上瘾品”的概念，而是说：因为你现实中感受到了痛，所以你寻找宗教这样一个慰藉，来转移你的痛苦、转移你的注意力。 这就好比我自己有偏头痛，所以我去买了止疼药来吃。现在你跑来跟我说：止疼药是个骗人的东西，然后把止疼药给我没收了。那我的痛怎么办？谁来管我的痛？难道靠你一句”止疼药是不好的东西”就能解决问题吗？ 你痛了，吃止疼药。我把止疼药给你摘了，说止疼药不好，那你剩下的痛谁来解决？ 我现实中遭受到了不公...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/02/2026-07-02-sui-bi-biao-da-yu-bao-zhuang/" title="2026-07-02 随笔：表达、包装与定制的代价">2026-07-02 随笔：表达、包装与定制的代价</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-02T05:51:19.000Z" title="发表于 2026-07-02 13:51:19">2026-07-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-02 表达、包装与定制的代价输入和输出我越来越觉得，学会表达自己、表达自己的观点和看法，其实挺重要的。 学习和吸收是一个输入的过程，但光有输入不够。如果只有输入，你很难让别人看到你身上值得欣赏的点。毕竟自己不是老板，你需要把自己推销出去，而推销是一个输出的过程。 所以我们要经常把自己的想法表达出来、说给别人听。但现实是，我们自己很少有这样的机会：很少有谁愿意一直听你讲那些还不算成熟的想法和观点。 不过现在有了大模型之后，这个问题其实挺好解决的。倒不一定非要和大模型沟通，只需要养成一个自己写日记的习惯就够了。那些大佬喜欢写书，我觉得也是同样的逻辑：把想法落成文字，本身就是一种输出训练。 会讲故事，是一种很强的能力我感觉「会讲故事」真的是一种很强的能力。 具体来说，就是你能把自己一个也许并不复杂的 idea，包装成一个比较高维、比较高层级的概念，让对方一听就觉得：「这是个什么东西？听起来这么高级，我得好好了解一下。」等他真的了解之后，可能会觉得「好像也没那么新颖」，但同时又觉得「好像确实有点道理，有点新意」。 这种包装，我觉得是非常有效的。 一个例子：4D 打印今天听...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/01/2026-07-01-sui-bi-shao-shu-ren-yu-ping-jun-shu-de-shi-jie/" title="2026-07-01 随笔：少数人与平均数的世界">2026-07-01 随笔：少数人与平均数的世界</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-01T13:45:15.000Z" title="发表于 2026-07-01 21:45:15">2026-07-01</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="content">2026-07-01 少数人与平均数的世界这个世界是为「平均数」设计的今天忽然想到一个事：对于一些弱势群体，或者说对于一些少数人，他们更多的时候，是在适应这个世界。因为这个世界的运转，是围绕着一个平均数去设计的。  所谓「正常」，不过是大多数人恰好落在那个区间里而已。  一双 45 码的鞋拿我自己举例。我脚比较大，买鞋这件事对我来说一直很麻烦。 最开始只能买到 43 码，但我要穿 45、46 码。高中的时候没办法，只能去定制，定制又非常贵。后来好不容易能买到合适的码数了，那种「终于不用将就」的感觉，可能大多数人很难体会。 一件这么小的事，就能让我意识到：很多对少数人来说的「困难」，并不是世界故意为难你，而是世界在它的尺度上根本没有为你留出位置。 需求没被满足，往往不是「没人愿意做」，而是「不够值得做」最近也听到一个观点，说现在社会对女性的适应、对女性的照顾并不算好。 我的想法是：在一个商业社会里，既然有需求，按理说就不会没人做。那为什么没人做？ 答案可能是，利益还不够。  可能是觉得无利可图，觉得这个市场太小 可能是觉得投入产出比不划算 也可能是，这个需求还没有被足够多的人「看到...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/07/01/shi-yong-tiao-ban-ji-lian-jie-xiao-nei-api-mo-xing/" title="使用跳板机连接校内api模型">使用跳板机连接校内api模型</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-07-01T12:31:22.000Z" title="发表于 2026-07-01 20:31:22">2026-07-01</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/">折腾记录</a></span></div><div class="content">使用跳板机连接校内 API 模型本文记录一下我从校外环境，通过跳板机访问校内 API 模型，并接入 WorkBuddy 的完整实现过程。 成功流程总结（校外 → 跳板 → 校内 API → WorkBuddy）整体拓扑你的 Windows 电脑 (校外)    ↓  SSH -L 8443:api.llm.ustc.edu.cn:443 跳板机 (xxx:6669)    ↓  校内网络 中科大 API 服务器 (api.llm.ustc.edu.cn:443)  WorkBuddy 发请求时，DNS 被本地 hosts 劫持到 127.0.0.1:8443，SSH 隧道将流量原封不动转发到校内 API 服务器的 443 端口，TLS SNI 和 HTTP Host 头保持不变。 步骤一：修改本地 hosts（管理员权限）编辑 C:\Windows\System32\drivers\etc\hosts，添加一行： 127.0.0.1  api.llm.ustc.edu.cn  然后执行 ipconfig /flushdns 刷新 DNS 缓存。 目的：让 api.llm.ustc...</div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#content-inner">9</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/ibuki.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">homie</div><div class="author-info-description">USTC | CS | Distributed System | In-memory Key-Value Store</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">105</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">37</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/leehm00"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/leehm00" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:leehm0073@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/13/2026-07-13-wan-jian-sui-bi-xiang-guan-xing-yu-bu-ke-shuo/" title="2026-07-13 晚间随笔：相关性、数据稀缺性与不可说">2026-07-13 晚间随笔：相关性、数据稀缺性与不可说</a><time datetime="2026-07-13T14:06:39.000Z" title="发表于 2026-07-13 22:06:39">2026-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/13/2026-07-13-sui-bi-xuan-yao-xia-ai-yu-zi-man/" title="2026-07-13 随笔：炫耀欲、狭隘与自满">2026-07-13 随笔：炫耀欲、狭隘与自满</a><time datetime="2026-07-12T16:12:11.000Z" title="发表于 2026-07-13 00:12:11">2026-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/09/2026-07-09-shen-ye-bu-ji-ying-yu-jing-que-xing-yu-yu-yin-ri-ji/" title="2026-07-09 深夜补记：回答问题、英语的精确性与语音日记">2026-07-09 深夜补记：回答问题、英语的精确性与语音日记</a><time datetime="2026-07-09T15:09:15.000Z" title="发表于 2026-07-09 23:09:15">2026-07-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/09/2026-07-09-wan-jian-sui-bi-zhi-shi-tou-ru-yu-xi-guan-de-jue-cha/" title="2026-07-09 晚间随笔：知识投入、习惯与好奇心">2026-07-09 晚间随笔：知识投入、习惯与好奇心</a><time datetime="2026-07-09T14:17:41.000Z" title="发表于 2026-07-09 22:17:41">2026-07-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/09/2026-07-09-sui-bi-di-er-yu-yan-yu-xin-xi-chong-fang/" title="2026-07-09 随笔：异语言、信息茧房与生活的归处">2026-07-09 随笔：异语言、信息茧房与生活的归处</a><time datetime="2026-07-08T16:08:25.000Z" title="发表于 2026-07-09 00:08:25">2026-07-09</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/computer/"><span class="card-category-list-name">computer</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/go/"><span class="card-category-list-name">go</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/java/"><span class="card-category-list-name">java</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/kv/"><span class="card-category-list-name">kv</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">学习</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E4%BD%9C/"><span class="card-category-list-name">工作</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E4%BD%9C%E6%8A%80%E5%B7%A7/"><span class="card-category-list-name">工作技巧</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/"><span class="card-category-list-name">折腾记录</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/zsh/" style="font-size: 1.1em; color: #999">zsh</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" style="font-size: 1.1em; color: #999">网络配置</a> <a href="/tags/sed/" style="font-size: 1.1em; color: #999">sed</a> <a href="/tags/presentation/" style="font-size: 1.1em; color: #999">presentation</a> <a href="/tags/maven/" style="font-size: 1.3em; color: #99a1ac">maven</a> <a href="/tags/apple-script/" style="font-size: 1.1em; color: #999">apple script</a> <a href="/tags/WorkBuddy/" style="font-size: 1.1em; color: #999">WorkBuddy</a> <a href="/tags/%E5%AD%97%E8%8A%82%E9%A1%BA%E5%BA%8F/" style="font-size: 1.1em; color: #999">字节顺序</a> <a href="/tags/javaweb/" style="font-size: 1.1em; color: #999">javaweb</a> <a href="/tags/tc/" style="font-size: 1.1em; color: #999">tc</a> <a href="/tags/Spring-boot/" style="font-size: 1.1em; color: #999">Spring boot</a> <a href="/tags/tcp/" style="font-size: 1.1em; color: #999">tcp</a> <a href="/tags/SpringBoot2/" style="font-size: 1.1em; color: #999">SpringBoot2</a> <a href="/tags/hexo/" style="font-size: 1.1em; color: #999">hexo</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 1.1em; color: #999">博客</a> <a href="/tags/eva/" style="font-size: 1.17em; color: #999c9f">eva</a> <a href="/tags/%E5%90%90%E6%A7%BD/" style="font-size: 1.1em; color: #999">吐槽</a> <a href="/tags/make%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">make函数</a> <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/" style="font-size: 1.1em; color: #999">论文写作</a> <a href="/tags/idea/" style="font-size: 1.17em; color: #999c9f">idea</a> <a href="/tags/SSH/" style="font-size: 1.1em; color: #999">SSH</a> <a href="/tags/anna/" style="font-size: 1.1em; color: #999">anna</a> <a href="/tags/ec/" style="font-size: 1.1em; color: #999">ec</a> <a href="/tags/distributed-system/" style="font-size: 1.1em; color: #999">distributed system</a> <a href="/tags/GFS/" style="font-size: 1.1em; color: #999">GFS</a> <a href="/tags/LinuxOS/" style="font-size: 1.1em; color: #999">LinuxOS</a> <a href="/tags/course/" style="font-size: 1.23em; color: #999ea6">course</a> <a href="/tags/mac%E5%91%BD%E4%BB%A4%E8%A1%8C/" style="font-size: 1.17em; color: #999c9f">mac命令行</a> <a href="/tags/%E6%97%A5%E8%AE%B0/" style="font-size: 1.5em; color: #99a9bf">日记</a> <a href="/tags/%E4%BC%9A%E8%AE%AE%E8%AE%B0%E5%BD%95/" style="font-size: 1.1em; color: #999">会议记录</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.43em; color: #99a6b9">随笔</a> <a href="/tags/shell/" style="font-size: 1.1em; color: #999">shell</a> <a href="/tags/%E6%9D%82%E6%80%9D/" style="font-size: 1.23em; color: #999ea6">杂思</a> <a href="/tags/redis/" style="font-size: 1.37em; color: #99a4b2">redis</a> <a href="/tags/github/" style="font-size: 1.17em; color: #999c9f">github</a> <a href="/tags/latex/" style="font-size: 1.1em; color: #999">latex</a> <a href="/tags/dynamo/" style="font-size: 1.1em; color: #999">dynamo</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
       <span>归档</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/about" class="waves-effect waves-light">
-      
-      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
-      
-      <span>关于</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/contact" class="waves-effect waves-light">
-      
-      <i class="fas fa-comments" style="zoom: 0.6;"></i>
-      
-      <span>留言板</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/friends" class="waves-effect waves-light">
-      
-      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
-      
-      <span>友情链接</span>
-    </a>
-    
-  </li>
-  
-  <li>
-    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
-    </a>
-  </li>
-</ul>
-
-
-<div id="mobile-nav" class="side-nav sidenav">
-
-    <div class="mobile-head bg-color">
-        
-        <img src="/medias/logo.png" class="logo-img circle responsive-img">
-        
-        <div class="logo-name">homie&#39;s Home</div>
-        <div class="logo-desc">
-            
-            USTC | CS | Distributed System | In-memory Key-Value Store
-            
-        </div>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
     </div>
-
-    
-
-    <ul class="menu-list mobile-menu-list">
-        
-        <li class="m-nav-item">
-	  
-		<a href="/" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-home"></i>
-			
-			首页
-		</a>
-          
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">12</span>
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/tags" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-tags"></i>
-			
-			标签
-		</a>
-          
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/categories" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-bookmark"></i>
-			
-			分类
-		</a>
-          
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/archives" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-archive"></i>
-			
-			归档
-		</a>
-          
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/about" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-user-circle"></i>
-			
-			关于
-		</a>
-          
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">12</span>
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/contact" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-comments"></i>
-			
-			留言板
-		</a>
-          
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/friends" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-address-book"></i>
-			
-			友情链接
-		</a>
-          
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">22</span>
+          </a>
         </li>
-        
-        
-        <li><div class="divider"></div></li>
-        <li>
-            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
-                <i class="fab fa-github-square fa-fw"></i>Fork Me
-            </a>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2022/08/">
+            <span class="card-archive-list-date">
+              八月 2022
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
         </li>
-        
+      
     </ul>
-</div>
-
-
-        </div>
-
-        
-            <style>
-    .nav-transparent .github-corner {
-        display: none !important;
-    }
-
-    .github-corner {
-        position: absolute;
-        z-index: 10;
-        top: 0;
-        right: 0;
-        border: 0;
-        transform: scale(1.1);
-    }
-
-    .github-corner svg {
-        color: #0f9d58;
-        fill: #fff;
-        height: 64px;
-        width: 64px;
-    }
-
-    .github-corner:hover .octo-arm {
-        animation: a 0.56s ease-in-out;
-    }
-
-    .github-corner .octo-arm {
-        animation: none;
-    }
-
-    @keyframes a {
-        0%,
-        to {
-            transform: rotate(0);
-        }
-        20%,
-        60% {
-            transform: rotate(-25deg);
-        }
-        40%,
-        80% {
-            transform: rotate(10deg);
-        }
-    }
-</style>
-
-<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
-   data-tooltip="Fork Me" data-position="left" data-delay="50">
-    <svg viewBox="0 0 250 250" aria-hidden="true">
-        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
-              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
-              fill="currentColor" class="octo-body"></path>
-    </svg>
-</a>
-        
-    </nav>
-
-</header>
-
-    
-<style>
-    .carousel-control {
-        width: 45px;
-        height: 45px;
-        line-height: 55px;
-        border-radius: 45px;
-        background: transparent;
-        cursor: pointer;
-        z-index: 100;
-    }
-
-    #prev-cover {
-        position: absolute;
-        top: 48%;
-        left: 8px;
-    }
-
-    #next-cover {
-        position: absolute;
-        top: 48%;
-        right: 8px;;
-    }
-
-    #prev-cover i {
-        margin-right: 3px;
-    }
-
-    #next-cover i {
-        margin-left: 3px;
-    }
-
-    .carousel-control:hover {
-        background-color: rgba(0, 0, 0, .4);
-    }
-
-    .carousel-control i {
-        color: #fff;
-        font-size: 2.4rem;
-    }
-</style>
-
-
-
-<div class="carousel carousel-slider center index-cover" data-indicators="true" style="margin-top: -64px;">
-    
-
-    <div class="carousel-item red white-text bg-cover about-cover">
-        <div class="container">
-            <div class="row">
-    <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
-        <div class="brand">
-            <div class="title center-align">
-                
-                homie lee
-                
-            </div>
-
-            <div class="description center-align">
-                
-                <span id="subtitle"></span>
-                <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
-                <script>
-                    var typed = new Typed("#subtitle", {
-                        strings: ['从来没有真正的绝境, 只有心灵的迷途','Never really desperate, only the lost of the soul'],
-                        startDelay: 300,
-                        typeSpeed: 100,
-                        loop: true,
-                        backSpeed: 50,
-                        showCursor: true
-                    });
-                </script>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script>
-    // 每天切换 banner 图.  Switch banner image every day.
-    var bannerUrl = "/medias/banner/" + new Date().getDay() + '.jpg';
-    $('.bg-cover').css('background-image', 'url(' + bannerUrl + ')');
-</script>
-
-
-
-            <div class="cover-btns">
-                <a href="#articles" class="waves-effect waves-light btn">
-                    <i class="fa fa-angle-double-down"></i>开始阅读
-                </a>
-
-                
-                    <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light btn" target="_blank">
-                        <i class="fab fa-github-alt"></i>Github
-                    </a>
-                
-            </div>
-            <div class="cover-social-link">
-    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
-        <i class="fas fa-rss"></i>
-    </a>
-
-</div>
-        </div>
-    </div>
-
-    
-</div>
-
-<script>
-    $(function () {
-        let coverSlider = $('.carousel');
-
-        //用户触摸轮播自动 restartPlay 是否生效
-        let initUserPressedOrDraggedActive = false
-
-        //用户触摸轮播自动 restartPlay
-        function initUserPressedOrDragged(instance) {
-            setInterval(() => {
-                if (instance.pressed || instance.dragged) {
-                    // console.log('initUserPressedOrDragged: ',instance.pressed,instance.dragged)
-                    restartPlay()
-                }
-            }, 1000)
-        }
-
-        coverSlider.carousel({
-            duration: Number('120'),
-            fullWidth: true,
-            indicators: 'true' === 'true',
-            onCycleTo() {
-                if (!initUserPressedOrDraggedActive) {
-                    // console.log('initUserPressedOrDraggedActive')
-                    initUserPressedOrDragged(this)
-                    initUserPressedOrDraggedActive = true
-                }
-            },
-        })
-
-        let carouselIntervalId;
-        
-        // Loop to call the next cover article picture.
-        let autoCarousel = function () {
-            carouselIntervalId = setInterval(function () {
-                coverSlider.carousel('next');
-            }, 5000);
-        };
-        autoCarousel();
-        
-
-        function restartPlay() {
-            
-            clearInterval(carouselIntervalId);
-            autoCarousel();
-            
-        };
-
-        
-        // prev and next cover post.
-        $('#prev-cover').click(function () {
-            coverSlider.carousel('prev');
-            restartPlay();
-        });
-        $('#next-cover').click(function () {
-            coverSlider.carousel('next');
-            restartPlay();
-        });
-        
-    });
-</script>
-
-
-
-<main class="content">
-
-    
-    <div id="indexCard" class="index-card">
-        <div class="container ">
-            <div class="card">
-                <div class="card-content">
-                    
-                        <div class="dream">
-    
-    <div class="title center-align">
-        <i class="far fa-lightbulb"></i>&nbsp;&nbsp;我的梦想
-    </div>
-    
-    <div class="row">
-        <div class="col l8 offset-l2 m10 offset-m1 s10 offset-s1 center-align text">
-            不是每个人都应该像我这样去建造一座水晶大教堂，但是每个人都应该拥有自己的梦想，设计自己的梦想，追求自己的梦想，实现自己的梦想。梦想是生命的灵魂，是心灵的灯塔，是引导人走向成功的信仰。有了崇高的梦想，只要矢志不渝地追求，梦想就会成为现实，奋斗就会变成壮举，生命就会创造奇迹。——罗伯·舒乐
-        </div>
-    </div>
-</div>
-
-                    
-
-                    
-
-                    
-
-                    
-                    <div id="recommend-sections" class="recommend">
-                        
-
-
-
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-    
-
-    
-
-    <!-- 所有文章卡片 -->
-    <article id="articles" class="container articles">
-        <div class="row article-row">
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2025/11/03/dairy251103/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="dairy251103">
-                            
-                            <span class="card-title">dairy251103</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                Here's something encrypted, password is required to continue reading.
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2025-11-03
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9A%8F%E7%AC%94/" class="post-category">
-                                    随笔
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/%E6%97%A5%E8%AE%B0/">
-                            <span class="chip bg-color">日记</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/springboot-hou-duan-xue-xi-bi-ji/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="springboot后端学习笔记">
-                            
-                            <span class="card-title">springboot后端学习笔记</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                45、web实验-抽取公共页面官方文档 - Template Layout
-
-公共页面/templates/common.html
-
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en" xmlns:th="ht
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/SpringBoot2/">
-                            <span class="chip bg-color">SpringBoot2</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/springboot-qian-duan-xue-xi-bi-ji/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="springboot前端学习笔记">
-                            
-                            <span class="card-title">springboot前端学习笔记</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                01、基础入门-SpringBoot2课程介绍
-Spring Boot 2核心技术
-Spring Boot 2响应式编程
-
-
-学习要求-熟悉Spring基础-熟悉Maven使用
-环境要求
-Java8及以上
-Maven 3.3及以上
-
-
-学习
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/Spring-boot/">
-                            <span class="chip bg-color">Spring boot</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/maven-wei-fu-wu-shi-jian-sheng-chan-wen-ti/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="maven-微服务实践生产问题">
-                            
-                            <span class="card-title">maven-微服务实践生产问题</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                第一节 搭建 Maven 私服：Nexus1、Nexus 安装①下载地址小诀窍：使用迅雷下载比直接用浏览器下载快很多
-https://download.sonatype.com/nexus/3/latest-unix.tar.gz
-②上传、
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="post-category">
-                                    学习
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/maven/">
-                            <span class="chip bg-color">maven</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/pom-shen-ru-yu-qiang-hua/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="POM 深入与强化">
-                            
-                            <span class="card-title">POM 深入与强化</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                第一节 重新认识Maven1、Maven 的完整功能在入门的时候我们介绍说 Maven 是一款『构建管理』和『依赖管理』的工具。但事实上这只是 Maven 的一部分功能。Maven 本身的产品定位是一款『项目管理工具』。
-2、项目管理功能的
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/maven/">
-                            <span class="chip bg-color">maven</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/maven-wei-fu-wu-jia-gou-an-li/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="maven-微服务架构案例">
-                            
-                            <span class="card-title">maven-微服务架构案例</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                第一节 创建工程1、创建工程
-
-
-
-工程名
-地位
-说明
-
-
-
-demo-imperial-court-ms-show
-父工程
-总体管理各个子工程
-
-
-demo01-imperial-court-gateway
-子工程
-网关
-
-
-demo02
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/maven/">
-                            <span class="chip bg-color">maven</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/javaweb-maven-dan-yi-jia-gou-an-li/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="javaweb-maven单一架构案例">
-                            
-                            <span class="card-title">javaweb-maven单一架构案例</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                第一节 创建工程，引入依赖1、架构①架构的概念『架构』其实就是『项目的结构』，只是因为架构是一个更大的词，通常用来形容比较大规模事物的结构。
-②单一架构单一架构也叫『all-in-one』结构，就是所有代码、配置文件、各种资源都在同一个工程
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/maven/">
-                            <span class="chip bg-color">maven</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/09/maven-qi-ta-he-xin-gai-nian/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="maven其他核心概念">
-                            
-                            <span class="card-title">maven其他核心概念</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                第五章 其他核心概念1、生命周期①作用为了让构建过程自动化完成，Maven 设定了三个生命周期，生命周期中的每一个环节对应构建过程中的一个操作。
-②三个生命周期
-
-
-生命周期名称
-作用
-各个环节
-
-
-
-Clean
-清理操作相关
-pre-cl
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-09
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/maven/">
-                            <span class="chip bg-color">maven</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/05/shi-yong-maven-idea-huan-jing/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="使用Maven：IDEA环境">
-                            
-                            <span class="card-title">使用Maven：IDEA环境</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-TIP
-各个 IDEA 不同版本在具体操作方面存在一定差异，这里我们以 2019.3.3 版本为例进行演示。其它版本大家灵活变通即可。
-
-第一节 创建父工程1、创建 Project
-
-
-2、开启自动导入创建 Project 后，IDEA 
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-05
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/08/05/shi-yong-maven-ming-ling-xing-huan-jing/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="使用 Maven：命令行环境">
-                            
-                            <span class="card-title">使用 Maven：命令行环境</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                使用 Maven：命令行环境第一节 实验一：根据坐标创建 Maven 工程1、Maven 核心概念：坐标①数学中的坐标
-使用 x、y、z 三个『向量』作为空间的坐标系，可以在『空间』中唯一的定位到一个『点』。
-②Maven中的坐标[1]向量
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-08-05
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/maven/">
-                            <span class="chip bg-color">maven</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/07/31/idea-chuang-jian-javaweb-xiang-mu-bing-bu-shu-yun-xing/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="idea创建javaweb项目并部署运行">
-                            
-                            <span class="card-title">idea创建javaweb项目并部署运行</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-在创建项目的时候选择module并选择javaweb，之后就会出现同时带有web文件夹和src文件夹的一个项目
-
-在web文件夹实现前端代码，在src实现后端代码
-
-编写好代码之后就可以配置当前的运行环境了
-
-首先选择添加配置add co
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-31
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E5%B7%A5%E4%BD%9C/" class="post-category">
-                                    工作
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/javaweb/">
-                            <span class="chip bg-color">javaweb</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2022/07/30/idea-zhu-shi-he-ban-quan-kuai-jie-fang-shi/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="idea注释和版权快捷方式">
-                            
-                            <span class="card-title">idea注释和版权快捷方式</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                一、概述    IDEA自带的注释模板不是太好用，我本人到网上搜集了很多资料系统的整理了一下制作了一份比较完整的模板来分享给大家，我不是专业玩博客的，写这篇文章只是为了让大家省事。
-这里设置的注释模板采用Eclipse的格式，下面先贴出Ec
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-07-30
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                homie
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-        </div>
-    </article>
-
-</main>
-
-
-<div class="container paging">
-    <div class="row">
-        <div class="col s6 m4 l4">
-            
-            <a class="left btn-floating btn-large disabled">
-                <i class="fas fa-angle-left"></i>
-            </a>
-            
-        </div>
-        <div class="page-info col m4 l4 hide-on-small-only">
-            <div class="center-align b-text-gray">1 / 4</div>
-        </div>
-        <div class="col s6 m4 l4">
-            
-            <a href="/page/2/"
-               class="right btn-floating btn-large waves-effect waves-light bg-color">
-                <i class="fas fa-angle-right"></i>
-            </a>
-            
-        </div>
-    </div>
-</div>
-
-
-
-
-    <footer class="page-footer bg-color">
-    
-        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
-<style>
-    .aplayer .aplayer-lrc p {
-        
-        display: none;
-        
-        font-size: 12px;
-        font-weight: 700;
-        line-height: 16px !important;
-    }
-
-    .aplayer .aplayer-lrc p.aplayer-lrc-current {
-        
-        display: none;
-        
-        font-size: 15px;
-        color: #42b983;
-    }
-
-    
-    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
-        left: -66px !important;
-    }
-
-    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
-        left: 0px !important;
-    }
-
-    
-</style>
-<div class="">
-    
-    <div class="row">
-        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
-                   server="netease"
-                   type="playlist"
-                   id="503838841"
-                   fixed='true'
-                   autoplay='false'
-                   theme='#42b983'
-                   loop='all'
-                   order='random'
-                   preload='auto'
-                   volume='0.7'
-                   list-folded='true'
-        >
-        </meting-js>
-    </div>
-</div>
-
-<script src="/libs/aplayer/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-
-    
-    <div class="container row center-align" style="margin-bottom: 0px !important;">
-        <div class="col s12 m8 l8 copy-right">
-            Copyright&nbsp;&copy;
-            
-                <span id="year">2019-2025</span>
-            
-            <span id="year">2019</span>
-            <a href="/about" target="_blank">homie</a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
-            <br>
-            
-            
-            
-            
-            
-            
-            <span id="busuanzi_container_site_pv">
-                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
-                    class="white-color"></span>&nbsp;次
-            </span>
-            
-            
-            <span id="busuanzi_container_site_uv">
-                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
-                    class="white-color"></span>&nbsp;人
-            </span>
-            
-            <br>
-            
-            <br>
-            
-        </div>
-        <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
-        <i class="fas fa-rss"></i>
-    </a>
-
-</div>
-    </div>
-</footer>
-
-<div class="progress-bar"></div>
-
-
-    <!-- 搜索遮罩框 -->
-<div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
-                   class="search-input">
-        </div>
-        <div id="searchResult"></div>
-    </div>
-</div>
-
-<script type="text/javascript">
-$(function () {
-    var searchFunc = function (path, search_id, content_id) {
-        'use strict';
-        $.ajax({
-            url: path,
-            dataType: "xml",
-            success: function (xmlResponse) {
-                // get the contents from search data
-                var datas = $("entry", xmlResponse).map(function () {
-                    return {
-                        title: $("title", this).text(),
-                        content: $("content", this).text(),
-                        url: $("url", this).text()
-                    };
-                }).get();
-                var $input = document.getElementById(search_id);
-                var $resultContent = document.getElementById(content_id);
-                $input.addEventListener('input', function () {
-                    var str = '<ul class=\"search-result-list\">';
-                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                    $resultContent.innerHTML = "";
-                    if (this.value.trim().length <= 0) {
-                        return;
-                    }
-                    // perform local searching
-                    datas.forEach(function (data) {
-                        var isMatch = true;
-                        var data_title = data.title.trim().toLowerCase();
-                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                        var data_url = data.url;
-                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
-                        var index_title = -1;
-                        var index_content = -1;
-                        var first_occur = -1;
-                        // only match artiles with not empty titles and contents
-                        if (data_title !== '' && data_content !== '') {
-                            keywords.forEach(function (keyword, i) {
-                                index_title = data_title.indexOf(keyword);
-                                index_content = data_content.indexOf(keyword);
-                                if (index_title < 0 && index_content < 0) {
-                                    isMatch = false;
-                                } else {
-                                    if (index_content < 0) {
-                                        index_content = 0;
-                                    }
-                                    if (i === 0) {
-                                        first_occur = index_content;
-                                    }
-                                }
-                            });
-                        }
-                        // show search results
-                        if (isMatch) {
-                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                            var content = data.content.trim().replace(/<[^>]+>/g, "");
-                            if (first_occur >= 0) {
-                                // cut out 100 characters
-                                var start = first_occur - 20;
-                                var end = first_occur + 80;
-                                if (start < 0) {
-                                    start = 0;
-                                }
-                                if (start === 0) {
-                                    end = 100;
-                                }
-                                if (end > content.length) {
-                                    end = content.length;
-                                }
-                                var match_content = content.substr(start, end);
-                                // highlight all keywords
-                                keywords.forEach(function (keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
-                                });
-
-                                str += "<p class=\"search-result\">" + match_content + "...</p>"
-                            }
-                            str += "</li>";
-                        }
-                    });
-                    str += "</ul>";
-                    $resultContent.innerHTML = str;
-                });
-            }
-        });
-    };
-
-    searchFunc('/search.xml', 'searchInput', 'searchResult');
-});
-</script>
-
-    <!-- 回到顶部按钮 -->
-<div id="backTop" class="top-scroll">
-    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-</div>
-
-
-    <script src="/libs/materialize/materialize.min.js"></script>
-    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="/libs/aos/aos.js"></script>
-    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="/js/matery.js"></script>
-
-    <!-- Baidu Analytics -->
-
-    <!-- Baidu Push -->
-
-<script>
-    (function () {
-        var bp = document.createElement('script');
-        var curProtocol = window.location.protocol.split(':')[0];
-        if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-        } else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-        }
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(bp, s);
-    })();
-</script>
-
-    
-    <script src="/libs/others/clicklove.js" async="async"></script>
-    
-    
-    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
-    
-
-    
-
-    
-
-	
-    
-
-    
-
-    
-
-    
-    <script src="/libs/instantpage/instantpage.js" type="module"></script>
-    
-
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
-
-</html>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">105</div></div><div class="webinfo-item"><div class="item-name">运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2021-12-31T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">248.8k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-07-13T15:17:45.244Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2026 By homie</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div><div class="footer_custom_text">Hi, welcome to my <a href="https://leehm00.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="/js/tw_cn.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/js/twikoo-pageview.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.2"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body></html>
